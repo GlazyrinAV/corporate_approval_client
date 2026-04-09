@@ -1,4 +1,5 @@
 import 'react';
+// declare module '*.css';
 
 declare module 'react' {
   interface HTMLAttributes<T> {
