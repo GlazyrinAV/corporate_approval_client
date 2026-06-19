@@ -6,7 +6,6 @@ import {
 import { EditCompany } from '../../features/company/editCompany/EditCompany';
 import type { TCompany } from '../../features/company/types/currentCompany';
 import type { AppDispatch } from '../../app/store';
-import { getCompaniesApi } from '../../features/company/api/getCompanyApi';
 import { useNavigate } from 'react-router';
 
 export const EditCompanyPage = () => {
@@ -16,7 +15,6 @@ export const EditCompanyPage = () => {
 
   const handleSubmit = (company: TCompany) => {
     dispatch(updateCompany(company));
-    dispatch(getCompaniesApi);
     navigate(-1);
   };
 

@@ -7,6 +7,7 @@ import {
   saveCompanyApi,
   updateCompanyApi
 } from '../api/editCompanyApi';
+import { fetchCompanies } from '../getAll/companies-slice';
 
 export const fetchCompanyById = createAsyncThunk(
   'currentCompany/fetchCompanyById',
@@ -27,22 +28,28 @@ const currentCompanyInitialState: TCurrentCompanyState = {
 
 export const saveCompany = createAsyncThunk(
   'saveCompany',
-  async (company: TNewCompany) => {
-    return saveCompanyApi(company);
+  async (company: TNewCompany, { dispatch }) => {
+    const newCompany = await saveCompanyApi(company);
+    await dispatch(fetchCompanies());
+    return newCompany;
   }
 );
 
 export const updateCompany = createAsyncThunk(
   'updateCompany',
-  async (company: TCompany) => {
-    return updateCompanyApi(company);
+  async (company: TCompany, { dispatch }) => {
+    const updatedCompany = await updateCompanyApi(company);
+    await dispatch(fetchCompanies());
+    return updatedCompany;
   }
 );
 
 export const removeCompany = createAsyncThunk(
   'companies/removeCompany',
-  async (id: number) => {
-    return deleteCompanyApi(id);
+  async (id: number, { dispatch }) => {
+    const response = await deleteCompanyApi(id);
+    await dispatch(fetchCompanies());
+    return response;
   }
 );
 

@@ -1,32 +1,19 @@
-import {
-  fetchCompanies,
-  getCompanies,
-  getIsLoading
-} from '../../../features/company/getAll/companies-slice';
-import { useEffect } from 'react';
-
 import { COMPANY_TYPE } from '../../../shared/utils/companyTypes';
 import styles from './CompaniesList.module.css';
 import { Link, useNavigate } from 'react-router';
 import { routes } from '../../../app/routes';
-import { useDispatch, useSelector } from '../../../app/store';
-import { Preloader } from '../../../shared/ui/preloader/Preloader';
 import { CommonCard } from '../../../shared/ui/common-card/CommonCard';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
+import type { TCompany } from '../../../features/company/types/currentCompany';
 
-export const CompaniesList = () => {
+type CompaniesListProps = {
+  companies: TCompany[];
+};
+
+export const CompaniesList = ({ companies }: CompaniesListProps) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const companies = useSelector(getCompanies);
-  const isLoading = useSelector(getIsLoading);
 
-  useEffect(() => {
-    dispatch(fetchCompanies());
-  }, [dispatch]);
-
-  return isLoading ? (
-    <Preloader />
-  ) : (
+  return (
     <div className={styles.companies_list}>
       {companies
         ? companies.map((company, index) => (
@@ -52,7 +39,7 @@ export const CompaniesList = () => {
               </CommonCard>
             </Link>
           ))
-        : ''}
+        : 'Компании не найдены'}
     </div>
   );
 };

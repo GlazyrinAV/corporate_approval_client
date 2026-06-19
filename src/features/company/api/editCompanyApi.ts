@@ -18,9 +18,9 @@ export const saveCompanyApi = (company: TNewCompany) =>
       'Content-Type': 'application/json'
     }
   })
-    .then((res) => checkResponse<TCompaniesResponse>(res))
+    .then((res) => checkResponse<TCompany>(res))
     .then((data) => {
-      if (data?.content) return data.content;
+      if (data) return data;
       return Promise.reject(data);
     });
 
@@ -32,9 +32,9 @@ export const updateCompanyApi = (company: TCompany) =>
       'Content-Type': 'application/json'
     }
   })
-    .then((res) => checkResponse<TCompaniesResponse>(res))
+    .then((res) => checkResponse<TCompany>(res))
     .then((data) => {
-      if (data) return data.content;
+      if (data) return data;
       return Promise.reject(data);
     });
 

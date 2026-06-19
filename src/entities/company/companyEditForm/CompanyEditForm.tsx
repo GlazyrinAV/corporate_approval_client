@@ -83,7 +83,6 @@ export const EditCompanyForm = ({
         value={companyType}
         row
         label='Организационная форма'
-        defaultValue={companyType}
       />
       <CommonButton color='secondary' onClick={handleSubmit}>
         Сохранить компанию

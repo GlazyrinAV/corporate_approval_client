@@ -46,6 +46,7 @@ export const companiesSlice = createSlice({
       .addCase(fetchCompanies.fulfilled, (state, action) => {
         state.companies = action.payload;
         state.isLoading = false;
+        state.error = null;
       })
       .addCase(fetchCompanies.rejected, (state, action) => {
         state.error = action.error.message as string;

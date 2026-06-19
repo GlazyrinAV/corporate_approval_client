@@ -5,7 +5,6 @@ import type { TNewCompany } from '../../features/company/types/newCompany';
 import { saveCompany } from '../../features/company/getCompany/currentCompany-slice';
 import { useNavigate } from 'react-router';
 import { routes } from '../../app/routes';
-import { getCompaniesApi } from '../../features/company/api/getCompanyApi';
 
 export const NewCompany = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,7 +12,6 @@ export const NewCompany = () => {
 
   const handleSubmit = (company: TNewCompany) => {
     dispatch(saveCompany(company));
-    dispatch(getCompaniesApi);
     navigate(routes.main);
   };
 
