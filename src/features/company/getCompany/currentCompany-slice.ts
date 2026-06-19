@@ -47,9 +47,8 @@ export const updateCompany = createAsyncThunk(
 export const removeCompany = createAsyncThunk(
   'companies/removeCompany',
   async (id: number, { dispatch }) => {
-    const response = await deleteCompanyApi(id);
+    await deleteCompanyApi(id);
     await dispatch(fetchCompanies());
-    return response;
   }
 );
 

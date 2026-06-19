@@ -44,4 +44,9 @@ export const deleteCompanyApi = (id: number) =>
     headers: {
       'Content-Type': 'application/json'
     }
-  }).then((res) => checkResponse<TCompaniesResponse>(res));
+  }).then((res) => {
+    if (res.status === 204) {
+      return;
+    }
+    return Promise.reject();
+  });
