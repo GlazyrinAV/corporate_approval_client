@@ -1,8 +1,8 @@
 export type TCompany = {
-  id: number;
+  id?: number;
   title: string;
-  inn: number;
-  registrationNumber: number;
+  inn: string;
+  registrationNumber: string;
   companyType: string;
   hasBoardOfDirectors: boolean;
 };

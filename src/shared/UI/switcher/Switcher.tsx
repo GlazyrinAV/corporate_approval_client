@@ -33,7 +33,7 @@ export const Switcher = ({
           color={color}
           onChange={onChange}
           disabled={disabled}
-          value={value}
+          checked={value}
           defaultChecked={defaultChecked}
         />
       }

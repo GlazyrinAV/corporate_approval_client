@@ -1,5 +1,6 @@
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -18,7 +19,8 @@ type TRadioGroupProps = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
   row?: boolean;
-  error?: boolean;
+  error: boolean;
+  helpText?: string;
 };
 
 export const RadioSelector = ({
@@ -28,7 +30,8 @@ export const RadioSelector = ({
   onChange,
   row = false,
   error = false,
-  value
+  value,
+  helpText = ' '
 }: TRadioGroupProps) => {
   return (
     <FormControl error={error}>
@@ -51,6 +54,7 @@ export const RadioSelector = ({
           />
         ))}
       </RadioGroup>
+      <FormHelperText>{helpText}</FormHelperText>
     </FormControl>
   );
 };

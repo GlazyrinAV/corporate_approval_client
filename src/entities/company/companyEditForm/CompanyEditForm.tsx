@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FormInput } from '../../../shared/ui/input/FormInput';
 import styles from './CompanyEditForm.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
@@ -6,6 +5,14 @@ import { RadioSelector } from '../../../shared/ui/radio-selector/RadioSelector';
 import { Switcher } from '../../../shared/ui/switcher/Switcher';
 import type { TCompany } from '../../../features/company/types/currentCompany';
 import { COMPANY_TYPE } from '../../../shared/utils/companyTypes';
+import {
+  Controller,
+  useForm,
+  type SubmitErrorHandler,
+  type SubmitHandler
+} from 'react-hook-form';
+import { companySchema } from '../../../features/company/schema/companySchema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type CompanyEditFormProps = {
   currentCompany?: TCompany;
@@ -16,75 +23,104 @@ export const EditCompanyForm = ({
   currentCompany,
   onSubmit
 }: CompanyEditFormProps) => {
-  const [title, setTitle] = useState(currentCompany?.title || '');
-  const [inn, setInn] = useState(currentCompany?.inn || null);
-  const [regNumber, setRegNumber] = useState(
-    currentCompany?.registrationNumber || null
-  );
-  const [companyType, setCompanyType] = useState(
-    currentCompany?.companyType || ''
-  );
-  const [hasBoardOfDirectors, setHasBoardOfDirectors] = useState(
-    currentCompany?.hasBoardOfDirectors || false
-  );
+  const { handleSubmit, control } = useForm<TCompany>({
+    resolver: zodResolver(companySchema)
+  });
 
-  function handleSubmit(e: React.SubmitEvent<HTMLButtonElement>) {
-    e.preventDefault();
+  const submit: SubmitHandler<TCompany> = (data) => {
     onSubmit({
-      id: currentCompany?.id || null,
-      title,
-      inn,
-      registrationNumber: regNumber,
-      companyType: COMPANY_TYPE[companyType],
-      hasBoardOfDirectors
+      ...data,
+      id: currentCompany?.id || null
     });
-  }
+  };
+
+  const onInvalid: SubmitErrorHandler<TCompany> = (errors) => {
+    console.error('Validation errors:', errors);
+  };
 
   return (
     <form className={styles.edit_form}>
-      <FormInput
-        label='Название компании'
-        value={title ? title : ''}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder='Введите название компании'
+      <Controller
+        name='title'
+        control={control}
+        defaultValue={currentCompany?.title}
+        render={({ field, fieldState: { error } }) => (
+          <FormInput
+            {...field}
+            label='Название компании'
+            placeholder='Введите название компании'
+            error={error != null}
+            helpText={error?.message}
+          />
+        )}
       />
-      <FormInput
-        label='ИНН'
-        value={inn ? String(inn) : ''}
-        onChange={(e) => setInn(Number(e.target.value))}
-        placeholder='Введите ИНН'
+      <Controller
+        name='inn'
+        control={control}
+        defaultValue={currentCompany?.inn.toString()}
+        render={({ field, fieldState: { error } }) => (
+          <FormInput
+            {...field}
+            value={field.value ? String(field.value) : ''}
+            label='ИНН'
+            placeholder='Введите ИНН'
+            error={error != null}
+            helpText={error?.message}
+          />
+        )}
       />
-      <FormInput
-        label='ОГРН'
-        value={regNumber ? String(regNumber) : ''}
-        onChange={(e) => setRegNumber(Number(e.target.value))}
-        placeholder='Введите ОГРН'
+      <Controller
+        name='registrationNumber'
+        control={control}
+        defaultValue={currentCompany?.registrationNumber.toString()}
+        render={({ field, fieldState: { error } }) => (
+          <FormInput
+            {...field}
+            value={field.value ? String(field.value) : ''}
+            label='ОГРН'
+            placeholder='Введите ОГРН'
+            error={error != null}
+            helpText={error?.message}
+          />
+        )}
       />
-      <Switcher
-        label='Совет директоров'
-        defaultChecked={hasBoardOfDirectors}
-        value={hasBoardOfDirectors}
-        onChange={(e) => setHasBoardOfDirectors(e.target.checked)}
+      <Controller
+        name='hasBoardOfDirectors'
+        control={control}
+        defaultValue={
+          currentCompany ? currentCompany?.hasBoardOfDirectors : false
+        }
+        render={({ field }) => <Switcher {...field} label='Совет директоров' />}
+      />
+      <Controller
+        name='companyType'
+        control={control}
+        defaultValue={
+          currentCompany ? COMPANY_TYPE[currentCompany?.companyType] : null
+        }
+        render={({ field, fieldState: { error } }) => (
+          <RadioSelector
+            {...field}
+            id='CompanyOrganizationForm'
+            options={[
+              {
+                value: COMPANY_TYPE['LLC'],
+                label: 'ООО'
+              },
+              {
+                value: COMPANY_TYPE['JSC'],
+                label: 'АО'
+              }
+            ]}
+            row
+            label='Организационная форма'
+            error={error != null}
+            helpText={error?.message}
+          />
+        )}
       />
 
-      <RadioSelector
-        id='CompanyOrganizationForm'
-        options={[
-          {
-            value: 'LLC',
-            label: 'ООО'
-          },
-          {
-            value: 'JSC',
-            label: 'АО'
-          }
-        ]}
-        onChange={(e) => setCompanyType(e.target.value)}
-        value={companyType}
-        row
-        label='Организационная форма'
-      />
-      <CommonButton color='secondary' onClick={handleSubmit}>
+      <CommonButton color='secondary' onClick={handleSubmit(submit, onInvalid)}>
         Сохранить компанию
       </CommonButton>
     </form>

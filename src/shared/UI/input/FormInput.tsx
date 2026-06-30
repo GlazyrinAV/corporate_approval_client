@@ -21,8 +21,8 @@ export const FormInput = ({
   required = false,
   disabled = false,
   type = 'text',
-  error = false,
-  helpText,
+  error,
+  helpText = ' ',
   color = 'primary',
   placeholder,
   value
