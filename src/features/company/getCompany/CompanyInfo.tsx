@@ -5,7 +5,7 @@ import type { AppDispatch } from '../../../app/store';
 import { fetchCompanyById, getCurrentCompany } from './currentCompany-slice';
 import { useEffect } from 'react';
 
-export const Company = () => {
+export const CompanyInfo = () => {
   const params = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const currentCompany = useSelector(getCurrentCompany);

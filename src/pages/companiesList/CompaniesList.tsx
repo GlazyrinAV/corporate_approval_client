@@ -1,5 +1,5 @@
-import { Companies } from '../../features/company/getAll/Companies';
+import { CompaniesInfo } from '../../features/company/getAll/CompaniesInfo';
 
 export const CompaniesList = () => {
-  return <Companies />;
+  return <CompaniesInfo />;
 };

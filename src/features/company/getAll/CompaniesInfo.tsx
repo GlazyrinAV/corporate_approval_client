@@ -6,7 +6,7 @@ import { fetchCompanies, getCompanies, getIsLoading } from './companies-slice';
 import { useEffect } from 'react';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
 
-export const Companies = () => {
+export const CompaniesInfo = () => {
   const dispatch = useDispatch<AppDispatch>();
   const companies = useSelector(getCompanies);
   const isLoading = useSelector(getIsLoading);

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router';
-import { Company } from '../../features/company/getCompany/Company';
+import { CompanyInfo } from '../../features/company/getCompany/CompanyInfo';
 import { CommonButton } from '../../shared/ui/common-button/CommonButton';
 import styles from './CurrentCompany.module.css';
 import { routes } from '../../app/routes';
@@ -24,7 +24,7 @@ export const CurrentCompany = () => {
       <div className={styles.navigation}>
         <CommonButton onClick={() => navigate(routes.main)}>Back</CommonButton>
       </div>
-      <Company />
+      <CompanyInfo />
       <div className={styles.actions}>
         <CommonButton
           color='secondary'
