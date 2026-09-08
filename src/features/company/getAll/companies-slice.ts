@@ -1,9 +1,6 @@
-import {
-  createAsyncThunk,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCompaniesApi } from '../api/getCompanyApi';
-import type { TCompany } from '../types/currentCompany';
+import type { TCompanyPagebable } from '../types/currentCompany';
 
 export const fetchCompanies = createAsyncThunk(
   'companies/fetchCompanies',
@@ -11,13 +8,13 @@ export const fetchCompanies = createAsyncThunk(
 );
 
 type TCompaniesState = {
-  companies: TCompany[];
+  companies: TCompanyPagebable | null;
   isLoading: boolean;
   error: string | null;
 };
 
 const companiesInintialState: TCompaniesState = {
-  companies: [],
+  companies: null,
   isLoading: false,
   error: null
 };

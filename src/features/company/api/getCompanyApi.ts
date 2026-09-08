@@ -1,19 +1,15 @@
-import type { TCompany } from '../types/currentCompany';
+import type { TCompany, TCompanyPagebable } from '../types/currentCompany';
 
 const URL = 'http://localhost:8080/approval';
 
 const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
-type TCompaniesResponse = {
-  content: TCompany[];
-};
-
-export const getCompaniesApi = () =>
-  fetch(`${URL}/company`)
-    .then((res) => checkResponse<TCompaniesResponse>(res))
+export const getCompaniesApi = (page: number | null) =>
+  fetch(page ? `${URL}/company?page=${page - 1}` : `${URL}/company`)
+    .then((res) => checkResponse<TCompanyPagebable>(res))
     .then((data) => {
-      if (data?.content) return data.content;
+      if (data) return data;
       return Promise.reject(data);
     });
 
