@@ -1,0 +1,10 @@
+.container {
+  width: 100%;
+  position: relative;
+}
+
+.clear {
+  position: absolute;
+  top: 30%;
+  right: 5%;
+}

@@ -20,3 +20,15 @@ export const getCompanyByIdApi = (id: number) =>
       if (data) return data;
       return Promise.reject(data);
     });
+
+export const filterCompaniesApi = (query: string, page: number) =>
+  fetch(
+    page
+      ? `${URL}/company/search?criteria=${query}&page=${page - 1}`
+      : `${URL}/company/search?criteria=${query}`
+  )
+    .then((res) => checkResponse<TCompanyPagebable>(res))
+    .then((data) => {
+      if (data) return data;
+      return Promise.reject(data);
+    });

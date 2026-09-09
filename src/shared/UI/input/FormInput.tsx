@@ -12,6 +12,7 @@ type FormInputProps = {
   color?: 'primary' | 'secondary' | 'error' | 'success' | 'info' | 'warning';
   placeholder?: string;
   value?: string;
+  classname?: string;
 };
 
 export const FormInput = ({
@@ -22,10 +23,11 @@ export const FormInput = ({
   disabled = false,
   type = 'text',
   error,
-  helpText = ' ',
+  helpText,
   color = 'primary',
   placeholder,
-  value
+  value,
+  classname
 }: FormInputProps) => {
   return (
     <TextField
@@ -36,10 +38,11 @@ export const FormInput = ({
       disabled={disabled}
       type={type}
       error={error}
-      helperText={helpText}
+      helperText={helpText ? helpText : null}
       color={color}
       placeholder={placeholder}
       value={value}
+      className={classname}
     />
   );
 };

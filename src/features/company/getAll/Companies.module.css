@@ -1,3 +1,15 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  gap: 10px;
+}
+
+.search {
+  width: 100%;
+  padding: 0 20px;
+}
+
 .container {
   display: flex;
   flex-direction: column;

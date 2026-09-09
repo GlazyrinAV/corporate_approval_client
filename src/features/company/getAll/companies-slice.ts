@@ -1,10 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCompaniesApi } from '../api/getCompanyApi';
+import { filterCompaniesApi, getCompaniesApi } from '../api/getCompanyApi';
 import type { TCompanyPagebable } from '../types/currentCompany';
+
+type TFilter = {
+  query: string;
+  page: number;
+};
 
 export const fetchCompanies = createAsyncThunk(
   'companies/fetchCompanies',
   getCompaniesApi
+);
+
+export const filterCompanies = createAsyncThunk(
+  'companies/filterCompanies',
+  async ({ query, page }: TFilter) => {
+    return await filterCompaniesApi(query, page);
+  }
 );
 
 type TCompaniesState = {
@@ -46,6 +58,19 @@ export const companiesSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCompanies.rejected, (state, action) => {
+        state.error = action.error.message as string;
+        state.isLoading = false;
+      })
+      .addCase(filterCompanies.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(filterCompanies.fulfilled, (state, action) => {
+        state.companies = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(filterCompanies.rejected, (state, action) => {
         state.error = action.error.message as string;
         state.isLoading = false;
       });
