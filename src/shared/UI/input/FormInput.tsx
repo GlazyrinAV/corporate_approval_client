@@ -6,7 +6,7 @@ type FormInputProps = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   disabled?: boolean;
-  type?: 'text' | 'number' | 'password' | 'email' | 'tel';
+  type?: 'text' | 'number' | 'password' | 'email' | 'tel' | 'date';
   error?: boolean;
   helpText?: string;
   color?: 'primary' | 'secondary' | 'error' | 'success' | 'info' | 'warning';

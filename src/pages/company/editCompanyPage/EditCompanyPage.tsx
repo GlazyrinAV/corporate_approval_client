@@ -2,10 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentCompany,
   updateCompany
-} from '../../features/company/getCompany/currentCompany-slice';
-import { EditCompany } from '../../features/company/editCompany/EditCompany';
-import type { TCompany } from '../../features/company/types/currentCompany';
-import type { AppDispatch } from '../../app/store';
+} from '../../../features/company/getCompany/currentCompany-slice';
+import { EditCompany } from '../../../features/company/editCompany/EditCompany';
+import type { TCompany } from '../../../features/company/types/currentCompany';
+import type { AppDispatch } from '../../../app/store';
 import { useNavigate } from 'react-router';
 
 export const EditCompanyPage = () => {

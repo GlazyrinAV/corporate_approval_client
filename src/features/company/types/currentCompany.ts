@@ -1,3 +1,5 @@
+import type { TPageble } from '../../../shared/utils/commonTypes';
+
 export type TCompany = {
   id?: number;
   title: string;
@@ -7,21 +9,6 @@ export type TCompany = {
   hasBoardOfDirectors: boolean;
 };
 
-export type TCompanyPagebable = {
+export type TCompanyPagebable = TPageble & {
   content: TCompany[];
-  empty: boolean;
-  first: boolean;
-  last: boolean;
-  number: number;
-  numberOfElements: number;
-  size: number;
-  sort: TSort;
-  totalElements: number;
-  totalPages: number;
-};
-
-export type TSort = {
-  empty: boolean;
-  sorted: boolean;
-  unsorted: boolean;
 };

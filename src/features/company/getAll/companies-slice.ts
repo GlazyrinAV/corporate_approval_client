@@ -2,9 +2,15 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { filterCompaniesApi, getCompaniesApi } from '../api/getCompanyApi';
 import type { TCompanyPagebable } from '../types/currentCompany';
 
-type TFilter = {
+type TCompanyFilter = {
   query: string;
   page: number;
+};
+
+type TCompaniesState = {
+  companies: TCompanyPagebable | null;
+  isLoading: boolean;
+  error: string | null;
 };
 
 export const fetchCompanies = createAsyncThunk(
@@ -14,16 +20,10 @@ export const fetchCompanies = createAsyncThunk(
 
 export const filterCompanies = createAsyncThunk(
   'companies/filterCompanies',
-  async ({ query, page }: TFilter) => {
+  async ({ query, page }: TCompanyFilter) => {
     return await filterCompaniesApi(query, page);
   }
 );
-
-type TCompaniesState = {
-  companies: TCompanyPagebable | null;
-  isLoading: boolean;
-  error: string | null;
-};
 
 const companiesInintialState: TCompaniesState = {
   companies: null,

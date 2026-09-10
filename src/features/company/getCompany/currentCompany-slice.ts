@@ -9,48 +9,48 @@ import {
 } from '../api/editCompanyApi';
 import { fetchCompanies } from '../getAll/companies-slice';
 
-export const fetchCompanyById = createAsyncThunk(
-  'currentCompany/fetchCompanyById',
-  async (id: number) => getCompanyByIdApi(id)
-);
-
 type TCurrentCompanyState = {
   company: TCompany | null;
   isLoading: boolean;
   error: string | null;
 };
 
-const currentCompanyInitialState: TCurrentCompanyState = {
-  company: null,
-  isLoading: false,
-  error: null
-};
+export const fetchCompanyById = createAsyncThunk(
+  'currentCompany/fetchCompanyById',
+  async (id: number) => getCompanyByIdApi(id)
+);
 
 export const saveCompany = createAsyncThunk(
-  'saveCompany',
+  'currentCompany/saveCompany',
   async (company: TNewCompany, { dispatch }) => {
     const newCompany = await saveCompanyApi(company);
-    await dispatch(fetchCompanies());
+    await dispatch(fetchCompanies(1));
     return newCompany;
   }
 );
 
 export const updateCompany = createAsyncThunk(
-  'updateCompany',
+  'currentCompany/updateCompany',
   async (company: TCompany, { dispatch }) => {
     const updatedCompany = await updateCompanyApi(company);
-    await dispatch(fetchCompanies());
+    await dispatch(fetchCompanies(1));
     return updatedCompany;
   }
 );
 
 export const removeCompany = createAsyncThunk(
-  'companies/removeCompany',
+  'currentCompany/removeCompany',
   async (id: number, { dispatch }) => {
     await deleteCompanyApi(id);
-    await dispatch(fetchCompanies());
+    await dispatch(fetchCompanies(1));
   }
 );
+
+const currentCompanyInitialState: TCurrentCompanyState = {
+  company: null,
+  isLoading: false,
+  error: null
+};
 
 export const currentCompanySlice = createSlice({
   name: 'currentCompany',

@@ -1,9 +1,6 @@
+import { checkResponse } from '../../../shared/utils/commonApi';
+import { URL } from '../../../shared/utils/commonApi';
 import type { TCompany, TCompanyPagebable } from '../types/currentCompany';
-
-const URL = 'http://localhost:8080/approval';
-
-const checkResponse = <T>(res: Response): Promise<T> =>
-  res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
 export const getCompaniesApi = (page: number | null) =>
   fetch(page ? `${URL}/company?page=${page - 1}` : `${URL}/company`)

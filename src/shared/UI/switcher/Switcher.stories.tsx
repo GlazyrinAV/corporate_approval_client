@@ -18,6 +18,6 @@ type Story = StoryObj<typeof Switcher>;
 
 export const Default: Story = {
   render: () => {
-    return <Switcher label='Choose' value='YES'  />;
+    return <Switcher label='Choose' value={true} />;
   }
 };

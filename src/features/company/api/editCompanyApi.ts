@@ -1,14 +1,7 @@
+import { checkResponse } from '../../../shared/utils/commonApi';
+import { URL } from '../../../shared/utils/commonApi';
 import type { TCompany } from '../types/currentCompany';
 import type { TNewCompany } from '../types/newCompany';
-
-const URL = 'http://localhost:8080/approval/company';
-
-const checkResponse = <T>(res: Response): Promise<T> =>
-  res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-
-type TCompaniesResponse = {
-  content: TCompany;
-};
 
 export const saveCompanyApi = (company: TNewCompany) =>
   fetch(`${URL}`, {

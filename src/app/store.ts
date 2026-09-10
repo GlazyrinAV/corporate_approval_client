@@ -7,8 +7,15 @@ import {
 } from 'react-redux';
 import companiesSlice from '../features/company/getAll/companies-slice';
 import currentCompanySlice from '../features/company/getCompany/currentCompany-slice';
+import participantsSlice from '../features/participant/getAll/participants-slice';
+import currentParticipantSlice from '../features/participant/getParticipant/currrentParticipant-slice';
 
-const rootReducer = combineSlices(companiesSlice, currentCompanySlice);
+const rootReducer = combineSlices(
+  companiesSlice,
+  currentCompanySlice,
+  participantsSlice,
+  currentParticipantSlice
+);
 
 const store = configureStore({
   reducer: rootReducer,
