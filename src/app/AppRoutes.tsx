@@ -9,6 +9,10 @@ import { ParticipantList } from '../pages/participant/participantsList/Participa
 import { CurrentParticipant } from '../pages/participant/currentParticipant/CurrentParticipant';
 import { NewParticipant } from '../pages/participant/newParticipant/NewParticipant';
 import { EditParticipantPage } from '../pages/participant/editParticipant/EditParticipantPage';
+import { MeetingsList } from '../pages/meeting/meetingsList/MeetingsList';
+import { CurrentMeeting } from '../pages/meeting/currentMeeting/CurrentMeeting';
+import { NewMeeting } from '../pages/meeting/newMeeting/NewMeeting';
+import { EditMeetingPage } from '../pages/meeting/editMeeting/EditMeeting';
 
 export const AppRoutes = () => (
   <>
@@ -22,6 +26,10 @@ export const AppRoutes = () => (
       <Route path={routes.participant} element={<CurrentParticipant />} />
       <Route path={routes.newParticipant} element={<NewParticipant />} />
       <Route path={routes.editParticipant} element={<EditParticipantPage />} />
+      <Route path={routes.meetings} element={<MeetingsList />} />
+      <Route path={routes.meeting} element={<CurrentMeeting />} />
+      <Route path={routes.newMeeting} element={<NewMeeting />} />
+      <Route path={routes.editMeeting} element={<EditMeetingPage />} />
     </Routes>
   </>
 );

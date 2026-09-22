@@ -6,7 +6,7 @@ export type TMeeting = {
   meetingType: string;
   dateOfMeeting: Date;
   dateOfProtocol: Date;
-  starOfRegistration: Date;
+  startOfRegistration: Date;
   endOfRegistration: Date;
   startOfMeeting: Date;
   endOfMeeting: Date;

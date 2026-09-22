@@ -28,7 +28,7 @@ export const fetchParticipants = createAsyncThunk(
 );
 
 export const filterParticipants = createAsyncThunk(
-  'companies/filterCompanies',
+  'participants/filterParticipants',
   async ({ companyId, query, page }: TParticpantFilter) => {
     return await filterParticipantsApi(companyId, query, page);
   }

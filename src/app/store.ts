@@ -9,12 +9,16 @@ import companiesSlice from '../features/company/getAll/companies-slice';
 import currentCompanySlice from '../features/company/getCompany/currentCompany-slice';
 import participantsSlice from '../features/participant/getAll/participants-slice';
 import currentParticipantSlice from '../features/participant/getParticipant/currrentParticipant-slice';
+import meetingsSlice from '../features/meeting/getAllMeetings/meetings-slice';
+import currentMeetingSlice from '../features/meeting/getMeeting/currentMeeting-slice';
 
 const rootReducer = combineSlices(
   companiesSlice,
   currentCompanySlice,
   participantsSlice,
-  currentParticipantSlice
+  currentParticipantSlice,
+  meetingsSlice,
+  currentMeetingSlice
 );
 
 const store = configureStore({

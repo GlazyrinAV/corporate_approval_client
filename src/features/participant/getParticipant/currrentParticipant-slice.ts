@@ -31,7 +31,7 @@ type TUpdateParticipantApi = {
 };
 
 export const fetchParticipantById = createAsyncThunk(
-  'currentParticipant/fetchParticipantById',
+  'participant/fetchParticipantById',
   async ({ companyId, participantId }: TParticipantApi) =>
     getParticipantByIdApi(companyId, participantId)
 );
