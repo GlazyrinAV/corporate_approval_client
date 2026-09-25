@@ -13,6 +13,9 @@ import { findType, MEETING_TYPE } from '../../shared/utils/meetingTypes';
 import { RadioSelector } from '../../shared/ui/radio-selector/RadioSelector';
 import { DatePickerBasic } from '../../shared/ui/date-picker/DatePickerBasic';
 import { FormInput } from '../../shared/ui/input/FormInput';
+import { TimePickerBasic } from '../../shared/ui/time-picker/TimePickerBasic';
+import dayjs from 'dayjs';
+import type { TNewMeeting } from '../../features/meeting/types/newMeeting';
 
 type MeetingEditFormProps = {
   currentMeeting?: TMeeting;
@@ -25,7 +28,7 @@ export const MeetingEditForm = ({
   onSubmit,
   companyId
 }: MeetingEditFormProps) => {
-  const { handleSubmit, control, register } = useForm<TMeeting>({
+  const { handleSubmit, control, register } = useForm<TMeeting | TNewMeeting>({
     resolver: zodResolver(meetingSchema)
   });
 
@@ -112,10 +115,12 @@ export const MeetingEditForm = ({
         name='startOfRegistration'
         control={control}
         defaultValue={
-          currentMeeting ? new Date(currentMeeting.startOfRegistration) : null
+          currentMeeting
+            ? dayjs(currentMeeting.startOfRegistration, 'HH:mm').toDate()
+            : null
         }
         render={({ field, fieldState: { error } }) => (
-          <DatePickerBasic
+          <TimePickerBasic
             {...field}
             value={field.value ? new Date(field.value) : null}
             label='Время начала регистрации участников собрания'
@@ -129,10 +134,12 @@ export const MeetingEditForm = ({
         name='endOfRegistration'
         control={control}
         defaultValue={
-          currentMeeting ? new Date(currentMeeting.endOfRegistration) : null
+          currentMeeting
+            ? dayjs(currentMeeting.endOfRegistration, 'HH:mm').toDate()
+            : null
         }
         render={({ field, fieldState: { error } }) => (
-          <DatePickerBasic
+          <TimePickerBasic
             {...field}
             value={field.value ? new Date(field.value) : null}
             label='Время окончания регистрации участников собрания'
@@ -146,10 +153,12 @@ export const MeetingEditForm = ({
         name='startOfMeeting'
         control={control}
         defaultValue={
-          currentMeeting ? new Date(currentMeeting.startOfMeeting) : null
+          currentMeeting
+            ? dayjs(currentMeeting.startOfMeeting, 'HH:mm').toDate()
+            : null
         }
         render={({ field, fieldState: { error } }) => (
-          <DatePickerBasic
+          <TimePickerBasic
             {...field}
             value={field.value ? new Date(field.value) : null}
             label='Время начала собрания'
@@ -163,10 +172,12 @@ export const MeetingEditForm = ({
         name='endOfMeeting'
         control={control}
         defaultValue={
-          currentMeeting ? new Date(currentMeeting.endOfMeeting) : null
+          currentMeeting
+            ? dayjs(currentMeeting.endOfMeeting, 'HH:mm').toDate()
+            : null
         }
         render={({ field, fieldState: { error } }) => (
-          <DatePickerBasic
+          <TimePickerBasic
             {...field}
             value={field.value ? new Date(field.value) : null}
             label='Время завершения собрания'

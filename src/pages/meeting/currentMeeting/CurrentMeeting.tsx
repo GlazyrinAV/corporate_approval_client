@@ -15,6 +15,7 @@ import {
   removeMeeting
 } from '../../../features/meeting/getMeeting/currentMeeting-slice';
 import { MeetingInfo } from '../../../features/meeting/getMeeting/MeetingInfo';
+import { MeetingParticipantsInfo } from '../../../features/meetingParticipant/getAllMeetingParticipants/MeetingParticipantsInfo';
 
 export const CurrentMeeting = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ export const CurrentMeeting = () => {
     <div className={styles.container}>
       <div className={styles.navigation}>
         <CommonButton
-          onClick={() => navigate(`/company/${companyId}/participants`)}
+          onClick={() => navigate(`/company/${companyId}/meetings`)}
         >
           Back
         </CommonButton>
@@ -58,7 +59,7 @@ export const CurrentMeeting = () => {
         <CommonButton
           color='secondary'
           onClick={() =>
-            navigate(`/company/${companyId}/participants/{${meetingId}/edit`)
+            navigate(`/company/${companyId}/meetings/{${meetingId}/edit`)
           }
         >
           Edit Meeting
@@ -67,15 +68,43 @@ export const CurrentMeeting = () => {
           Delete Meeting
         </CommonButton>
       </div>
-      <section>
+      <section className={styles.meeting_info}>
         {isLoading ? (
           <Preloader />
         ) : meeting ? (
           <MeetingInfo meeting={meeting} />
         ) : (
-          'Данные отсутствуют'
+          'Данные о собрании отсутствуют'
         )}
       </section>
+
+      {isLoading ? (
+        <Preloader />
+      ) : meeting ? (
+        <section className={styles.meeting_participants}>
+          <div className={styles.actions}>
+            <CommonButton
+              color='secondary'
+              onClick={() =>
+                navigate(
+                  `/company/${companyId}/meetings/${meetingId}/participants`
+                )
+              }
+            >
+              View Meeting Participants
+            </CommonButton>
+          </div>
+          <div>
+            <MeetingParticipantsInfo
+              companyId={companyId}
+              meetingId={meetingId}
+              limit={2}
+            />
+          </div>
+        </section>
+      ) : (
+        'Данные об участниках собрания отсутствуют'
+      )}
     </div>
   );
 };

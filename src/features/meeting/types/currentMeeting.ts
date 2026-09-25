@@ -1,7 +1,7 @@
 import type { TPageble } from '../../../shared/utils/commonTypes';
 
 export type TMeeting = {
-  id?: number;
+  id: number;
   companyId: string;
   meetingType: string;
   dateOfMeeting: Date;

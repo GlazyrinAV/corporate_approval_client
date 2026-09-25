@@ -1,7 +1,7 @@
 import type { TPageble } from '../../../shared/utils/commonTypes';
 
 export type TParticipant = {
-  id?: number;
+  id: number;
   name: string;
   dateOfBirth: Date;
   idDocument: string;

@@ -1,3 +1,13 @@
+
+import companiesSlice from '../features/company/getAll/companies-slice';
+import currentCompanySlice from '../features/company/getCompany/currentCompany-slice';
+import participantsSlice from '../features/participant/getAll/participants-slice';
+import currentParticipantSlice from '../features/participant/getParticipant/currrentParticipant-slice';
+import meetingsSlice from '../features/meeting/getAllMeetings/meetings-slice';
+import currentMeetingSlice from '../features/meeting/getMeeting/currentMeeting-slice';
+import meetingParticipantsSlice from '../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import currentMeetingParticipantSlice from '../features/meetingParticipant/getMeetingParticipant/currentMeetingParticipant-slice';
+import potentialMeetingParticipantsSlice from '../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
 
 import {
@@ -5,12 +15,6 @@ import {
   useSelector as selectorHook,
   type TypedUseSelectorHook
 } from 'react-redux';
-import companiesSlice from '../features/company/getAll/companies-slice';
-import currentCompanySlice from '../features/company/getCompany/currentCompany-slice';
-import participantsSlice from '../features/participant/getAll/participants-slice';
-import currentParticipantSlice from '../features/participant/getParticipant/currrentParticipant-slice';
-import meetingsSlice from '../features/meeting/getAllMeetings/meetings-slice';
-import currentMeetingSlice from '../features/meeting/getMeeting/currentMeeting-slice';
 
 const rootReducer = combineSlices(
   companiesSlice,
@@ -18,7 +22,10 @@ const rootReducer = combineSlices(
   participantsSlice,
   currentParticipantSlice,
   meetingsSlice,
-  currentMeetingSlice
+  currentMeetingSlice,
+  meetingParticipantsSlice,
+  currentMeetingParticipantSlice,
+  potentialMeetingParticipantsSlice
 );
 
 const store = configureStore({

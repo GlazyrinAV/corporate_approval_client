@@ -1,0 +1,22 @@
+.wraper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 0 0 20px;
+}
+
+.actions {
+  grid-row: 2;
+  display: flex;
+  gap: 20px;
+}
+
+.main_section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pagebale {
+  align-self: center;
+}

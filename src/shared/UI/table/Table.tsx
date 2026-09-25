@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 
 type BasicTableProps = {
   headers: { colName: string; colValue: string }[];
-  rawData: { [key: string]: string | number | boolean | Date }[];
+  rawData: { [key: string]: string | number | boolean | Date | object }[];
   handleClick?: (id: number) => void;
   sneakPeek?: boolean;
   disableView?: boolean;
@@ -22,7 +22,7 @@ export const BasicTable = ({
   disableView = false
 }: BasicTableProps) => {
   function refineRawData(
-    rawData: { [key: string]: string | number | boolean | Date }[]
+    rawData: { [key: string]: string | number | boolean | Date | object }[]
   ): { [key: string]: string | number | boolean | Date }[] {
     const rows = [];
     rawData.forEach((item) => {

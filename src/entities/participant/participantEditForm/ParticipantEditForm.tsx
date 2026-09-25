@@ -17,6 +17,7 @@ import {
   findType,
   PARTICIPANT_TYPE
 } from '../../../shared/utils/participantTypes';
+import type { TNewParticipant } from '../../../features/participant/types/newParticipant';
 
 type ParticipantEditFormProps = {
   currentParticipant?: TParticipant;
@@ -29,7 +30,9 @@ export const EditParticipantForm = ({
   onSubmit,
   companyId
 }: ParticipantEditFormProps) => {
-  const { handleSubmit, control, register } = useForm<TParticipant>({
+  const { handleSubmit, control, register } = useForm<
+    TParticipant | TNewParticipant
+  >({
     resolver: zodResolver(participantSchema)
   });
 
@@ -195,7 +198,7 @@ export const EditParticipantForm = ({
       <input
         type='hidden'
         {...register('companyId')}
-        value={companyId.toString()}
+        value={companyId ? companyId.toString() : null}
       />
 
       <CommonButton color='secondary' onClick={handleSubmit(submit, onInvalid)}>

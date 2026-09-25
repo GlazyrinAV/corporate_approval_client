@@ -12,5 +12,8 @@ export const routes = {
   meetings: '/company/:companyId/meetings',
   meeting: '/company/:companyId/meetings/:meetingId',
   editMeeting: '/company/:companyId/meetings/:meetingId/edit',
-  newMeeting: '/company/:companyId/meetings/new'
+  newMeeting: '/company/:companyId/meetings/new',
+  meetingParticipants: '/company/:companyId/meetings/:meetingId/participants',
+  meetingParticipant: '/company/:companyId/meetings/:meetingId/participants/:meetingParticipantId',
+  editMeetingParticipants: '/company/:companyId/meetings/:meetingId/participants/edit'
 };

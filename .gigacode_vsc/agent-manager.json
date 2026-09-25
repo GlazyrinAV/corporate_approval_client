@@ -1,0 +1,20 @@
+{
+  "worktrees": {
+    "wt-1791289116005-1": {
+      "branch": "teal-show",
+      "path": "c:\\Users\\alexg\\IdeaProjects\\corporate_approval_client\\.gigacode_vsc\\worktrees\\teal-show",
+      "parentBranch": "main",
+      "createdAt": "2026-10-06T12:18:36.005Z",
+      "remote": "origin"
+    }
+  },
+  "sessions": {},
+  "tabOrder": {
+    "local": [
+      "pending:1"
+    ]
+  },
+  "worktreeOrder": [
+    "wt-1791289116005-1"
+  ]
+}

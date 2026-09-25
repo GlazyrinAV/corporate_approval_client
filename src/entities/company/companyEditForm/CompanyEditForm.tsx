@@ -13,6 +13,7 @@ import {
 } from 'react-hook-form';
 import { companySchema } from '../../../features/company/schema/companySchema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { TNewCompany } from '../../../features/company/types/newCompany';
 
 type CompanyEditFormProps = {
   currentCompany?: TCompany;
@@ -23,7 +24,7 @@ export const EditCompanyForm = ({
   currentCompany,
   onSubmit
 }: CompanyEditFormProps) => {
-  const { handleSubmit, control } = useForm<TCompany>({
+  const { handleSubmit, control } = useForm<TCompany | TNewCompany>({
     resolver: zodResolver(companySchema)
   });
 

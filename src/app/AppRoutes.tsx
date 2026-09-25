@@ -13,6 +13,9 @@ import { MeetingsList } from '../pages/meeting/meetingsList/MeetingsList';
 import { CurrentMeeting } from '../pages/meeting/currentMeeting/CurrentMeeting';
 import { NewMeeting } from '../pages/meeting/newMeeting/NewMeeting';
 import { EditMeetingPage } from '../pages/meeting/editMeeting/EditMeeting';
+import { CurrentMeetingParticipant } from '../pages/meetingParticipant/currentMeetingParticipant/CurrentMeetingParticipant';
+import { EditMeetingParticipants } from '../pages/meetingParticipant/editMeetingParticipants/EditMeetingParticipants';
+import { MeetingParticipantsList } from '../pages/meetingParticipant/meetingParticipantsList/MeetingParticiapntsList';
 
 export const AppRoutes = () => (
   <>
@@ -30,6 +33,18 @@ export const AppRoutes = () => (
       <Route path={routes.meeting} element={<CurrentMeeting />} />
       <Route path={routes.newMeeting} element={<NewMeeting />} />
       <Route path={routes.editMeeting} element={<EditMeetingPage />} />
+      <Route
+        path={routes.meetingParticipants}
+        element={<MeetingParticipantsList />}
+      />
+      <Route
+        path={routes.meetingParticipant}
+        element={<CurrentMeetingParticipant />}
+      />
+      <Route
+        path={routes.editMeetingParticipants}
+        element={<EditMeetingParticipants />}
+      />
     </Routes>
   </>
 );
