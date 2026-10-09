@@ -5,7 +5,7 @@ import type {
   TMeetingParticipantPagebale
 } from '../types/currentMeetingParticipant';
 
-export const getPotentialMeetingParticipantsApi = (
+export const getPotentialMeetingParticipantsForCurrentMeetingApi = (
   companyId: number,
   meetingId: number,
   page: number | null
@@ -21,10 +21,26 @@ export const getPotentialMeetingParticipantsApi = (
       return Promise.reject(data);
     });
 
+export const getPotentialMeetingParticipantsForNewMeetingApi = (
+  companyId: number,
+  meetingType: string,
+  page?: number | null
+) =>
+  fetch(
+    page
+      ? `${URL}/${companyId}/meeting/potentials?meetingType=${meetingType}&page=${page - 1}`
+      : `${URL}/${companyId}/meeting/potentials?meetingType=${meetingType}`
+  )
+    .then((res) => checkResponse<TMeetingParticipantPagebale>(res))
+    .then((data) => {
+      if (data) return data;
+      return Promise.reject(data);
+    });
+
 export const getAllMeetingParticipantsApi = (
   companyId: number,
   meetingId: number,
-  page: number | null
+  page?: number | null
 ) =>
   fetch(
     page
@@ -32,7 +48,8 @@ export const getAllMeetingParticipantsApi = (
       : `${URL}/${companyId}/meeting/${meetingId}/participants`
   )
     .then((res) => {
-      return checkResponse<TMeetingParticipantPagebale>(res)})
+      return checkResponse<TMeetingParticipantPagebale>(res);
+    })
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);

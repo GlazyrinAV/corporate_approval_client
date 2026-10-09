@@ -1,0 +1,117 @@
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction
+} from '@reduxjs/toolkit';
+import type { TNewMeeting } from '../types/newMeeting';
+import type { TMeeting } from '../types/currentMeeting';
+import { saveMeetingApi, updateMeetingApi } from '../api/editMeetingApi';
+import { fetchMeetings } from '../getAllMeetings/meetings-slice';
+
+type editMeetingState = {
+  form: TNewMeeting | TMeeting;
+  error: string | null;
+  isLoading: boolean;
+};
+
+type TNewMeetingApi = {
+  companyId: number;
+  meeting: TNewMeeting;
+};
+
+type TUpdateMeetingApi = {
+  companyId: number;
+  meeting: TMeeting;
+};
+
+export type TFieldType<T> = {
+  field: keyof T;
+  value: string | number | Date;
+};
+
+export const editMeetingInitialState: editMeetingState = {
+  form: {
+    id: null,
+    companyId: '',
+    meetingType: '',
+    dateOfMeeting: null,
+    dateOfProtocol: null,
+    startOfRegistration: null,
+    endOfRegistration: null,
+    startOfMeeting: null,
+    endOfMeeting: null,
+    town: '',
+    address: '',
+    secretaryId: '',
+    chairmanId: ''
+  },
+  error: null,
+  isLoading: false
+};
+
+export const saveMeeting = createAsyncThunk(
+  'meeting/saveMeeting',
+  async ({ companyId, meeting }: TNewMeetingApi, { dispatch }) => {
+    const newMeeting = await saveMeetingApi(companyId, meeting);
+    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
+    return newMeeting;
+  }
+);
+
+export const updateMeeting = createAsyncThunk(
+  'meeting/updateMeeting',
+  async ({ companyId, meeting }: TUpdateMeetingApi, { dispatch }) => {
+    const updatedMeeting = await updateMeetingApi(companyId, meeting);
+    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
+    return updatedMeeting;
+  }
+);
+
+export const editMeetingSlice = createSlice({
+  name: 'editMeeting',
+  initialState: editMeetingInitialState,
+  reducers: {
+    setFormValue: (state, action: PayloadAction<TFieldType<TNewMeeting>>) => {
+      const { field, value } = action.payload;
+      if (field in state.form) {
+        (state.form[field] as typeof value) = value;
+      }
+    }
+  },
+  selectors: {
+    getForm(state) {
+      return state;
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(saveMeeting.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(saveMeeting.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(saveMeeting.rejected, (state, action) => {
+        state.error = action.error.message as string;
+        state.isLoading = false;
+      })
+      .addCase(updateMeeting.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateMeeting.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(updateMeeting.rejected, (state, action) => {
+        state.error = action.error.message as string;
+        state.isLoading = false;
+      });
+  }
+});
+
+export default editMeetingSlice;
+export const { getForm } = editMeetingSlice.selectors;
+export const { setFormValue } = editMeetingSlice.actions;

@@ -2,8 +2,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import type { AppDispatch } from '../../../app/store';
 import type { TNewMeeting } from '../../../features/meeting/types/newMeeting';
-import { saveMeeting } from '../../../features/meeting/getMeeting/currentMeeting-slice';
 import { MeetingEditForm } from '../../../entities/meeting/MeetingEditForm';
+import { saveMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
 
 export const NewMeeting = () => {
   const params = useParams<{ companyId: string }>();
@@ -16,5 +16,5 @@ export const NewMeeting = () => {
     navigate(`/company/${companyId}/meetings`);
   };
 
-  return <MeetingEditForm companyId={companyId} onSubmit={handleSubmit} />;
+  return <MeetingEditForm currentCompanyId={companyId} onSubmit={handleSubmit} />;
 };

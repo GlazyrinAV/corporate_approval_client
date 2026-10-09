@@ -1,4 +1,3 @@
-
 import companiesSlice from '../features/company/getAll/companies-slice';
 import currentCompanySlice from '../features/company/getCompany/currentCompany-slice';
 import participantsSlice from '../features/participant/getAll/participants-slice';
@@ -15,6 +14,7 @@ import {
   useSelector as selectorHook,
   type TypedUseSelectorHook
 } from 'react-redux';
+import editMeetingSlice from '../features/meeting/editMeeting/EditMeeting-slice';
 
 const rootReducer = combineSlices(
   companiesSlice,
@@ -23,6 +23,7 @@ const rootReducer = combineSlices(
   currentParticipantSlice,
   meetingsSlice,
   currentMeetingSlice,
+  editMeetingSlice,
   meetingParticipantsSlice,
   currentMeetingParticipantSlice,
   potentialMeetingParticipantsSlice

@@ -16,6 +16,8 @@ import { EditMeetingPage } from '../pages/meeting/editMeeting/EditMeeting';
 import { CurrentMeetingParticipant } from '../pages/meetingParticipant/currentMeetingParticipant/CurrentMeetingParticipant';
 import { EditMeetingParticipants } from '../pages/meetingParticipant/editMeetingParticipants/EditMeetingParticipants';
 import { MeetingParticipantsList } from '../pages/meetingParticipant/meetingParticipantsList/MeetingParticiapntsList';
+import { PotentialChairman } from '../pages/meetingParticipant/potentialParticipants/PotentialChairman';
+import { PotentialSecretary } from '../pages/meetingParticipant/potentialParticipants/PotentialSecretary';
 
 export const AppRoutes = () => (
   <>
@@ -45,6 +47,8 @@ export const AppRoutes = () => (
         path={routes.editMeetingParticipants}
         element={<EditMeetingParticipants />}
       />
+      <Route path={routes.changeChairman} element={<PotentialChairman />} />
+      <Route path={routes.changeSecretary} element={<PotentialSecretary />} />
     </Routes>
   </>
 );

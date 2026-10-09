@@ -7,12 +7,21 @@ import type {
   TMeetingParticipant,
   TMeetingParticipantPagebale
 } from '../types/currentMeetingParticipant';
-import { getPotentialMeetingParticipantsApi } from '../api/getMeetingParticipant';
+import {
+  getPotentialMeetingParticipantsForCurrentMeetingApi,
+  getPotentialMeetingParticipantsForNewMeetingApi
+} from '../api/getMeetingParticipant';
 
-export type TPotentialMeetingParticipantsApi = {
+export type TPotentialMeetingParticipantsForCurrentMeetingApi = {
   companyId: number;
   meetingId: number;
-  page: number;
+  page?: number;
+};
+
+export type TPotentialMeetingParticipantsForNewMeetingApi = {
+  companyId: number;
+  meetingType: string;
+  page?: number;
 };
 
 type TPotentialMeetingParticipantsState = {
@@ -21,10 +30,34 @@ type TPotentialMeetingParticipantsState = {
   error: string | null;
 };
 
-export const fetchPotentialMeetingParticipants = createAsyncThunk(
-  'potentialMeetingParticipants/fetchPotentialMeetingParticipants',
-  async ({ companyId, meetingId, page }: TPotentialMeetingParticipantsApi) => {
-    return await getPotentialMeetingParticipantsApi(companyId, meetingId, page);
+export const fetchPotentialMeetingParticipantsForCurrentMeeting =
+  createAsyncThunk(
+    'potentialMeetingParticipants/fetchPotentialMeetingParticipantsForCurrentMeeting',
+    async ({
+      companyId,
+      meetingId,
+      page
+    }: TPotentialMeetingParticipantsForCurrentMeetingApi) => {
+      return await getPotentialMeetingParticipantsForCurrentMeetingApi(
+        companyId,
+        meetingId,
+        page
+      );
+    }
+  );
+
+export const fetchPotentialMeetingParticipantsForNewMeeting = createAsyncThunk(
+  'potentialMeetingParticipants/fetchPotentialMeetingParticipantsForNewMeeting',
+  async ({
+    companyId,
+    meetingType,
+    page
+  }: TPotentialMeetingParticipantsForNewMeetingApi) => {
+    return await getPotentialMeetingParticipantsForNewMeetingApi(
+      companyId,
+      meetingType,
+      page
+    );
   }
 );
 
@@ -62,19 +95,50 @@ export const potentialMeetingParticipantsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchPotentialMeetingParticipants.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchPotentialMeetingParticipants.fulfilled, (state, action) => {
-        state.potentialMeetingParticipants = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchPotentialMeetingParticipants.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      });
+      .addCase(
+        fetchPotentialMeetingParticipantsForCurrentMeeting.pending,
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        fetchPotentialMeetingParticipantsForCurrentMeeting.fulfilled,
+        (state, action) => {
+          state.potentialMeetingParticipants = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addCase(
+        fetchPotentialMeetingParticipantsForCurrentMeeting.rejected,
+        (state, action) => {
+          state.error = action.error.message as string;
+          state.isLoading = false;
+        }
+      )
+      .addCase(
+        fetchPotentialMeetingParticipantsForNewMeeting.pending,
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        fetchPotentialMeetingParticipantsForNewMeeting.fulfilled,
+        (state, action) => {
+          state.potentialMeetingParticipants = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addCase(
+        fetchPotentialMeetingParticipantsForNewMeeting.rejected,
+        (state, action) => {
+          state.error = action.error.message as string;
+          state.isLoading = false;
+        }
+      );
   }
 });
 

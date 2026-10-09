@@ -1,3 +1,8 @@
 import type { TMeetingParticipant } from './currentMeetingParticipant';
 
-export type TNewMeetingParticipant = Omit<TMeetingParticipant, 'id'>;
+export type TCurrentMeetingParticipant = Omit<TMeetingParticipant, 'id'>;
+
+export type TNewMeetingParticipant = {
+  participantId: number;
+  isPresent: boolean;
+};

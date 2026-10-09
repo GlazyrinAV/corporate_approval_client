@@ -1,12 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { TMeeting } from '../types/currentMeeting';
 import { getMeetingByIdApi } from '../api/getMeetingApi';
-import {
-  deleteMeetingApi,
-  saveMeetingApi,
-  updateMeetingApi
-} from '../api/editMeetingApi';
-import type { TNewMeeting } from '../types/newMeeting';
+import { deleteMeetingApi } from '../api/editMeetingApi';
+
 import { fetchMeetings } from '../getAllMeetings/meetings-slice';
 
 type TCurrentMeetingState = {
@@ -20,38 +16,10 @@ type TMeetingApi = {
   meetingId: number;
 };
 
-type TNewMeetingApi = {
-  companyId: number;
-  meeting: TNewMeeting;
-};
-
-type TUpdateMeetingApi = {
-  companyId: number;
-  meeting: TMeeting;
-};
-
 export const fetchMeetingById = createAsyncThunk(
   'meeting/fetchMeetingById',
   async ({ companyId, meetingId }: TMeetingApi) =>
     getMeetingByIdApi(companyId, meetingId)
-);
-
-export const saveMeeting = createAsyncThunk(
-  'meeting/saveMeeting',
-  async ({ companyId, meeting }: TNewMeetingApi, { dispatch }) => {
-    const newMeeting = await saveMeetingApi(companyId, meeting);
-    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
-    return newMeeting;
-  }
-);
-
-export const updateMeeting = createAsyncThunk(
-  'meeting/updateMeeting',
-  async ({ companyId, meeting }: TUpdateMeetingApi, { dispatch }) => {
-    const updatedMeeting = await updateMeetingApi(companyId, meeting);
-    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
-    return updatedMeeting;
-  }
 );
 
 export const removeMeeting = createAsyncThunk(
@@ -97,32 +65,6 @@ export const currentMeetingSlice = createSlice({
       .addCase(fetchMeetingById.rejected, (state, action) => {
         state.error = action.error.message as string;
         state.isLoading = false;
-      })
-      .addCase(saveMeeting.fulfilled, (state, action) => {
-        state.meeting = action.payload;
-        state.error = null;
-        state.isLoading = false;
-      })
-      .addCase(saveMeeting.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(saveMeeting.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(updateMeeting.fulfilled, (state, action) => {
-        state.meeting = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(updateMeeting.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(updateMeeting.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
       })
       .addCase(removeMeeting.fulfilled, (state) => {
         state.meeting = null;

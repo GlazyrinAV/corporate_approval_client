@@ -1,5 +1,9 @@
+import dayjs from 'dayjs';
 import { CommonCard } from '../../../shared/ui/common-card/CommonCard';
 import type { TMeeting } from '../types/currentMeeting';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 type MeetingInfoProps = {
   meeting: TMeeting;
@@ -16,16 +20,26 @@ export const MeetingInfo = ({ meeting }: MeetingInfoProps) => {
         'Вид встречи': meeting.meetingType,
         'Город проведения собрания': meeting.town,
         'Адресс проведения собрания': meeting.address,
-        'Дата собрания': String(meeting.dateOfMeeting),
-        'Дата составления протокола': String(meeting.dateOfProtocol),
-        'Начало регистрации Участников собрания': String(
-          meeting.startOfRegistration
+        'Дата собрания': dayjs(meeting.dateOfMeeting).format('DD-MM-YYYY'),
+        'Дата составления протокола': dayjs(meeting.dateOfMeeting).format(
+          'DD-MM-YYYY'
         ),
-        'Окончание регистрации Участников собрания': String(
-          meeting.endOfRegistration
-        ),
-        'Время начала собрания': String(meeting.startOfMeeting),
-        'Время окончания собрания': String(meeting.endOfMeeting)
+        'Начало регистрации Участников собрания': dayjs(
+          meeting.startOfRegistration,
+          'HH:mm:ss.SSS'
+        ).format('HH:mm'),
+        'Окончание регистрации Участников собрания': dayjs(
+          meeting.endOfRegistration,
+          'HH:mm:ss.SSS'
+        ).format('HH:mm'),
+        'Время начала собрания': dayjs(
+          meeting.startOfMeeting,
+          'HH:mm:ss.SSS'
+        ).format('HH:mm'),
+        'Время окончания собрания': dayjs(
+          meeting.endOfMeeting,
+          'HH:mm:ss.SSS'
+        ).format('HH:mm')
       }}
     />
   );

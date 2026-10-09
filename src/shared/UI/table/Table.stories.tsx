@@ -12,15 +12,72 @@ type Story = StoryObj<typeof BasicTable>;
 
 export const Basic: Story = {
   args: {
-    headers: [
-      { colName: 'name', colValue: 'Наименование' },
-      { colName: 'share', colValue: 'Доля' }
-    ],
-    rawData: [
-      { name: 'Frozen yoghurt', share: 159 },
-      { name: 'Frozen yoghurt', share: 259 },
-      { name: 'Frozen yoghurt' },
-      { name: 'Frozen yoghurt', share: 259, add: 'лишняя информация' }
+    tableData: [
+      {
+        id: 1,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 2,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'UnFrozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 3,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 4,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 },
+        ]
+      },
+    ]
+  }
+};
+
+export const SneekPeak: Story = {
+  args: {
+    disableView: true,
+    sneakPeek: 2,
+    tableData: [
+      {
+        id: 1,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 2,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'UnFrozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 3,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 4,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 },
+        ]
+      },
     ]
   }
 };

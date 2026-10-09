@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { BasicTable } from '../../../shared/ui/table/Table';
+import { BasicTable, type RowData } from '../../../shared/ui/table/Table';
 import type { AppDispatch } from '../../../app/store';
 import {
   fetchParticipants,
@@ -22,7 +22,7 @@ type ParticipantsInfoProps = {
 
 export const PartcipantsInfo = ({
   companyId,
-  limit,
+  limit = 0,
   onClick
 }: ParticipantsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,6 +55,28 @@ export const PartcipantsInfo = ({
     setSearchQuery(query);
   };
 
+  const tableData = (): RowData[] => {
+    const data: RowData[] = [];
+    if (participantsPagebale?.content.length > 0) {
+      participantsPagebale.content.forEach((participant) =>
+        data.push({
+          id: participant.id,
+          rowData: [
+            {
+              cellLabel: 'Имя участника',
+              cellValue: participant.name
+            },
+            {
+              cellLabel: 'Доля участника',
+              cellValue: participant.share
+            }
+          ]
+        })
+      );
+    }
+    return data;
+  };
+
   return (
     <div className={styles.wrapper}>
       {!limit ? (
@@ -77,22 +99,8 @@ export const PartcipantsInfo = ({
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={
-              limit && participantsPagebale.content
-                ? limit < participantsPagebale.content.length
-                : false
-            }
-            headers={[
-              { colName: 'name', colValue: 'Имя' },
-              { colName: 'share', colValue: 'Доля' }
-            ]}
-            rawData={
-              limit
-                ? limit >= 0 && participantsPagebale.content.length > 0
-                  ? participantsPagebale.content.slice(0, limit)
-                  : participantsPagebale.content
-                : participantsPagebale.content
-            }
+            sneakPeek={participantsPagebale.totalPages > 1 ? limit : 0}
+            tableData={tableData()}
           />
           {limit === undefined && participantsPagebale.totalPages > 1 ? (
             <Pagebale

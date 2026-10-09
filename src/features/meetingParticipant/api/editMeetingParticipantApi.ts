@@ -1,12 +1,12 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
 import { URL } from '../../../shared/utils/commonApi';
 import type { TMeetingParticipantPagebale } from '../types/currentMeetingParticipant';
-import type { TNewMeetingParticipant } from '../types/newMeetingParticipant';
+import type { TCurrentMeetingParticipant } from '../types/newMeetingParticipant';
 
 export const saveMeetingParticipantsApi = (
   companyId: number,
   meetingId: number,
-  meetingParticipants: TNewMeetingParticipant[]
+  meetingParticipants: TCurrentMeetingParticipant[]
 ) =>
   fetch(`${URL}/${companyId}/meeting/${meetingId}/participants`, {
     method: 'POST',

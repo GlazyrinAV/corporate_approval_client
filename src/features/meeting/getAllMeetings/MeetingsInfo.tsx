@@ -1,12 +1,23 @@
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch } from '../../../app/store';
-import { fetchMeetings, getIsLoading, getMeetings } from './meetings-slice';
+import { useDispatch } from 'react-redux';
+import { useSelector, type AppDispatch } from '../../../app/store';
+import { fetchMeetings, getIsLoading } from './meetings-slice';
 import { useEffect, useState } from 'react';
 
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
-import { BasicTable } from '../../../shared/ui/table/Table';
+import { BasicTable, type RowData } from '../../../shared/ui/table/Table';
 import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
 import styles from './MeetingsInfo.module.css';
+import dayjs from 'dayjs';
+import type { TPageble } from '../../../shared/utils/commonTypes';
+import type { TMeeting } from '../types/currentMeeting';
+
+type MeetingFormatted = Omit<TMeeting, 'dateOfMeeting'> & {
+  dateOfMeeting: string;
+};
+
+type MeetingInfoData = TPageble & {
+  content: MeetingFormatted[];
+};
 
 type MeetingsInfoProps = {
   companyId: number;
@@ -17,11 +28,24 @@ type MeetingsInfoProps = {
 
 export const MeetingsInfo = ({
   companyId,
-  limit,
+  limit = 0,
   onClick
 }: MeetingsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const meetingsPagebale = useSelector(getMeetings);
+  const meetingsPagebale = useSelector((state) => {
+    const meetings = state.meetings.meetings;
+    const data: MeetingInfoData = {
+      ...meetings,
+      content: []
+    };
+    if (meetings?.content) {
+      data.content = meetings?.content?.map((meeting) => ({
+        ...meeting,
+        dateOfMeeting: dayjs(meeting.dateOfMeeting).format('DD-MM-YYYY')
+      }));
+    }
+    return data;
+  });
   const isLoading = useSelector(getIsLoading);
   const [page, setPage] = useState(
     meetingsPagebale ? meetingsPagebale.number : 1
@@ -35,6 +59,22 @@ export const MeetingsInfo = ({
     setPage(value);
   };
 
+  const tableData = (): RowData[] => {
+    const data: RowData[] = [];
+    if (meetingsPagebale?.content.length > 0) {
+      meetingsPagebale.content.forEach((meeting) =>
+        data.push({
+          id: meeting.id,
+          rowData: [
+            { cellLabel: 'Дата собрания', cellValue: meeting.dateOfMeeting },
+            { cellLabel: 'Вид собрания', cellValue: meeting.meetingType }
+          ]
+        })
+      );
+    }
+    return data;
+  };
+
   return (
     <div className={styles.wrapper}>
       {isLoading ? (
@@ -44,23 +84,8 @@ export const MeetingsInfo = ({
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={
-              limit && meetingsPagebale.content
-                ? limit < meetingsPagebale.content.length
-                : false
-            }
-            headers={[
-              { colName: 'id', colValue: 'Id' },
-              { colName: 'dateOfMeeting', colValue: 'Дата собрания' },
-              { colName: 'meetingType', colValue: 'Вид собрания' }
-            ]}
-            rawData={
-              limit
-                ? limit >= 0 && meetingsPagebale.content.length > 0
-                  ? meetingsPagebale.content.slice(0, limit)
-                  : meetingsPagebale.content
-                : meetingsPagebale.content
-            }
+            sneakPeek={meetingsPagebale.totalPages > 1 ? limit : 0}
+            tableData={tableData()}
           />
           {limit === undefined && meetingsPagebale.totalPages > 1 ? (
             <Pagebale

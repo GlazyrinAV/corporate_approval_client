@@ -8,7 +8,7 @@ import type {
   TMeetingParticipantPagebale
 } from '../types/currentMeetingParticipant';
 import { getAllMeetingParticipantsApi } from '../api/getMeetingParticipant';
-import type { TNewMeetingParticipant } from '../types/newMeetingParticipant';
+import type { TCurrentMeetingParticipant } from '../types/newMeetingParticipant';
 import { saveMeetingParticipantsApi } from '../api/editMeetingParticipantApi';
 
 export type TMeetingParticipantsApi = {
@@ -20,12 +20,12 @@ export type TMeetingParticipantsApi = {
 type TNewMeetingParticipantApi = {
   companyId: number;
   meetingId: number;
-  participants: TNewMeetingParticipant[];
+  participants: TCurrentMeetingParticipant[];
 };
 
 type TMeetingParticipantsState = {
   meetingParticipants: TMeetingParticipantPagebale | null;
-  choosenMeetingParticipants: TNewMeetingParticipant[];
+  choosenMeetingParticipants: TCurrentMeetingParticipant[];
   isLoading: boolean;
   error: string | null;
 };

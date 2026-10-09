@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
 import {
-  fetchPotentialMeetingParticipants,
+  fetchPotentialMeetingParticipantsForCurrentMeeting,
+  fetchPotentialMeetingParticipantsForNewMeeting,
   getIsPotentialLoading,
   getPotentionalMeetingParticpants,
   updateParticipantInPotentialList
@@ -18,7 +18,6 @@ import {
   getIsCurrentLoading,
   getMeetingParticipants,
   removeFromChosenList,
-  saveMeetingParticipants,
   updateParticipantInChosenList
 } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
 import { useSelector, type AppDispatch } from '../../../app/store';
@@ -26,8 +25,15 @@ import styles from './MeetingParticipantEditForm.module.css';
 import { NewMeetingParticipants } from '../../../widgets/newMeetingParticipant/NewMeetingParticipants';
 import type { TMeetingParticipant } from '../../../features/meetingParticipant/types/currentMeetingParticipant';
 
-export const MeetingParticipantEditForm = () => {
-  const navigate = useNavigate();
+type MeetingParticipantEditFormProps = {
+  participantExceptions?: number[];
+  meetingType?: string;
+};
+
+export const MeetingParticipantEditForm = ({
+  meetingType,
+  participantExceptions = []
+}: MeetingParticipantEditFormProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams<{ companyId: string; meetingId: string }>();
   const companyId = Number(params?.companyId);
@@ -60,33 +66,50 @@ export const MeetingParticipantEditForm = () => {
 
   // Получаем потенциальных участников
   useEffect(() => {
-    dispatch(
-      fetchPotentialMeetingParticipants({
-        companyId,
-        meetingId,
-        page: pagePotential
-      })
-    );
-  }, [dispatch, companyId, meetingId, pagePotential]);
+    if (meetingId) {
+      dispatch(
+        fetchPotentialMeetingParticipantsForCurrentMeeting({
+          companyId,
+          meetingId,
+          page: pagePotential
+        })
+      );
+    } else {
+      if (meetingType) {
+        dispatch(
+          fetchPotentialMeetingParticipantsForNewMeeting({
+            companyId,
+            meetingType,
+            page: pagePotential
+          })
+        );
+      }
+    }
+  }, [dispatch, companyId, meetingId, pagePotential, meetingType]);
 
   // Добавляем участникам признак выбран или нет для формирования списка с
   const meetingParticipantsValues = useMemo(() => {
     return (
-      meetingParticipants?.content?.map((item) => ({
-        ...item,
-        checked: true
-      })) ?? []
+      meetingParticipants?.content
+        ?.filter((item) => !participantExceptions.includes(item.participant.id))
+        .map((item) => ({
+          ...item,
+          meetingId: meetingId ? meetingId : null,
+          checked: true
+        })) ?? []
     );
-  }, [meetingParticipants]);
+  }, [meetingParticipants, participantExceptions, meetingId]);
 
   const potentialMeetingParticipantsValues = useMemo(() => {
     return (
-      potentialMeetingParticipants?.content?.map((item) => ({
-        ...item,
-        checked: false
-      })) ?? []
+      potentialMeetingParticipants?.content
+        ?.filter((item) => !participantExceptions.includes(item.participant.id))
+        .map((item) => ({
+          ...item,
+          checked: false
+        })) ?? []
     );
-  }, [potentialMeetingParticipants]);
+  }, [potentialMeetingParticipants, participantExceptions]);
 
   // Настройка пагинации
   const handlePageChangeCurrent = useCallback((value: number) => {
@@ -116,6 +139,7 @@ export const MeetingParticipantEditForm = () => {
       dispatch(
         addToChosenList({
           ...value,
+          meetingId: meetingId ? meetingId : null,
           participant: {
             ...value.participant,
             participantType: findParticipantTypeLabel(
@@ -133,6 +157,7 @@ export const MeetingParticipantEditForm = () => {
     const participantIndex = chosenMeetingParticipants.findIndex(
       (item) => item.participant.id === value.participant.id
     );
+    value.meetingId = meetingId ? meetingId : null;
 
     if (participantIndex >= 0) {
       dispatch(updateParticipantInChosenList(value));
@@ -141,69 +166,33 @@ export const MeetingParticipantEditForm = () => {
     }
   };
 
-  // Обработка сохранения изменений в составе участников собрания
-  const handleSaveChange = useCallback(() => {
-    if (chosenMeetingParticipants.length === 0) {
-      console.warn('No participants selected');
-      return;
-    }
-
-    dispatch(
-      saveMeetingParticipants({
-        companyId,
-        meetingId,
-        participants: chosenMeetingParticipants
-      })
-    );
-
-    dispatch(
-      fetchMeetingParticipants({
-        companyId,
-        meetingId,
-        page: pageCurrent
-      })
-    );
-
-    navigate(`/company/${companyId}/meetings/${meetingId}/participants`);
-  }, [
-    chosenMeetingParticipants,
-    companyId,
-    meetingId,
-    pageCurrent,
-    dispatch,
-    navigate
-  ]);
-
   return (
     <section className={styles.wraper}>
-      <div className={styles.actions}>
-        <CommonButton color='secondary' onClick={handleSaveChange}>
-          Save Meeting Participants
-        </CommonButton>
-      </div>
-      <div className={styles.main_section}>
-        <span>Current Meeting Participants</span>
-        {isCurrentLoading ? (
-          <Preloader />
-        ) : (
-          <>
-            <NewMeetingParticipants
-              meetingParticipants={meetingParticipantsValues}
-              fileds={['name', 'share']}
-              onChangeChosen={handleChangeChosen}
-              onChangePresent={handleChangePresent}
-            />
-            {meetingParticipants && meetingParticipants.totalPages > 1 && (
-              <Pagebale
-                count={meetingParticipants.totalPages}
-                page={pageCurrent}
-                onChange={handlePageChangeCurrent}
-                classname={styles.pagable}
+      {meetingParticipants ? (
+        <div className={styles.main_section}>
+          <span>Current Meeting Participants</span>
+          {isCurrentLoading ? (
+            <Preloader />
+          ) : (
+            <>
+              <NewMeetingParticipants
+                meetingParticipants={meetingParticipantsValues}
+                fileds={['name', 'share']}
+                onChangeChosen={handleChangeChosen}
+                onChangePresent={handleChangePresent}
               />
-            )}
-          </>
-        )}
-      </div>
+              {meetingParticipants && meetingParticipants.totalPages > 1 && (
+                <Pagebale
+                  count={meetingParticipants.totalPages}
+                  page={pageCurrent}
+                  onChange={handlePageChangeCurrent}
+                  classname={styles.pagable}
+                />
+              )}
+            </>
+          )}
+        </div>
+      ) : null}
       <div className={styles.main_section}>
         <span>Potential Meeting Participants</span>
         {isPotentialLoading ? (

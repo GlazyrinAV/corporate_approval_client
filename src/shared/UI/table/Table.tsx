@@ -6,68 +6,72 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+type CellData = {
+  cellLabel: string;
+  cellValue: string | number | boolean | Date | object;
+};
+
+export type RowData = {
+  id: number;
+  rowData: CellData[];
+};
+
 type BasicTableProps = {
-  headers: { colName: string; colValue: string }[];
-  rawData: { [key: string]: string | number | boolean | Date | object }[];
+  tableData: RowData[];
   handleClick?: (id: number) => void;
-  sneakPeek?: boolean;
+  sneakPeek?: number;
   disableView?: boolean;
 };
 
 export const BasicTable = ({
-  headers,
-  rawData,
   handleClick,
-  sneakPeek = false,
-  disableView = false
+  sneakPeek = 0,
+  disableView = false,
+  tableData
 }: BasicTableProps) => {
-  function refineRawData(
-    rawData: { [key: string]: string | number | boolean | Date | object }[]
-  ): { [key: string]: string | number | boolean | Date }[] {
-    const rows = [];
-    rawData.forEach((item) => {
-      const newItem = {};
-
-      headers.forEach((header) => {
-        if (item[header.colName]) {
-          newItem[header.colName] = item[header.colName];
-        } else {
-          newItem[header.colName] = 'данные отсутствуют';
-        }
-      });
-
-      rows.push(newItem);
-    });
-    if (sneakPeek) {
-      const key = Object.keys(headers)[0];
-      rows.push({ [key]: '...' });
+  function checkSneakPeak(tableData: RowData[]) {
+    if (
+      sneakPeek > 0 &&
+      tableData.length > 0 &&
+      tableData[0].rowData.length > 0
+    ) {
+      const sneakPeakData = tableData[0].rowData.map((key) => ({
+        cellLabel: key.cellLabel,
+        cellValue: '...'
+      }));
+      return [
+        ...tableData.slice(0, sneakPeek),
+        { id: -1, rowData: sneakPeakData }
+      ];
     }
-    return rows;
+    return tableData;
   }
 
-  const data = refineRawData(rawData);
+  const checkedTableData = checkSneakPeak(tableData);
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='table'>
         <TableHead>
           <TableRow>
-            {headers.map((header, HeaderIdx) => (
-              <TableCell
-                key={`${HeaderIdx}-cell`}
-                id={`${HeaderIdx}-cell`}
-                align='center'
-              >
-                {header.colValue}&nbsp;
-              </TableCell>
-            ))}
+            {checkedTableData.length > 0
+              ? checkedTableData[0].rowData.map((cell, HeaderIdx) => (
+                  <TableCell
+                    key={`${HeaderIdx}-cell`}
+                    id={`${HeaderIdx}-cell`}
+                    align='center'
+                  >
+                    {cell.cellLabel}&nbsp;
+                  </TableCell>
+                ))
+              : null}
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.length > 0 ? (
-            data.map((row, RowIdx) => (
+          {checkedTableData.length > 0 ? (
+            checkedTableData.map((row) => (
               <TableRow
-                key={`${RowIdx}-table-row`}
+                key={`${row.id}-table-row`}
                 sx={{
                   '&:last-child td, &:last-child th': { border: 0 },
                   '&:hover': !disableView
@@ -75,17 +79,13 @@ export const BasicTable = ({
                     : null
                 }}
               >
-                {Object.values(row).map((cellValue, cellIdx) => (
+                {row.rowData.map((cell, cellIdx) => (
                   <TableCell
-                    key={`${RowIdx}-table-row-${cellIdx}-cell`}
+                    key={`${row.id}-table-row-${cellIdx}-cell`}
                     align={cellIdx === 0 ? 'center' : 'right'}
-                    onClick={() =>
-                      handleClick
-                        ? handleClick(Number(rawData[RowIdx]['id']))
-                        : null
-                    }
+                    onClick={() => (handleClick ? handleClick(row.id) : null)}
                   >
-                    {cellValue.toString()}
+                    {cell.cellValue.toString()}
                   </TableCell>
                 ))}
               </TableRow>

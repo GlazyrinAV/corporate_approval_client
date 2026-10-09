@@ -3,7 +3,7 @@ import type { AppDispatch } from '../../../app/store';
 import { useEffect, useState } from 'react';
 
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
-import { BasicTable } from '../../../shared/ui/table/Table';
+import { BasicTable, type RowData } from '../../../shared/ui/table/Table';
 import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
 import styles from './MeetingParticipantsInfo.module.css';
 import {
@@ -11,7 +11,10 @@ import {
   getIsCurrentLoading,
   getMeetingParticipants
 } from './meetingParticipants-slice';
-import type { TParticipant } from '../../participant/types/currentParticipant';
+import {
+  fetchMeetingById,
+  getCurrentMeeting
+} from '../../meeting/getMeeting/currentMeeting-slice';
 
 type MeetingParticipantsInfoProps = {
   companyId: number;
@@ -24,7 +27,7 @@ type MeetingParticipantsInfoProps = {
 export const MeetingParticipantsInfo = ({
   companyId,
   meetingId,
-  limit,
+  limit = 0,
   onClick
 }: MeetingParticipantsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,8 +36,12 @@ export const MeetingParticipantsInfo = ({
   const [page, setPage] = useState(
     meetingParticipantsPagebale ? meetingParticipantsPagebale.number : 1
   );
+  const meeting = useSelector(getCurrentMeeting);
 
   useEffect(() => {
+    if (meetingId) {
+      dispatch(fetchMeetingById({ companyId, meetingId }));
+    }
     dispatch(
       fetchMeetingParticipants({
         companyId: companyId,
@@ -48,17 +55,42 @@ export const MeetingParticipantsInfo = ({
     setPage(value);
   };
 
-  function getParticipantsFromData(): TParticipant[] {
-    if (meetingParticipantsPagebale?.content?.length > 0) {
-      const participants: TParticipant[] = [];
-      meetingParticipantsPagebale.content.forEach((participant) => {
-        participants.push(participant.participant);
-      });
-      return participants;
+  const getRole = (participantId: number) => {
+    if (meeting && participantId === Number(meeting.chairmanId)) {
+      return 'Председатель';
+    } else if (meeting && participantId === Number(meeting.secretaryId)) {
+      return 'Секретарь';
     } else {
-      return [];
+      return 'Участник';
     }
-  }
+  };
+
+  const tableData = (): RowData[] => {
+    const data: RowData[] = [];
+    if (meetingParticipantsPagebale?.content.length > 0) {
+      meetingParticipantsPagebale.content.forEach((participant) =>
+        data.push({
+          id: participant.participant.id,
+          rowData: [
+            {
+              cellLabel: 'Роль участника',
+              cellValue: getRole(participant.id)
+            },
+            {
+              cellLabel: 'Имя участника',
+              cellValue: participant.participant.name
+            },
+            {
+              cellLabel: 'Доля участника',
+              cellValue: participant.participant.share
+            }
+          ]
+        })
+      );
+    }
+
+    return data.sort();
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -69,22 +101,8 @@ export const MeetingParticipantsInfo = ({
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={
-              limit && getParticipantsFromData()
-                ? limit < getParticipantsFromData().length
-                : false
-            }
-            headers={[
-              { colName: 'name', colValue: 'Имя' },
-              { colName: 'share', colValue: 'Доля' }
-            ]}
-            rawData={
-              limit
-                ? limit >= 0 && getParticipantsFromData().length > 0
-                  ? getParticipantsFromData().slice(0, limit)
-                  : getParticipantsFromData()
-                : getParticipantsFromData()
-            }
+            sneakPeek={meetingParticipantsPagebale.totalPages > 1 ? limit : 0}
+            tableData={tableData()}
           />
           {limit === undefined && meetingParticipantsPagebale.totalPages > 1 ? (
             <Pagebale

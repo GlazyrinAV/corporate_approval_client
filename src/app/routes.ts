@@ -14,6 +14,10 @@ export const routes = {
   editMeeting: '/company/:companyId/meetings/:meetingId/edit',
   newMeeting: '/company/:companyId/meetings/new',
   meetingParticipants: '/company/:companyId/meetings/:meetingId/participants',
-  meetingParticipant: '/company/:companyId/meetings/:meetingId/participants/:meetingParticipantId',
-  editMeetingParticipants: '/company/:companyId/meetings/:meetingId/participants/edit'
+  meetingParticipant:
+    '/company/:companyId/meetings/:meetingId/participants/:meetingParticipantId',
+  editMeetingParticipants:
+    '/company/:companyId/meetings/:meetingId/participants/edit',
+  changeChairman: '/company/:companyId/meetings/new/chairman',
+  changeSecretary: '/company/:companyId/meetings/new/secretary'
 };

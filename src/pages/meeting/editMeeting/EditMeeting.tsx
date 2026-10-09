@@ -1,12 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
-import {
-  getCurrentMeeting,
-  updateMeeting
-} from '../../../features/meeting/getMeeting/currentMeeting-slice';
+import { getCurrentMeeting } from '../../../features/meeting/getMeeting/currentMeeting-slice';
 import type { AppDispatch } from '../../../app/store';
 import type { TMeeting } from '../../../features/meeting/types/currentMeeting';
 import { EditMeeting } from '../../../features/meeting/editMeeting/EditMeeting';
+import { updateMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
 
 export const EditMeetingPage = () => {
   const params = useParams<{ companyId: string; participantId?: string }>();

@@ -1,7 +1,26 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
 .edit_form {
+  grid-column: 1;
   display: grid;
   flex-direction: column;
   gap: 15px;
   align-self: flex-start;
   margin: 30px 20px;
+}
+
+.information {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+}
+
+.second_colomn {
+  margin: 30px 20px;
+  grid-column: 2;
 }
