@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BasicTable } from './Table';
+import { Switcher } from '../switcher/Switcher';
 
 const meta: Meta<typeof BasicTable> = {
   title: 'UI/Table',
@@ -38,9 +39,9 @@ export const Basic: Story = {
         id: 4,
         rowData: [
           { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
-          { cellLabel: 'share', cellValue: 159 },
+          { cellLabel: 'share', cellValue: 159 }
         ]
-      },
+      }
     ]
   }
 };
@@ -75,9 +76,9 @@ export const SneekPeak: Story = {
         id: 4,
         rowData: [
           { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
-          { cellLabel: 'share', cellValue: 159 },
+          { cellLabel: 'share', cellValue: 159 }
         ]
-      },
+      }
     ]
   }
 };
@@ -106,7 +107,7 @@ export const AdditionalColumn: Story = {
         rowData: [
           { cellLabel: 'name', cellValue: 'UnFrozen yoghurt' },
           { cellLabel: 'share', cellValue: 159 },
-          { cellLabel: 'X', cellValue: 100 },
+          { cellLabel: 'X', cellValue: 100 }
         ]
       },
       {
@@ -120,9 +121,47 @@ export const AdditionalColumn: Story = {
         id: 5,
         rowData: [
           { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
-          { cellLabel: 'share', cellValue: 159 },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      }
+    ]
+  }
+};
+
+export const WithReactNode: Story = {
+  args: {
+    tableData: [
+      {
+        id: 1,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
         ]
       },
+      {
+        id: 2,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'UnFrozen yoghurt' },
+          {
+            cellLabel: 'share',
+            cellValue: <Switcher label='Choose' value={true} />
+          }
+        ]
+      },
+      {
+        id: 3,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 4,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      }
     ]
   }
 };

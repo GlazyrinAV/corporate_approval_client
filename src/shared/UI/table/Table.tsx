@@ -5,10 +5,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 type CellData = {
   cellLabel: string;
-  cellValue: string | number | boolean | Date | object;
+  cellValue: string | number | boolean | Date | ReactNode;
 };
 
 export type RowData = {
@@ -90,24 +92,12 @@ export const BasicTable = ({
                   const cell = row.rowData.find(
                     (cell) => cell.cellLabel === header
                   );
-                  return cell ? (
-                    <TableCell
-                      key={`${row.id}-table-row-${headerIdx}-cell`}
-                      align={
-                        typeof cell.cellValue === 'number' ? 'right' : 'center'
-                      }
-                      onClick={() => (handleClick ? handleClick(row.id) : null)}
-                    >
-                      {cell.cellValue.toString()}
-                    </TableCell>
-                  ) : (
-                    <TableCell
-                      key={`${row.id}-table-row-${headerIdx}-cell`}
-                      align={'center'}
-                      onClick={() => (handleClick ? handleClick(row.id) : null)}
-                    >
-                      {emptyDataMessage}
-                    </TableCell>
+                  return createCell(
+                    cell,
+                    row.id,
+                    headerIdx,
+                    handleClick,
+                    emptyDataMessage
                   );
                 })}
               </TableRow>
@@ -142,4 +132,43 @@ function getHeaders(rowData: RowData[]): string[] {
   }
 
   return headers;
+}
+
+function createCell(
+  cell: CellData,
+  rowId: number,
+  cellId: number,
+  handleClick: (id: number) => void,
+  emptyDataMessage: string
+): ReactNode {
+  return cell ? (
+    // проверка ячейки на наличие Node
+    React.isValidElement(cell.cellValue) ? (
+      <TableCell
+        key={`${rowId}-table-row-${cellId}-cell`}
+        align='center'
+        onClick={() => (handleClick ? handleClick(rowId) : null)}
+      >
+        {cell.cellValue}
+      </TableCell>
+    ) : (
+      // Отрисовка элемента, если там не Node
+      <TableCell
+        key={`${rowId}-table-row-${cellId}-cell`}
+        align={typeof cell.cellValue === 'number' ? 'right' : 'center'}
+        onClick={() => (handleClick ? handleClick(rowId) : null)}
+      >
+        {cell.cellValue.toString()}
+      </TableCell>
+    )
+  ) : (
+    // Отрисовка элемента, если для этого столбца нет данных
+    <TableCell
+      key={`${rowId}-table-row-${cellId}-cell`}
+      align={'center'}
+      onClick={() => (handleClick ? handleClick(rowId) : null)}
+    >
+      {emptyDataMessage}
+    </TableCell>
+  );
 }
