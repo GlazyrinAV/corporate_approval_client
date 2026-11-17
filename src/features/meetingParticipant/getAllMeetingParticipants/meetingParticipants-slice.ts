@@ -93,7 +93,13 @@ export const meetingParticipantsSlice = createSlice({
           (item) => item.participant.id != action.payload
         )
       ];
-    }
+    },
+    clearChosenList(state) {
+      state.choosenMeetingParticipants = [];
+    },
+    clearMeetingParticipants(state) {
+      state.meetingParticipants = null;
+    },
   },
   selectors: {
     getMeetingParticipants(state) {
@@ -148,5 +154,10 @@ export const {
   getIsCurrentLoading,
   getError
 } = meetingParticipantsSlice.selectors;
-export const { addToChosenList, removeFromChosenList, updateParticipantInChosenList } =
-  meetingParticipantsSlice.actions;
+export const {
+  addToChosenList,
+  removeFromChosenList,
+  updateParticipantInChosenList,
+  clearChosenList,
+  clearMeetingParticipants
+} = meetingParticipantsSlice.actions;

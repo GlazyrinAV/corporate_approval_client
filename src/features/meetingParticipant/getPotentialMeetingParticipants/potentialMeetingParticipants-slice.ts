@@ -80,6 +80,9 @@ export const potentialMeetingParticipantsSlice = createSlice({
           ? actions.payload
           : item
       );
+    },
+    clearPotentialList(state) {
+      state.potentialMeetingParticipants = null;
     }
   },
   selectors: {
@@ -148,5 +151,5 @@ export const {
   getIsPotentialLoading,
   getError
 } = potentialMeetingParticipantsSlice.selectors;
-export const { updateParticipantInPotentialList } =
+export const { updateParticipantInPotentialList, clearPotentialList } =
   potentialMeetingParticipantsSlice.actions;

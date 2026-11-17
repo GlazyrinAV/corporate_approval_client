@@ -56,9 +56,9 @@ export const MeetingParticipantsInfo = ({
   };
 
   const getRole = (participantId: number) => {
-    if (meeting && participantId === Number(meeting.chairmanId)) {
+    if (meeting && participantId === Number(meeting?.chairmanId)) {
       return 'Председатель';
-    } else if (meeting && participantId === Number(meeting.secretaryId)) {
+    } else if (meeting && participantId === Number(meeting?.secretaryId)) {
       return 'Секретарь';
     } else {
       return 'Участник';
@@ -89,7 +89,15 @@ export const MeetingParticipantsInfo = ({
       );
     }
 
-    return data.sort();
+    return data.sort((a, b) => {
+      const dataA = a.rowData.find(
+        (a) => a.cellLabel === 'Роль участника'
+      ).cellLabel;
+      const dataB = b.rowData.find(
+        (b) => b.cellLabel === 'Роль участника'
+      ).cellLabel;
+      return dataA.localeCompare(dataB);
+    });
   };
 
   return (

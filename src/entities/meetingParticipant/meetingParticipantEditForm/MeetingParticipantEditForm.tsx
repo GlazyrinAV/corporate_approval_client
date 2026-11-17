@@ -177,7 +177,6 @@ export const MeetingParticipantEditForm = ({
             <>
               <NewMeetingParticipants
                 meetingParticipants={meetingParticipantsValues}
-                fileds={['name', 'share']}
                 onChangeChosen={handleChangeChosen}
                 onChangePresent={handleChangePresent}
               />
@@ -201,7 +200,6 @@ export const MeetingParticipantEditForm = ({
           <>
             <NewMeetingParticipants
               meetingParticipants={potentialMeetingParticipantsValues}
-              fileds={['name', 'share']}
               onChangeChosen={handleChangeChosen}
               onChangePresent={handleChangePresent}
             />

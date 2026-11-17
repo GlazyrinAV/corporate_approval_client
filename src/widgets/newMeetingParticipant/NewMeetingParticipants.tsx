@@ -1,17 +1,13 @@
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import List from '@mui/material/List';
 import type { TMeetingParticipant } from '../../features/meetingParticipant/types/currentMeetingParticipant';
 import { useState } from 'react';
 import { Switcher } from '../../shared/ui/switcher/Switcher';
+import { BasicTable, type RowData } from '../../shared/ui/table/Table';
 
 type NewMeetingParticipantsProps = {
   meetingParticipants: TNewMeetingParticipant[];
   onChangeChosen?: (meetingParticipant: TMeetingParticipant) => void;
   onChangePresent?: (meetingParticipant: TMeetingParticipant) => void;
-  fileds?: string[];
 };
 
 type TNewMeetingParticipant = TMeetingParticipant & {
@@ -21,8 +17,7 @@ type TNewMeetingParticipant = TMeetingParticipant & {
 export const NewMeetingParticipants = ({
   meetingParticipants,
   onChangeChosen,
-  onChangePresent,
-  fileds
+  onChangePresent
 }: NewMeetingParticipantsProps) => {
   const [checked, setChecked] = useState(
     meetingParticipants
@@ -75,49 +70,46 @@ export const NewMeetingParticipants = ({
     setPresent(newPresent);
   };
 
-  return (
-    <List
-      dense
-      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-    >
-      {meetingParticipants?.length > 0
-        ? meetingParticipants.map((meetingParticipant) => {
-            const participant = meetingParticipant.participant;
-            const labelId = `checkbox-list-secondary-label-${participant.id}`;
-            return (
-              <ListItem
-                key={`item-${participant.id}`}
-                secondaryAction={
-                  <Checkbox
-                    edge='end'
-                    onChange={handleToggle(meetingParticipant)}
-                    checked={checked.includes(participant.id)}
-                    slotProps={{ input: { 'aria-labelledby': labelId } }}
-                  />
+  const getTableData = (): RowData[] => {
+    const tableData: RowData[] = meetingParticipants.map((participant) => ({
+      id: participant.participant.id,
+      rowData: [
+        {
+          cellLabel: 'Присутствует на собрании',
+          cellValue: (
+            <Switcher
+              value={present.includes(participant.participant.id)}
+              onChange={handleSwitch(participant)}
+            />
+          )
+        },
+        {
+          cellLabel: 'Имя участника',
+          cellValue: participant.participant.name
+        },
+        {
+          cellLabel: 'Доля участника',
+          cellValue: participant.participant.share
+        },
+        {
+          cellLabel: 'Участник собрания',
+          cellValue: (
+            <Checkbox
+              edge='end'
+              onChange={handleToggle(participant)}
+              checked={checked.includes(participant.participant.id)}
+              slotProps={{
+                input: {
+                  'aria-labelledby': `checkbox-list-secondary-label-${participant.participant.id}`
                 }
-                disablePadding
-              >
-                <Switcher
-                  value={present.includes(participant.id)}
-                  onChange={handleSwitch(meetingParticipant)}
-                />
-                <ListItemButton>
-                  {fileds?.length > 0
-                    ? fileds.map((filed) =>
-                        participant[filed] ? (
-                          <ListItemText
-                            key={`ItemButton-${participant[filed]}-${participant.id}`}
-                            id={labelId}
-                            primary={`${participant[filed]}`}
-                          ></ListItemText>
-                        ) : null
-                      )
-                    : null}
-                </ListItemButton>
-              </ListItem>
-            );
-          })
-        : null}
-    </List>
-  );
+              }}
+            />
+          )
+        }
+      ]
+    }));
+    return tableData;
+  };
+
+  return <BasicTable tableData={getTableData()} disableView />;
 };

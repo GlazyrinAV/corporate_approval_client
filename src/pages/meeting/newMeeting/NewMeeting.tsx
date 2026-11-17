@@ -4,6 +4,9 @@ import type { AppDispatch } from '../../../app/store';
 import type { TNewMeeting } from '../../../features/meeting/types/newMeeting';
 import { MeetingEditForm } from '../../../entities/meeting/MeetingEditForm';
 import { saveMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
+import { useEffect } from 'react';
+import { clearChosenList, clearMeetingParticipants } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import { clearPotentialList } from '../../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
 
 export const NewMeeting = () => {
   const params = useParams<{ companyId: string }>();
@@ -11,10 +14,18 @@ export const NewMeeting = () => {
   const navigate = useNavigate();
   const companyId = Number(params?.companyId);
 
+  useEffect(() => {
+    dispatch(clearMeetingParticipants());
+    dispatch(clearChosenList());
+    dispatch(clearPotentialList())
+  }, [dispatch]);
+
   const handleSubmit = (meeting: TNewMeeting) => {
     dispatch(saveMeeting({ companyId: companyId, meeting: meeting }));
     navigate(`/company/${companyId}/meetings`);
   };
 
-  return <MeetingEditForm currentCompanyId={companyId} onSubmit={handleSubmit} />;
+  return (
+    <MeetingEditForm currentCompanyId={companyId} onSubmit={handleSubmit} />
+  );
 };
