@@ -81,3 +81,48 @@ export const SneekPeak: Story = {
     ]
   }
 };
+
+export const AdditionalColumn: Story = {
+  args: {
+    isHeadersVisible: false,
+    emptyDataMessage: 'Х',
+    tableData: [
+      {
+        id: 1,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 2,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'UnFrozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 3,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'UnFrozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 },
+          { cellLabel: 'X', cellValue: 100 },
+        ]
+      },
+      {
+        id: 4,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 }
+        ]
+      },
+      {
+        id: 5,
+        rowData: [
+          { cellLabel: 'name', cellValue: 'Frozen yoghurt' },
+          { cellLabel: 'share', cellValue: 159 },
+        ]
+      },
+    ]
+  }
+};
