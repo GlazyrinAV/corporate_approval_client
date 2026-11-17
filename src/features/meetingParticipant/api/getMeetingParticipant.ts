@@ -8,7 +8,7 @@ import type {
 export const getPotentialMeetingParticipantsForCurrentMeetingApi = (
   companyId: number,
   meetingId: number,
-  page: number | null
+  page: number
 ) =>
   fetch(
     page
@@ -24,7 +24,7 @@ export const getPotentialMeetingParticipantsForCurrentMeetingApi = (
 export const getPotentialMeetingParticipantsForNewMeetingApi = (
   companyId: number,
   meetingType: string,
-  page?: number | null
+  page?: number
 ) =>
   fetch(
     page
@@ -33,6 +33,7 @@ export const getPotentialMeetingParticipantsForNewMeetingApi = (
   )
     .then((res) => checkResponse<TMeetingParticipantPagebale>(res))
     .then((data) => {
+      console.log(data);
       if (data) return data;
       return Promise.reject(data);
     });

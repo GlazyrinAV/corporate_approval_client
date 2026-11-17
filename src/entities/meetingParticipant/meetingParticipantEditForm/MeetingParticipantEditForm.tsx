@@ -55,13 +55,15 @@ export const MeetingParticipantEditForm = ({
 
   // Получаем текущих участников
   useEffect(() => {
-    dispatch(
-      fetchMeetingParticipants({
-        companyId,
-        meetingId,
-        page: pageCurrent
-      })
-    );
+    if (meetingId) {
+      dispatch(
+        fetchMeetingParticipants({
+          companyId,
+          meetingId,
+          page: pageCurrent
+        })
+      );
+    }
   }, [dispatch, companyId, meetingId, pageCurrent]);
 
   // Получаем потенциальных участников
