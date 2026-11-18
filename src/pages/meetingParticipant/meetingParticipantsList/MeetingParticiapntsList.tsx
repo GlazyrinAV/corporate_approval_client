@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import styles from './MeetingParticipantList.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { MeetingParticipantsInfo } from '../../../features/meetingParticipant/getAllMeetingParticipants/MeetingParticipantsInfo';
+import { routeBuilders } from '../../../app/routes';
 
 export const MeetingParticipantsList = () => {
   const navigate = useNavigate();
@@ -11,19 +12,27 @@ export const MeetingParticipantsList = () => {
 
   const handleClick = (participantId: number) => {
     navigate(
-      `/company/${companyId}/meetings/${meetingId}/participants/${participantId}`
+      routeBuilders.currentMeetingParticipant({
+        companyId,
+        meetingId,
+        meetingParticipantId: participantId
+      })
     );
   };
 
   return (
     <section className={styles.wraper}>
       <div className={styles.actions}>
-        <CommonButton onClick={() => navigate(-1)}>Back</CommonButton>
+        <CommonButton
+          onClick={() => navigate(routeBuilders.currentCompany({ companyId }))}
+        >
+          Back
+        </CommonButton>
         <CommonButton
           color='secondary'
           onClick={() =>
             navigate(
-              `/company/${companyId}/meetings/${meetingId}/participants/edit`
+              routeBuilders.editMeetingParticipants({ companyId, meetingId })
             )
           }
         >

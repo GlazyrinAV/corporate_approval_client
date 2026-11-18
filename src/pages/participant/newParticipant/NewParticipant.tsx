@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import type { TNewParticipant } from '../../../features/participant/types/newParticipant';
 import { saveParticipant } from '../../../features/participant/getParticipant/currentParticipant-slice';
 import { EditParticipant } from '../../../features/participant/editParticipant/EditParticipant';
+import { routeBuilders } from '../../../app/routes';
 
 export const NewParticipant = () => {
   const params = useParams<{ companyId: string }>();
@@ -15,7 +16,7 @@ export const NewParticipant = () => {
     dispatch(
       saveParticipant({ companyId: companyId, participant: participant })
     );
-    navigate(`/company/${companyId}/participants`);
+    navigate(routeBuilders.participants({ companyId }));
   };
 
   return <EditParticipant onSubmit={handleSubmit} />;

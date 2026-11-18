@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import styles from './MeetingsList.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { MeetingsInfo } from '../../../features/meeting/getAllMeetings/MeetingsInfo';
+import { routeBuilders } from '../../../app/routes';
 
 export const MeetingsList = () => {
   const navigate = useNavigate();
@@ -9,20 +10,22 @@ export const MeetingsList = () => {
   const companyId = Number(params?.companyId);
 
   const handleClick = (meetingId: number) => {
-    navigate(`/company/${companyId}/meetings/${meetingId}`);
+    navigate(routeBuilders.currentMeeting({ companyId, meetingId }));
   };
 
   return (
     <section className={styles.wraper}>
       <div className={styles.actions}>
         <CommonButton
-          onClick={() => navigate(-1)}
+          onClick={() =>
+            navigate(routeBuilders.currentCompany({ companyId }))
+          }
         >
           Back
         </CommonButton>
         <CommonButton
           color='secondary'
-          onClick={() => navigate(`/company/${companyId}/meetings/new`)}
+          onClick={() => navigate(routeBuilders.newMeeting({ companyId }))}
         >
           Add Meeting
         </CommonButton>

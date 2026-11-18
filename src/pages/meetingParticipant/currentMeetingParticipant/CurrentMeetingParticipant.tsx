@@ -11,6 +11,7 @@ import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
 import { getIsCurrentLoading } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
 import { MeetingParticipantInfo } from '../../../features/meetingParticipant/getMeetingParticipant/MeetingParticipantInfo';
+import { routeBuilders } from '../../../app/routes';
 
 export const CurrentMeetingParticipant = () => {
   const navigate = useNavigate();
@@ -41,7 +42,9 @@ export const CurrentMeetingParticipant = () => {
       <div className={styles.navigation}>
         <CommonButton
           onClick={() =>
-            navigate(`/company/${companyId}/meetings/${meetingId}/participants`)
+            navigate(
+              routeBuilders.meetingParticipants({ companyId, meetingId })
+            )
           }
         >
           Back

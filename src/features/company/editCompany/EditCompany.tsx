@@ -3,6 +3,7 @@ import { EditCompanyForm } from '../../../entities/company/companyEditForm/Compa
 import styles from './EditCompany.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import type { TCompany } from '../types/currentCompany';
+import { routeBuilders } from '../../../app/routes';
 
 type EditCompanyProps = {
   currentCompany?: TCompany;
@@ -15,7 +16,13 @@ export const EditCompany = ({ currentCompany, onSubmit }: EditCompanyProps) => {
   return (
     <section className={styles.container}>
       <div className={styles.actions}>
-        <CommonButton onClick={() => navigate(-1)}>Back</CommonButton>
+        <CommonButton
+          onClick={() =>
+            navigate(routeBuilders.currentCompany({companyId: currentCompany.id}))
+          }
+        >
+          Back
+        </CommonButton>
       </div>
       <div className={styles.content}>
         <EditCompanyForm currentCompany={currentCompany} onSubmit={onSubmit} />

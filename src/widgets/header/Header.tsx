@@ -3,7 +3,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { CommonButton } from '../../shared/ui/common-button/CommonButton';
 import { useNavigate } from 'react-router';
-import { routes } from '../../app/routes';
+import { routeBuilders } from '../../app/routes';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -13,12 +13,15 @@ export const Header = () => {
       <AppBar position='static'>
         <Toolbar sx={{ display: 'flex', gap: '30px' }}>
           <Typography variant='h6'>Corporate Approval</Typography>
-          <CommonButton color='secondary' onClick={() => navigate(routes.main)}>
+          <CommonButton
+            color='secondary'
+            onClick={() => navigate(routeBuilders.main())}
+          >
             Home
           </CommonButton>
           <CommonButton
             color='secondary'
-            onClick={() => navigate(routes.newCompany)}
+            onClick={() => navigate(routeBuilders.newCompany())}
           >
             New Company
           </CommonButton>

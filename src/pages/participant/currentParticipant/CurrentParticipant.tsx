@@ -15,6 +15,7 @@ import {
 import { ParticipantInfo } from '../../../features/participant/getParticipant/ParticipantInfo';
 import { useEffect } from 'react';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
+import { routeBuilders } from '../../../app/routes';
 
 export const CurrentParticipant = () => {
   const navigate = useNavigate();
@@ -42,14 +43,14 @@ export const CurrentParticipant = () => {
       })
     );
     dispatch(fetchParticipants({ companyId: companyId, page: 1 }));
-    navigate(`/company/${companyId}/participants`);
+    navigate(routeBuilders.participants({ companyId }));
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.navigation}>
         <CommonButton
-          onClick={() => navigate(`/company/${companyId}/participants`)}
+          onClick={() => navigate(routeBuilders.participants({ companyId }))}
         >
           Back
         </CommonButton>
@@ -59,7 +60,7 @@ export const CurrentParticipant = () => {
           color='secondary'
           onClick={() =>
             navigate(
-              `/company/${companyId}/participants/{${participantId}/edit`
+              routeBuilders.editParticipant({ companyId, participantId })
             )
           }
         >

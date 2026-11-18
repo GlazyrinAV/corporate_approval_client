@@ -7,6 +7,7 @@ import { EditCompany } from '../../../features/company/editCompany/EditCompany';
 import type { TCompany } from '../../../features/company/types/currentCompany';
 import type { AppDispatch } from '../../../app/store';
 import { useNavigate } from 'react-router';
+import { routeBuilders } from '../../../app/routes';
 
 export const EditCompanyPage = () => {
   const currentCompany = useSelector(getCurrentCompany);
@@ -15,7 +16,7 @@ export const EditCompanyPage = () => {
 
   const handleSubmit = (company: TCompany) => {
     dispatch(updateCompany(company));
-    navigate(-1);
+    navigate(routeBuilders.currentCompany({ companyId: company?.id }));
   };
 
   return (

@@ -6,10 +6,10 @@ import { fetchCompanyById, getCurrentCompany } from './currentCompany-slice';
 import { useEffect } from 'react';
 
 export const CompanyInfo = () => {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ companyId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const currentCompany = useSelector(getCurrentCompany);
-  const companyId = Number(params.id);
+  const companyId = Number(params.companyId);
 
   useEffect(() => {
     dispatch(fetchCompanyById(companyId));

@@ -5,8 +5,12 @@ import type { TNewMeeting } from '../../../features/meeting/types/newMeeting';
 import { MeetingEditForm } from '../../../entities/meeting/MeetingEditForm';
 import { saveMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
 import { useEffect } from 'react';
-import { clearChosenList, clearMeetingParticipants } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import {
+  clearChosenList,
+  clearMeetingParticipants
+} from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
 import { clearPotentialList } from '../../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
+import { routeBuilders } from '../../../app/routes';
 
 export const NewMeeting = () => {
   const params = useParams<{ companyId: string }>();
@@ -17,12 +21,12 @@ export const NewMeeting = () => {
   useEffect(() => {
     dispatch(clearMeetingParticipants());
     dispatch(clearChosenList());
-    dispatch(clearPotentialList())
+    dispatch(clearPotentialList());
   }, [dispatch]);
 
   const handleSubmit = (meeting: TNewMeeting) => {
-    dispatch(saveMeeting({ companyId: companyId, meeting: meeting }));
-    navigate(`/company/${companyId}/meetings`);
+    dispatch(saveMeeting({ companyId, meeting }));
+    navigate(routeBuilders.meetings({ companyId }));
   };
 
   return (

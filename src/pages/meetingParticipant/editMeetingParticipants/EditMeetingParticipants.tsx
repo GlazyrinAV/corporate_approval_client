@@ -10,6 +10,7 @@ import {
   getChosenMeetingParticipants,
   saveMeetingParticipants
 } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import { routeBuilders } from '../../../app/routes';
 
 export const EditMeetingParticipants = () => {
   const navigate = useNavigate();
@@ -41,13 +42,21 @@ export const EditMeetingParticipants = () => {
       })
     );
 
-    navigate(`/company/${companyId}/meetings/${meetingId}/participants`);
+    navigate(routeBuilders.meetingParticipants({ companyId, meetingId }));
   }, [companyId, meetingId, dispatch, navigate, chosenMeetingParticipants]);
 
   return (
     <section className={styles.wraper}>
       <div className={styles.actions}>
-        <CommonButton onClick={() => navigate(-1)}>Back</CommonButton>
+        <CommonButton
+          onClick={() =>
+            navigate(
+              routeBuilders.meetingParticipants({ companyId, meetingId })
+            )
+          }
+        >
+          Back
+        </CommonButton>
       </div>
       <div className={styles.main_section}>
         <div className={styles.actions}>

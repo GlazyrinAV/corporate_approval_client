@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import { PartcipantsInfo } from '../../../features/participant/getAll/ParticipantsInfo';
 import styles from './ParticipantList.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
+import { routeBuilders } from '../../../app/routes';
 
 export const ParticipantList = () => {
   const navigate = useNavigate();
@@ -15,12 +16,16 @@ export const ParticipantList = () => {
   return (
     <section className={styles.wraper}>
       <div className={styles.actions}>
-        <CommonButton onClick={() => navigate(`/company/${companyId}`)}>
+        <CommonButton
+          onClick={() =>
+            navigate(routeBuilders.currentCompany({ companyId }))
+          }
+        >
           Back
         </CommonButton>
         <CommonButton
           color='secondary'
-          onClick={() => navigate(`/company/${companyId}/participants/new`)}
+          onClick={() => navigate(routeBuilders.newParticipant({ companyId }))}
         >
           Add Participant
         </CommonButton>

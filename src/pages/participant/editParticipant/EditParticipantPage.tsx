@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router';
 import type { AppDispatch } from '../../../app/store';
 import type { TParticipant } from '../../../features/participant/types/currentParticipant';
 import { EditParticipant } from '../../../features/participant/editParticipant/EditParticipant';
+import { routeBuilders } from '../../../app/routes';
 
 export const EditParticipantPage = () => {
   const params = useParams<{ companyId: string; participantId?: string }>();
@@ -22,7 +23,12 @@ export const EditParticipantPage = () => {
         participant: participant
       })
     );
-    navigate(-1);
+    navigate(
+      routeBuilders.currentParticipant({
+        companyId,
+        participantId: currentParticipant.id
+      })
+    );
   };
 
   return (

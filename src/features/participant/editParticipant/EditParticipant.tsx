@@ -3,6 +3,7 @@ import styles from './EditParticipant.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import type { TParticipant } from '../types/currentParticipant';
 import { EditParticipantForm } from '../../../entities/participant/participantEditForm/ParticipantEditForm';
+import { routeBuilders } from '../../../app/routes';
 
 type EditParticipantProps = {
   currentParticipant?: TParticipant;
@@ -20,7 +21,11 @@ export const EditParticipant = ({
   return (
     <section className={styles.container}>
       <div className={styles.actions}>
-        <CommonButton onClick={() => navigate(-1)}>Back</CommonButton>
+        <CommonButton
+          onClick={() => navigate(routeBuilders.participants({ companyId }))}
+        >
+          Back
+        </CommonButton>
       </div>
       <div className={styles.content}>
         <EditParticipantForm

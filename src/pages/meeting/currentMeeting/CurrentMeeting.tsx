@@ -16,6 +16,7 @@ import {
 } from '../../../features/meeting/getMeeting/currentMeeting-slice';
 import { MeetingInfo } from '../../../features/meeting/getMeeting/MeetingInfo';
 import { MeetingParticipantsInfo } from '../../../features/meetingParticipant/getAllMeetingParticipants/MeetingParticipantsInfo';
+import { routeBuilders } from '../../../app/routes';
 
 export const CurrentMeeting = () => {
   const navigate = useNavigate();
@@ -42,15 +43,15 @@ export const CurrentMeeting = () => {
         meetingId: meetingId
       })
     );
-    dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
-    navigate(`/company/${companyId}/meetings`);
+    dispatch(fetchMeetings({ companyId, page: 1 }));
+    navigate(routeBuilders.meetings({ companyId }));
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.navigation}>
         <CommonButton
-          onClick={() => navigate(`/company/${companyId}/meetings`)}
+          onClick={() => navigate(routeBuilders.meetings({ companyId }))}
         >
           Back
         </CommonButton>
@@ -59,7 +60,12 @@ export const CurrentMeeting = () => {
         <CommonButton
           color='secondary'
           onClick={() =>
-            navigate(`/company/${companyId}/meetings/{${meetingId}/edit`)
+            navigate(
+              routeBuilders.editMeeting({
+                companyId,
+                meetingId
+              })
+            )
           }
         >
           Edit Meeting
@@ -87,7 +93,7 @@ export const CurrentMeeting = () => {
               color='secondary'
               onClick={() =>
                 navigate(
-                  `/company/${companyId}/meetings/${meetingId}/participants`
+                  routeBuilders.meetingParticipants({ companyId, meetingId })
                 )
               }
             >

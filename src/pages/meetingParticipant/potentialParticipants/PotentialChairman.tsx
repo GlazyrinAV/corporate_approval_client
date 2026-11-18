@@ -2,20 +2,21 @@ import { useDispatch } from 'react-redux';
 import { PotentialMeetingParticipantsInfoForNewMeeting } from '../../../features/meetingParticipant/getPotentialMeetingParticipants/PotentialMeetingParticipantsInfoForNewMeeting';
 import type { AppDispatch } from '../../../app/store';
 import { setFormValue } from '../../../features/meeting/editMeeting/EditMeeting-slice';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import { routeBuilders } from '../../../app/routes';
 
 export const PotentialChairman = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const params = useParams<{ companyId: string }>();
+  const companyId = Number(params?.companyId);
   const navigate = useNavigate();
 
   const handleClick = (id: number) => {
     dispatch(setFormValue({ field: 'chairmanId', value: id }));
-    navigate(-1);
+    navigate(routeBuilders.newMeeting({ companyId }));
   };
 
   return (
-    <PotentialMeetingParticipantsInfoForNewMeeting
-      onClick={handleClick}
-    />
+    <PotentialMeetingParticipantsInfoForNewMeeting onClick={handleClick} />
   );
 };

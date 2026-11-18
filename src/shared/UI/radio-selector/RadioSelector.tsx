@@ -19,7 +19,7 @@ type TRadioGroupProps = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
   row?: boolean;
-  error: boolean;
+  error?: boolean;
   helpText?: string;
 };
 

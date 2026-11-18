@@ -5,6 +5,7 @@ import type { AppDispatch } from '../../../app/store';
 import type { TMeeting } from '../../../features/meeting/types/currentMeeting';
 import { EditMeeting } from '../../../features/meeting/editMeeting/EditMeeting';
 import { updateMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
+import { routeBuilders } from '../../../app/routes';
 
 export const EditMeetingPage = () => {
   const params = useParams<{ companyId: string; participantId?: string }>();
@@ -20,7 +21,9 @@ export const EditMeetingPage = () => {
         meeting: meeting
       })
     );
-    navigate(-1);
+    navigate(
+      routeBuilders.currentMeeting({ companyId, meetingId: meeting.id })
+    );
   };
 
   return (

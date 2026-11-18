@@ -1,7 +1,7 @@
 import { COMPANY_TYPE } from '../../../shared/utils/companyTypes';
 import styles from './CompaniesList.module.css';
 import { Link, useNavigate } from 'react-router';
-import { routes } from '../../../app/routes';
+import { routeBuilders } from '../../../app/routes';
 import { CommonCard } from '../../../shared/ui/common-card/CommonCard';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import type { TCompany } from '../../../features/company/types/currentCompany';
@@ -17,7 +17,10 @@ export const CompaniesList = ({ companies }: CompaniesListProps) => {
     <div className={styles.companies_list}>
       {companies
         ? companies.map((company, index) => (
-            <Link to={`${routes.company}/${company.id}`} key={index}>
+            <Link
+              to={routeBuilders.currentCompany({ companyId: company?.id })}
+              key={index}
+            >
               <CommonCard
                 key={company.id}
                 title='Информация о компании'
@@ -30,7 +33,9 @@ export const CompaniesList = ({ companies }: CompaniesListProps) => {
               >
                 <CommonButton
                   onClick={() => {
-                    navigate(`${routes.company}/${company.id}`);
+                    navigate(
+                      routeBuilders.currentCompany({ companyId: company.id })
+                    );
                   }}
                   className={styles.button}
                 >
