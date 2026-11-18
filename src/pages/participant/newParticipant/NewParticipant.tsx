@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../app/store';
 import { useNavigate, useParams } from 'react-router';
 import type { TNewParticipant } from '../../../features/participant/types/newParticipant';
-import { saveParticipant } from '../../../features/participant/getParticipant/currrentParticipant-slice';
+import { saveParticipant } from '../../../features/participant/getParticipant/currentParticipant-slice';
 import { EditParticipant } from '../../../features/participant/editParticipant/EditParticipant';
 
 export const NewParticipant = () => {

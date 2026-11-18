@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentParticipant,
   updateParticipant
-} from '../../../features/participant/getParticipant/currrentParticipant-slice';
+} from '../../../features/participant/getParticipant/currentParticipant-slice';
 import { useNavigate, useParams } from 'react-router';
 import type { AppDispatch } from '../../../app/store';
 import type { TParticipant } from '../../../features/participant/types/currentParticipant';

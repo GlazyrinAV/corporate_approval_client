@@ -7,7 +7,7 @@ import {
   fetchParticipantById,
   getCurrentParticipant,
   removeParticipant
-} from '../../../features/participant/getParticipant/currrentParticipant-slice';
+} from '../../../features/participant/getParticipant/currentParticipant-slice';
 import {
   fetchParticipants,
   getIsLoading
