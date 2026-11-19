@@ -27,7 +27,6 @@ export const EditMeeting = ({ currentMeeting, onSubmit }: EditMeetingProps) => {
       <div className={styles.content}>
         <MeetingEditForm
           currentMeeting={currentMeeting}
-          currentCompanyId={companyId}
           onSubmit={onSubmit}
         />
       </div>

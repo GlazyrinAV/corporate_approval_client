@@ -42,7 +42,6 @@ export const MeetingParticipantsList = ({
         })
       );
     }
-    console.log(data)
     return data;
   };
 

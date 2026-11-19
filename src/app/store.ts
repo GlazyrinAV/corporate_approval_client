@@ -31,7 +31,13 @@ const rootReducer = combineSlices(
 
 const store = configureStore({
   reducer: rootReducer,
-  devTools: import.meta.env.MODE !== 'production'
+  devTools: import.meta.env.MODE !== 'production',
+  middleware: (getDefault) =>
+    getDefault({
+      serializableCheck: {
+        ignoredPaths: ['editMeeting.form']
+      }
+    })
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

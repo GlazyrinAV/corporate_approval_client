@@ -22,7 +22,7 @@ export const EditMeetingParticipants = () => {
   // Обработка сохранения изменений в составе участников собрания
   const handleSave = useCallback(() => {
     if (chosenMeetingParticipants.length === 0) {
-      console.warn('No participants selected');
+      console.error('No participants selected');
       return;
     }
 

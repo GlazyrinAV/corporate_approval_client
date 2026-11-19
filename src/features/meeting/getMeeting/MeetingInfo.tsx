@@ -21,7 +21,7 @@ export const MeetingInfo = ({ meeting }: MeetingInfoProps) => {
         'Город проведения собрания': meeting.town,
         'Адресс проведения собрания': meeting.address,
         'Дата собрания': dayjs(meeting.dateOfMeeting).format('DD-MM-YYYY'),
-        'Дата составления протокола': dayjs(meeting.dateOfMeeting).format(
+        'Дата составления протокола': dayjs(meeting.dateOfProtocol).format(
           'DD-MM-YYYY'
         ),
         'Начало регистрации Участников собрания': dayjs(

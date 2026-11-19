@@ -34,7 +34,6 @@ export const CurrentCompany = () => {
           <CommonButton
             color='secondary'
             onClick={() => {
-              console.log(companyId);
               navigate(routeBuilders.editCompany({ companyId }))}}
           >
             Edit Company

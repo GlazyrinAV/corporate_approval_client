@@ -30,24 +30,28 @@ import {
   getPotentionalMeetingParticpants
 } from '../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
 import type { AppDispatch } from '../../app/store';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { MeetingParticipantEditForm } from '../meetingParticipant/meetingParticipantEditForm/MeetingParticipantEditForm';
-import { getChosenMeetingParticipants } from '../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import {
+  fetchMeetingParticipants,
+  getChosenMeetingParticipants,
+  getMeetingParticipants
+} from '../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import type { TMeetingParticipant } from '../../features/meetingParticipant/types/currentMeetingParticipant';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+dayjs.extend(customParseFormat);
 type MeetingEditFormProps = {
   currentMeeting?: TMeeting;
-  currentCompanyId: number;
   onSubmit: (meeting: TMeeting) => void;
 };
 
 export const MeetingEditForm = ({
   currentMeeting,
-  onSubmit,
-  currentCompanyId
+  onSubmit
 }: MeetingEditFormProps) => {
   const { form } = useSelector(getForm);
   const {
-    companyId,
     meetingType,
     dateOfMeeting,
     dateOfProtocol,
@@ -61,26 +65,77 @@ export const MeetingEditForm = ({
     chairmanId
   } = form;
   const dispatch = useDispatch<AppDispatch>();
+  const params = useParams<{ companyId: string }>();
+  const companyId = Number(params.companyId);
   const potentialParticipants = useSelector(getPotentionalMeetingParticpants);
-  const secretary = potentialParticipants?.content.find(
-    (participant) => participant.participant.id === Number(secretaryId)
-  );
-  const chairman = potentialParticipants?.content.find(
-    (participant) => participant.participant.id === Number(chairmanId)
-  );
+  const currentParticipants = useSelector(getMeetingParticipants);
+  const secretary = findSecretary();
+  const chairman = findChairman();
   const meetingParticipants = useSelector(getChosenMeetingParticipants);
 
+  function findSecretary(): TMeetingParticipant {
+    let secretary = null;
+    if (currentMeeting && currentMeeting.secretaryId) {
+      secretary = currentParticipants?.content?.find(
+        (participant) => participant.id === Number(currentMeeting.secretaryId)
+      );
+    } else if (secretaryId != null) {
+      if (currentParticipants) {
+        secretary = currentParticipants?.content?.find(
+          (participant) => participant.participant.id === Number(secretaryId)
+        );
+      }
+      console.log(secretary)
+      if (!secretary) {
+        secretary = potentialParticipants?.content?.find(
+          (participant) => participant.participant.id === Number(secretaryId)
+        );
+      }
+    }
+    return secretary;
+  }
+
+  function findChairman(): TMeetingParticipant {
+    let chairman = null;
+    if (currentMeeting != null && currentMeeting.chairmanId != null) {
+      chairman = currentParticipants?.content?.find(
+        (participant) => participant.id === Number(currentMeeting.chairmanId)
+      );
+    } else if (chairmanId) {
+      if (currentParticipants) {
+        chairman = currentParticipants?.content?.find(
+          (participant) => participant.participant.id === Number(chairmanId)
+        );
+      }
+      if (!chairman) {
+        chairman = potentialParticipants?.content?.find(
+          (participant) => participant.participant.id === Number(chairmanId)
+        );
+      }
+    }
+    return chairman;
+  }
+
   useEffect(() => {
-    dispatch(setFormValue({ field: 'companyId', value: currentCompanyId }));
+    if (currentMeeting)
+      dispatch(
+        fetchMeetingParticipants({
+          companyId,
+          meetingId: currentMeeting.id,
+          page: null
+        })
+      );
+
     if (meetingType) {
+      dispatch(setFormValue({ field: 'companyId', value: companyId }));
       dispatch(
         fetchPotentialMeetingParticipantsForNewMeeting({
-          companyId: currentCompanyId,
+          companyId,
           meetingType
         })
       );
     }
-  }, [dispatch, currentCompanyId, meetingType]);
+  }, [dispatch, meetingType, currentMeeting, companyId]);
 
   const { handleSubmit, control, register } = useForm<TMeeting | TNewMeeting>({
     resolver: zodResolver(meetingSchema),
@@ -94,8 +149,8 @@ export const MeetingEditForm = ({
       endOfRegistration: dayjs(endOfRegistration).toDate(),
       startOfMeeting: dayjs(startOfMeeting).toDate(),
       endOfMeeting: dayjs(endOfMeeting).toDate(),
-      secretaryId: secretaryId.toString(),
-      chairmanId: chairmanId.toString(),
+      secretaryId: secretaryId?.toString(),
+      chairmanId: chairmanId?.toString(),
       meetingParticipants: meetingParticipants.map((participant) => ({
         participantId: participant.participant.id,
         isPresent: participant.isPresent
@@ -140,7 +195,7 @@ export const MeetingEditForm = ({
     dispatch(
       setFormValue({
         field: 'startOfRegistration',
-        value: dayjs(date).toISOString()
+        value: dayjs(date, 'HH:mm:ss.SSS').toISOString()
       })
     );
   };
@@ -149,7 +204,7 @@ export const MeetingEditForm = ({
     dispatch(
       setFormValue({
         field: 'endOfRegistration',
-        value: dayjs(date).toISOString()
+        value: dayjs(date, 'HH:mm:ss.SSS').toISOString()
       })
     );
   };
@@ -158,14 +213,17 @@ export const MeetingEditForm = ({
     dispatch(
       setFormValue({
         field: 'startOfMeeting',
-        value: dayjs(date).toISOString()
+        value: dayjs(date, 'HH:mm:ss.SSS').toISOString()
       })
     );
   };
 
   const handleEndOfMeetingChange = (date: Date) => {
     dispatch(
-      setFormValue({ field: 'endOfMeeting', value: dayjs(date).toISOString() })
+      setFormValue({
+        field: 'endOfMeeting',
+        value: dayjs(date, 'HH:mm:ss.SSS').toISOString()
+      })
     );
   };
 
@@ -226,7 +284,6 @@ export const MeetingEditForm = ({
         <Controller
           name='dateOfMeeting'
           control={control}
-          defaultValue={dateOfMeeting}
           render={({ field, fieldState: { error } }) => (
             <DatePickerBasic
               {...field}
@@ -242,7 +299,6 @@ export const MeetingEditForm = ({
         <Controller
           name='dateOfProtocol'
           control={control}
-          defaultValue={dateOfProtocol}
           render={({ field, fieldState: { error } }) => (
             <DatePickerBasic
               {...field}
@@ -258,11 +314,6 @@ export const MeetingEditForm = ({
         <Controller
           name='startOfRegistration'
           control={control}
-          defaultValue={
-            startOfRegistration
-              ? dayjs(startOfRegistration, 'HH:mm').toDate()
-              : null
-          }
           render={({ field, fieldState: { error } }) => (
             <TimePickerBasic
               {...field}
@@ -278,11 +329,6 @@ export const MeetingEditForm = ({
         <Controller
           name='endOfRegistration'
           control={control}
-          defaultValue={
-            endOfRegistration
-              ? dayjs(endOfRegistration, 'HH:mm').toDate()
-              : null
-          }
           render={({ field, fieldState: { error } }) => (
             <TimePickerBasic
               {...field}
@@ -298,9 +344,6 @@ export const MeetingEditForm = ({
         <Controller
           name='startOfMeeting'
           control={control}
-          defaultValue={
-            startOfMeeting ? dayjs(startOfMeeting, 'HH:mm').toDate() : null
-          }
           render={({ field, fieldState: { error } }) => (
             <TimePickerBasic
               {...field}
@@ -316,9 +359,6 @@ export const MeetingEditForm = ({
         <Controller
           name='endOfMeeting'
           control={control}
-          defaultValue={
-            endOfMeeting ? dayjs(endOfMeeting, 'HH:mm').toDate() : null
-          }
           render={({ field, fieldState: { error } }) => (
             <TimePickerBasic
               {...field}
@@ -334,7 +374,6 @@ export const MeetingEditForm = ({
         <Controller
           name='town'
           control={control}
-          defaultValue={town}
           render={({ field, fieldState: { error } }) => (
             <FormInput
               {...field}
@@ -351,7 +390,6 @@ export const MeetingEditForm = ({
         <Controller
           name='address'
           control={control}
-          defaultValue={address}
           render={({ field, fieldState: { error } }) => (
             <FormInput
               {...field}
@@ -368,35 +406,43 @@ export const MeetingEditForm = ({
         <div className={styles.information}>
           <span>Председатель собрания:</span>
           <span>
-            {meetingType
-              ? chairman?.participant.name
-              : 'Необходимо выбрать тип собрания'}
+            {chairman ? chairman?.participant.name : 'Председатель не выбран'}
           </span>
           {meetingType ? (
             <Link
               to={`/company/${companyId}/meetings/new/chairman`}
-              state={{ meetingType, companyId }}
+              state={{
+                meetingType,
+                companyId,
+                meetingId: currentMeeting ? currentMeeting.id : null
+              }}
             >
               <CommonButton>Изменить председателя</CommonButton>
             </Link>
-          ) : null}
+          ) : (
+            'Необходимо выбрать вид собрани'
+          )}
         </div>
 
         <div className={styles.information}>
           <span>Секретарь собрания:</span>
           <span>
-            {meetingType
-              ? secretary?.participant.name
-              : 'Необходимо выбрать тип собрания'}
+            {secretary ? secretary?.participant.name : 'Секретарь не выбран'}
           </span>
           {meetingType ? (
             <Link
               to={`/company/${companyId}/meetings/new/secretary`}
-              state={{ meetingType, companyId }}
+              state={{
+                meetingType,
+                companyId,
+                meetingId: currentMeeting ? currentMeeting.id : null
+              }}
             >
               <CommonButton>Изменить секретаря</CommonButton>
             </Link>
-          ) : null}
+          ) : (
+            'Необходимо выбрать вид собрани'
+          )}
         </div>
 
         <input type='hidden' {...register('companyId')} value={companyId} />

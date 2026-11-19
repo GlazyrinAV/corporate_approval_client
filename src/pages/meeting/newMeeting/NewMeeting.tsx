@@ -30,6 +30,6 @@ export const NewMeeting = () => {
   };
 
   return (
-    <MeetingEditForm currentCompanyId={companyId} onSubmit={handleSubmit} />
+    <MeetingEditForm onSubmit={handleSubmit} />
   );
 };

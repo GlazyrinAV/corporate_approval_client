@@ -17,6 +17,7 @@ import {
 import { MeetingInfo } from '../../../features/meeting/getMeeting/MeetingInfo';
 import { MeetingParticipantsInfo } from '../../../features/meetingParticipant/getAllMeetingParticipants/MeetingParticipantsInfo';
 import { routeBuilders } from '../../../app/routes';
+import { loadDefaultValues } from '../../../features/meeting/editMeeting/EditMeeting-slice';
 
 export const CurrentMeeting = () => {
   const navigate = useNavigate();
@@ -59,14 +60,15 @@ export const CurrentMeeting = () => {
       <div className={styles.actions}>
         <CommonButton
           color='secondary'
-          onClick={() =>
+          onClick={() => {
+            dispatch(loadDefaultValues(meeting));
             navigate(
               routeBuilders.editMeeting({
                 companyId,
                 meetingId
               })
-            )
-          }
+            );
+          }}
         >
           Edit Meeting
         </CommonButton>

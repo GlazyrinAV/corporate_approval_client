@@ -12,8 +12,8 @@ export type TMeeting = {
   endOfMeeting: Date;
   town: string;
   address: string;
-  secretaryId: string;
-  chairmanId: string;
+  secretaryId?: string;
+  chairmanId?: string;
 };
 
 export type TMeetingPagebable = TPageble & {

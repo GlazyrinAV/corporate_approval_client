@@ -7,6 +7,10 @@ import type { TNewMeeting } from '../types/newMeeting';
 import type { TMeeting } from '../types/currentMeeting';
 import { saveMeetingApi, updateMeetingApi } from '../api/editMeetingApi';
 import { fetchMeetings } from '../getAllMeetings/meetings-slice';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 type editMeetingState = {
   form: TNewMeeting | TMeeting;
@@ -76,6 +80,28 @@ export const editMeetingSlice = createSlice({
       if (field in state.form) {
         (state.form[field] as typeof value) = value;
       }
+    },
+    loadDefaultValues: (state, action: PayloadAction<TMeeting>) => {
+      const currentMeeting = action.payload;
+      state.form = {
+        ...currentMeeting,
+        startOfMeeting: dayjs(
+          currentMeeting?.startOfMeeting,
+          'HH:mm:ss.SSS'
+        ).toDate(),
+        endOfMeeting: dayjs(
+          currentMeeting?.endOfMeeting,
+          'HH:mm:ss.SSS'
+        ).toDate(),
+        startOfRegistration: dayjs(
+          currentMeeting?.startOfRegistration,
+          'HH:mm:ss.SSS'
+        ).toDate(),
+        endOfRegistration: dayjs(
+          currentMeeting?.endOfRegistration,
+          'HH:mm:ss.SSS'
+        ).toDate()
+      };
     }
   },
   selectors: {
@@ -114,4 +140,4 @@ export const editMeetingSlice = createSlice({
 
 export default editMeetingSlice;
 export const { getForm } = editMeetingSlice.selectors;
-export const { setFormValue } = editMeetingSlice.actions;
+export const { setFormValue, loadDefaultValues } = editMeetingSlice.actions;

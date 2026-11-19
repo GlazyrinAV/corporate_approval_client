@@ -33,7 +33,6 @@ export const getPotentialMeetingParticipantsForNewMeetingApi = (
   )
     .then((res) => checkResponse<TMeetingParticipantPagebale>(res))
     .then((data) => {
-      console.log(data);
       if (data) return data;
       return Promise.reject(data);
     });

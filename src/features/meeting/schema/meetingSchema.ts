@@ -15,8 +15,8 @@ export const meetingSchema = z.object({
   endOfMeeting: z.date('Необходимо указать время завершения собрания'),
   town: z.string('Необходимо указать город проведения собрания'),
   address: z.string('Необходимо указать адрес проведения собрания'),
-  secretaryId: z.string('Необходимо выбрать секретаря собрания'),
-  chairmanId: z.string('Необходимо выбрать председателя собрания'),
+  secretaryId: z.string('Необходимо выбрать секретаря собрания').optional(),
+  chairmanId: z.string('Необходимо выбрать председателя собрания').optional(),
   meetingType: z.enum(MEETING_TYPE, 'Вид собрания должен быть выбран'),
   companyId: z.string('Необходимо выбрать компанию'),
   meetingParticipants: z
