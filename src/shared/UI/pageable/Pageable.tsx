@@ -1,6 +1,6 @@
 import Pagination from '@mui/material/Pagination';
 
-type PagebaleProps = {
+type PageableProps = {
   count: number;
   page: number;
   onChange: (value: number) => void;
@@ -8,13 +8,13 @@ type PagebaleProps = {
   size?: 'large' | 'small' | 'medium';
 };
 
-export const Pagebale = ({
+export const Pageable = ({
   count,
   page,
   onChange,
   classname,
   size = 'large'
-}: PagebaleProps) => {
+}: PageableProps) => {
   return (
     <Pagination
       count={count}

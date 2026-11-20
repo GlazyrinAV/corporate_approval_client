@@ -1,4 +1,4 @@
-import type { TPageble } from '../../../shared/utils/commonTypes';
+import type { TPageable } from '../../../shared/utils/commonTypes';
 
 export type TMeeting = {
   id: number;
@@ -16,6 +16,6 @@ export type TMeeting = {
   chairmanId?: string;
 };
 
-export type TMeetingPagebable = TPageble & {
+export type TMeetingPageable = TPageable & {
   content: TMeeting[];
 };

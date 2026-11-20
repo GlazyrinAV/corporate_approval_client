@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { filterCompaniesApi, getCompaniesApi } from '../api/getCompanyApi';
-import type { TCompanyPagebable } from '../types/currentCompany';
+import type { TCompanyPageable } from '../types/currentCompany';
 
 type TCompanyFilter = {
   query: string;
@@ -8,7 +8,7 @@ type TCompanyFilter = {
 };
 
 type TCompaniesState = {
-  companies: TCompanyPagebable | null;
+  companies: TCompanyPageable | null;
   isLoading: boolean;
   error: string | null;
 };

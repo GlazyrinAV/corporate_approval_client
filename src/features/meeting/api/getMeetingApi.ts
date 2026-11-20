@@ -1,21 +1,21 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
-import type { TMeeting, TMeetingPagebable } from '../types/currentMeeting';
+import { BASE_URL } from '../../../shared/utils/commonApi';
+import type { TMeeting, TMeetingPageable } from '../types/currentMeeting';
 
 export const getMeetingsApi = (companyId: number, page: number | null) =>
   fetch(
     page
-      ? `${URL}/${companyId}/meeting?page=${page - 1}`
-      : `${URL}/${companyId}/meeting`
+      ? `${BASE_URL}/${companyId}/meeting?page=${page - 1}`
+      : `${BASE_URL}/${companyId}/meeting`
   )
-    .then((res) => checkResponse<TMeetingPagebable>(res))
+    .then((res) => checkResponse<TMeetingPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);
     });
 
 export const getMeetingByIdApi = (companyId: number, meetingId: number) =>
-  fetch(`${URL}/${companyId}/meeting/${meetingId}`)
+  fetch(`${BASE_URL}/${companyId}/meeting/${meetingId}`)
     .then((res) => checkResponse<TMeeting>(res))
     .then((data) => {
       if (data) return data;
@@ -29,10 +29,10 @@ export const filterMeetingsApi = (
 ) =>
   fetch(
     page
-      ? `${URL}/${companyId}/meeting/search?criteria=${query}&page=${page - 1}`
-      : `${URL}/${companyId}/meeting/search?criteria=${query}`
+      ? `${BASE_URL}/${companyId}/meeting/search?criteria=${query}&page=${page - 1}`
+      : `${BASE_URL}/${companyId}/meeting/search?criteria=${query}`
   )
-    .then((res) => checkResponse<TMeetingPagebable>(res))
+    .then((res) => checkResponse<TMeetingPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);

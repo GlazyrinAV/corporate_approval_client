@@ -3,11 +3,11 @@ import { Preloader } from '../../shared/ui/preloader/Preloader';
 import { BasicTable, type RowData } from '../../shared/ui/table/Table';
 import styles from './MeetingParticipantsList.module.css';
 import { getIsPotentialLoading } from '../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
-import { Pagebale } from '../../shared/ui/pagebale/Pagebale';
-import type { TMeetingParticipantPagebale } from '../../features/meetingParticipant/types/currentMeetingParticipant';
+import { Pageable } from '../../shared/ui/pageable/Pageable';
+import type { TMeetingParticipantPageable } from '../../features/meetingParticipant/types/currentMeetingParticipant';
 
 type MeetingParticipantsListProps = {
-  meetingParticipantsPagebale: TMeetingParticipantPagebale;
+  meetingParticipantsPageable: TMeetingParticipantPageable;
   onClick?: (id: number) => void;
   onPageChange?: (id: number) => void;
   limit?: number;
@@ -15,7 +15,7 @@ type MeetingParticipantsListProps = {
 };
 
 export const MeetingParticipantsList = ({
-  meetingParticipantsPagebale,
+  meetingParticipantsPageable: meetingParticipantsPageable,
   onClick,
   onPageChange,
   limit = 0,
@@ -25,8 +25,8 @@ export const MeetingParticipantsList = ({
 
   const tableData = (): RowData[] => {
     const data: RowData[] = [];
-    if (meetingParticipantsPagebale?.content.length > 0) {
-      meetingParticipantsPagebale.content.forEach((participant) =>
+    if (meetingParticipantsPageable?.content.length > 0) {
+      meetingParticipantsPageable.content.forEach((participant) =>
         data.push({
           id: participant.participant.id,
           rowData: [
@@ -53,20 +53,20 @@ export const MeetingParticipantsList = ({
     <div className={styles.wrapper}>
       {isLoading ? (
         <Preloader />
-      ) : meetingParticipantsPagebale != null ? (
+      ) : meetingParticipantsPageable != null ? (
         <div>
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={meetingParticipantsPagebale.totalPages > 1 ? limit : 0}
+            sneakPeek={meetingParticipantsPageable.totalPages > 1 ? limit : 0}
             tableData={tableData()}
           />
-          {limit === undefined && meetingParticipantsPagebale.totalPages > 1 ? (
-            <Pagebale
-              count={meetingParticipantsPagebale.totalPages}
+          {limit === undefined && meetingParticipantsPageable.totalPages > 1 ? (
+            <Pageable
+              count={meetingParticipantsPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pagebale}
+              classname={styles.pageable}
             />
           ) : null}
         </div>

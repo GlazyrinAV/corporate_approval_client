@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
 import { BasicTable, type RowData } from '../../../shared/ui/table/Table';
-import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
+import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import styles from './MeetingParticipantsInfo.module.css';
 import {
   fetchMeetingParticipants,
@@ -32,9 +32,9 @@ export const MeetingParticipantsInfo = ({
 }: MeetingParticipantsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useSelector(getIsCurrentLoading);
-  const meetingParticipantsPagebale = useSelector(getMeetingParticipants);
+  const meetingParticipantsPageable = useSelector(getMeetingParticipants);
   const [page, setPage] = useState(
-    meetingParticipantsPagebale ? meetingParticipantsPagebale.number : 1
+    meetingParticipantsPageable ? meetingParticipantsPageable.number : 1
   );
   const meeting = useSelector(getCurrentMeeting);
 
@@ -67,8 +67,8 @@ export const MeetingParticipantsInfo = ({
 
   const tableData = (): RowData[] => {
     const data: RowData[] = [];
-    if (meetingParticipantsPagebale?.content.length > 0) {
-      meetingParticipantsPagebale.content.forEach((participant) =>
+    if (meetingParticipantsPageable?.content.length > 0) {
+      meetingParticipantsPageable.content.forEach((participant) =>
         data.push({
           id: participant.participant.id,
           rowData: [
@@ -104,20 +104,20 @@ export const MeetingParticipantsInfo = ({
     <div className={styles.wrapper}>
       {isLoading ? (
         <Preloader />
-      ) : meetingParticipantsPagebale?.content != null ? (
+      ) : meetingParticipantsPageable?.content != null ? (
         <div>
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={meetingParticipantsPagebale.totalPages > 1 ? limit : 0}
+            sneakPeek={meetingParticipantsPageable.totalPages > 1 ? limit : 0}
             tableData={tableData()}
           />
-          {limit === undefined && meetingParticipantsPagebale.totalPages > 1 ? (
-            <Pagebale
-              count={meetingParticipantsPagebale.totalPages}
+          {limit === undefined && meetingParticipantsPageable.totalPages > 1 ? (
+            <Pageable
+              count={meetingParticipantsPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pagebale}
+              classname={styles.pageable}
             />
           ) : null}
         </div>

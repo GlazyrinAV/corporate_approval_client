@@ -1,8 +1,8 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
+import { BASE_URL } from '../../../shared/utils/commonApi';
 import type {
   TMeetingParticipant,
-  TMeetingParticipantPagebale
+  TMeetingParticipantPageable
 } from '../types/currentMeetingParticipant';
 
 export const getPotentialMeetingParticipantsForCurrentMeetingApi = (
@@ -12,10 +12,10 @@ export const getPotentialMeetingParticipantsForCurrentMeetingApi = (
 ) =>
   fetch(
     page
-      ? `${URL}/${companyId}/meeting/${meetingId}/participants/potentials?page=${page - 1}`
-      : `${URL}/${companyId}/meeting/${meetingId}/participants/potentials`
+      ? `${BASE_URL}/${companyId}/meeting/${meetingId}/participants/potentials?page=${page - 1}`
+      : `${BASE_URL}/${companyId}/meeting/${meetingId}/participants/potentials`
   )
-    .then((res) => checkResponse<TMeetingParticipantPagebale>(res))
+    .then((res) => checkResponse<TMeetingParticipantPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);
@@ -28,10 +28,10 @@ export const getPotentialMeetingParticipantsForNewMeetingApi = (
 ) =>
   fetch(
     page
-      ? `${URL}/${companyId}/meeting/potentials?meetingType=${meetingType}&page=${page - 1}`
-      : `${URL}/${companyId}/meeting/potentials?meetingType=${meetingType}`
+      ? `${BASE_URL}/${companyId}/meeting/potentials?meetingType=${meetingType}&page=${page - 1}`
+      : `${BASE_URL}/${companyId}/meeting/potentials?meetingType=${meetingType}`
   )
-    .then((res) => checkResponse<TMeetingParticipantPagebale>(res))
+    .then((res) => checkResponse<TMeetingParticipantPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);
@@ -44,11 +44,11 @@ export const getAllMeetingParticipantsApi = (
 ) =>
   fetch(
     page
-      ? `${URL}/${companyId}/meeting/${meetingId}/participants?page=${page - 1}`
-      : `${URL}/${companyId}/meeting/${meetingId}/participants`
+      ? `${BASE_URL}/${companyId}/meeting/${meetingId}/participants?page=${page - 1}`
+      : `${BASE_URL}/${companyId}/meeting/${meetingId}/participants`
   )
     .then((res) => {
-      return checkResponse<TMeetingParticipantPagebale>(res);
+      return checkResponse<TMeetingParticipantPageable>(res);
     })
     .then((data) => {
       if (data) return data;
@@ -61,7 +61,7 @@ export const getMeetingParticipantApi = (
   participantId: number
 ) =>
   fetch(
-    `${URL}/${companyId}/meeting/${meetingId}/participants/${participantId}`
+    `${BASE_URL}/${companyId}/meeting/${meetingId}/participants/${participantId}`
   )
     .then((res) => checkResponse<TMeetingParticipant>(res))
     .then((data) => {

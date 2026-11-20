@@ -9,7 +9,7 @@ import {
   getPotentionalMeetingParticpants,
   updateParticipantInPotentialList
 } from '../../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
-import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
+import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import { findParticipantTypeLabel } from '../../../shared/utils/participantTypes';
 import {
   addToChosenList,
@@ -183,7 +183,7 @@ export const MeetingParticipantEditForm = ({
                 onChangePresent={handleChangePresent}
               />
               {meetingParticipants && meetingParticipants.totalPages > 1 && (
-                <Pagebale
+                <Pageable
                   count={meetingParticipants.totalPages}
                   page={pageCurrent}
                   onChange={handlePageChangeCurrent}
@@ -207,7 +207,7 @@ export const MeetingParticipantEditForm = ({
             />
             {potentialMeetingParticipants &&
               potentialMeetingParticipants.totalPages > 1 && (
-                <Pagebale
+                <Pageable
                   count={potentialMeetingParticipants.totalPages}
                   page={pagePotential}
                   onChange={handlePageChangePotential}

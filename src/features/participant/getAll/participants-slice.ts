@@ -3,7 +3,7 @@ import {
   filterParticipantsApi,
   getParticipantsApi
 } from '../api/getParticipantApi';
-import type { TParticipantPagebale } from '../types/currentParticipant';
+import type { TParticipantPageable } from '../types/currentParticipant';
 
 export type TParticipantApi = {
   companyId: number;
@@ -15,7 +15,7 @@ type TParticpantFilter = TParticipantApi & {
 };
 
 type TParticipantsState = {
-  participants: TParticipantPagebale | null;
+  participants: TParticipantPageable | null;
   isLoading: boolean;
   error: string | null;
 };

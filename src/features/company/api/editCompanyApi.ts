@@ -1,10 +1,10 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
+import { BASE_URL } from '../../../shared/utils/commonApi';
 import type { TCompany } from '../types/currentCompany';
 import type { TNewCompany } from '../types/newCompany';
 
 export const saveCompanyApi = (company: TNewCompany) =>
-  fetch(`${URL}`, {
+  fetch(`${BASE_URL}`, {
     method: 'POST',
     body: JSON.stringify(company),
     headers: {
@@ -18,7 +18,7 @@ export const saveCompanyApi = (company: TNewCompany) =>
     });
 
 export const updateCompanyApi = (company: TCompany) =>
-  fetch(`${URL}/${company.id}`, {
+  fetch(`${BASE_URL}/${company.id}`, {
     method: 'PATCH',
     body: JSON.stringify(company),
     headers: {
@@ -32,7 +32,7 @@ export const updateCompanyApi = (company: TCompany) =>
     });
 
 export const deleteCompanyApi = (id: number) =>
-  fetch(`${URL}/${id}`, {
+  fetch(`${BASE_URL}/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'

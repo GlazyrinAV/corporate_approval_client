@@ -1,10 +1,10 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
+import { BASE_URL } from '../../../shared/utils/commonApi';
 import type { TMeeting } from '../types/currentMeeting';
 import type { TNewMeeting } from '../types/newMeeting';
 
 export const saveMeetingApi = (companyId: number, meeting: TNewMeeting) =>
-  fetch(`${URL}/${companyId}/meeting`, {
+  fetch(`${BASE_URL}/${companyId}/meeting`, {
     method: 'POST',
     body: JSON.stringify(meeting),
     headers: {
@@ -18,7 +18,7 @@ export const saveMeetingApi = (companyId: number, meeting: TNewMeeting) =>
     });
 
 export const updateMeetingApi = (companyId: number, meeting: TMeeting) =>
-  fetch(`${URL}/${companyId}/meeting/${meeting.id}`, {
+  fetch(`${BASE_URL}/${companyId}/meeting/${meeting.id}`, {
     method: 'PATCH',
     body: JSON.stringify(meeting),
     headers: {
@@ -32,7 +32,7 @@ export const updateMeetingApi = (companyId: number, meeting: TMeeting) =>
     });
 
 export const deleteMeetingApi = (companyId: number, meetingId: number) =>
-  fetch(`${URL}/${companyId}/meeting/${meetingId}`, {
+  fetch(`${BASE_URL}/${companyId}/meeting/${meetingId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'

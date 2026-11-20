@@ -5,17 +5,17 @@ import { useEffect, useState } from 'react';
 
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
 import { BasicTable, type RowData } from '../../../shared/ui/table/Table';
-import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
+import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import styles from './MeetingsInfo.module.css';
 import dayjs from 'dayjs';
-import type { TPageble } from '../../../shared/utils/commonTypes';
+import type { TPageable } from '../../../shared/utils/commonTypes';
 import type { TMeeting } from '../types/currentMeeting';
 
 type MeetingFormatted = Omit<TMeeting, 'dateOfMeeting'> & {
   dateOfMeeting: string;
 };
 
-type MeetingInfoData = TPageble & {
+type MeetingInfoData = TPageable & {
   content: MeetingFormatted[];
 };
 
@@ -32,7 +32,7 @@ export const MeetingsInfo = ({
   onClick
 }: MeetingsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const meetingsPagebale = useSelector((state) => {
+  const meetingsPageable = useSelector((state) => {
     const meetings = state.meetings.meetings;
     const data: MeetingInfoData = {
       ...meetings,
@@ -48,7 +48,7 @@ export const MeetingsInfo = ({
   });
   const isLoading = useSelector(getIsLoading);
   const [page, setPage] = useState(
-    meetingsPagebale ? meetingsPagebale.number : 1
+    meetingsPageable ? meetingsPageable.number : 1
   );
 
   useEffect(() => {
@@ -61,8 +61,8 @@ export const MeetingsInfo = ({
 
   const tableData = (): RowData[] => {
     const data: RowData[] = [];
-    if (meetingsPagebale?.content.length > 0) {
-      meetingsPagebale.content.forEach((meeting) =>
+    if (meetingsPageable?.content.length > 0) {
+      meetingsPageable.content.forEach((meeting) =>
         data.push({
           id: meeting.id,
           rowData: [
@@ -79,20 +79,20 @@ export const MeetingsInfo = ({
     <div className={styles.wrapper}>
       {isLoading ? (
         <Preloader />
-      ) : meetingsPagebale != null ? (
+      ) : meetingsPageable != null ? (
         <div>
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={meetingsPagebale.totalPages > 1 ? limit : 0}
+            sneakPeek={meetingsPageable.totalPages > 1 ? limit : 0}
             tableData={tableData()}
           />
-          {limit === undefined && meetingsPagebale.totalPages > 1 ? (
-            <Pagebale
-              count={meetingsPagebale.totalPages}
+          {limit === undefined && meetingsPageable.totalPages > 1 ? (
+            <Pageable
+              count={meetingsPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pagebale}
+              classname={styles.pageable}
             />
           ) : null}
         </div>

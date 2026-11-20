@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { Pagebale } from './Pagebale';
+import { Pageable } from './Pageable';
 
-const meta: Meta<typeof Pagebale> = {
+const meta: Meta<typeof Pageable> = {
   title: 'UI/Pagebale',
-  component: Pagebale,
+  component: Pageable,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -14,10 +14,10 @@ const meta: Meta<typeof Pagebale> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Pagebale>;
+type Story = StoryObj<typeof Pageable>;
 
 export const Default: Story = {
   render: () => {
-    return <Pagebale count={10} page={3} onChange={() => {}} />;
+    return <Pageable count={10} page={3} onChange={() => {}} />;
   }
 };

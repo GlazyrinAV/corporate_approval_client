@@ -10,15 +10,15 @@ import {
 } from './companies-slice';
 import { useEffect, useState } from 'react';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
-import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
+import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import { SearchBar } from '../../../widgets/searchBar/SearchBar';
 
 export const CompaniesInfo = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const companiesPagebale = useSelector(getCompanies);
+  const companiesPageable = useSelector(getCompanies);
   const isLoading = useSelector(getIsLoading);
   const [page, setPage] = useState(
-    companiesPagebale ? companiesPagebale.number : 1
+    companiesPageable ? companiesPageable.number : 1
   );
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -52,15 +52,15 @@ export const CompaniesInfo = () => {
       </div>
       {isLoading ? (
         <Preloader />
-      ) : companiesPagebale ? (
+      ) : companiesPageable ? (
         <section className={styles.container}>
-          <CompaniesList companies={companiesPagebale.content} />
-          {companiesPagebale.totalPages > 1 ? (
-            <Pagebale
-              count={companiesPagebale.totalPages}
+          <CompaniesList companies={companiesPageable.content} />
+          {companiesPageable.totalPages > 1 ? (
+            <Pageable
+              count={companiesPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pagebale}
+              classname={styles.pageable}
             />
           ) : null}
         </section>

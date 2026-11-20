@@ -1,17 +1,17 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
+import { BASE_URL } from '../../../shared/utils/commonApi';
 import type {
   TParticipant,
-  TParticipantPagebale
+  TParticipantPageable
 } from '../types/currentParticipant';
 
 export const getParticipantsApi = (companyId: number, page: number | null) =>
   fetch(
     page
-      ? `${URL}/${companyId}/participant?page=${page - 1}`
-      : `${URL}/${companyId}/participant`
+      ? `${BASE_URL}/${companyId}/participant?page=${page - 1}`
+      : `${BASE_URL}/${companyId}/participant`
   )
-    .then((res) => checkResponse<TParticipantPagebale>(res))
+    .then((res) => checkResponse<TParticipantPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);
@@ -21,7 +21,7 @@ export const getParticipantByIdApi = (
   companyId: number,
   participantId: number
 ) =>
-  fetch(`${URL}/${companyId}/participant/${participantId}`)
+  fetch(`${BASE_URL}/${companyId}/participant/${participantId}`)
     .then((res) => checkResponse<TParticipant>(res))
     .then((data) => {
       if (data) return data;
@@ -35,10 +35,10 @@ export const filterParticipantsApi = (
 ) =>
   fetch(
     page
-      ? `${URL}/${companyId}/participant/search?criteria=${query}&page=${page - 1}`
-      : `${URL}/${companyId}/participant/search?criteria=${query}`
+      ? `${BASE_URL}/${companyId}/participant/search?criteria=${query}&page=${page - 1}`
+      : `${BASE_URL}/${companyId}/participant/search?criteria=${query}`
   )
-    .then((res) => checkResponse<TParticipantPagebale>(res))
+    .then((res) => checkResponse<TParticipantPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);

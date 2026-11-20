@@ -18,7 +18,11 @@ export const EditCompany = ({ currentCompany, onSubmit }: EditCompanyProps) => {
       <div className={styles.actions}>
         <CommonButton
           onClick={() =>
-            navigate(routeBuilders.currentCompany({companyId: currentCompany.id}))
+            navigate(
+              currentCompany
+                ? routeBuilders.currentCompany({ companyId: currentCompany.id })
+                : routeBuilders.main()
+            )
           }
         >
           Back

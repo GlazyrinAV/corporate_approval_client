@@ -1,4 +1,4 @@
-import type { TPageble } from '../../../shared/utils/commonTypes';
+import type { TPageable } from '../../../shared/utils/commonTypes';
 import type { TParticipant } from '../../participant/types/currentParticipant';
 
 export type TMeetingParticipant = {
@@ -8,6 +8,6 @@ export type TMeetingParticipant = {
   isPresent?: boolean;
 };
 
-export type TMeetingParticipantPagebale = TPageble & {
+export type TMeetingParticipantPageable = TPageable & {
   content: TMeetingParticipant[];
 };

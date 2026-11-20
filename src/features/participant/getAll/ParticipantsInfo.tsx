@@ -9,7 +9,7 @@ import {
 } from './participants-slice';
 import { useEffect, useState } from 'react';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
-import { Pagebale } from '../../../shared/ui/pagebale/Pagebale';
+import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import styles from './ParticipantInfo.module.css';
 import { SearchBar } from '../../../widgets/searchBar/SearchBar';
 
@@ -26,10 +26,10 @@ export const PartcipantsInfo = ({
   onClick
 }: ParticipantsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const participantsPagebale = useSelector(getParticipants);
+  const participantsPageable = useSelector(getParticipants);
   const isLoading = useSelector(getIsLoading);
   const [page, setPage] = useState(
-    participantsPagebale ? participantsPagebale.number : 1
+    participantsPageable ? participantsPageable.number : 1
   );
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -57,8 +57,8 @@ export const PartcipantsInfo = ({
 
   const tableData = (): RowData[] => {
     const data: RowData[] = [];
-    if (participantsPagebale?.content.length > 0) {
-      participantsPagebale.content.forEach((participant) =>
+    if (participantsPageable?.content.length > 0) {
+      participantsPageable.content.forEach((participant) =>
         data.push({
           id: participant.id,
           rowData: [
@@ -94,20 +94,20 @@ export const PartcipantsInfo = ({
       ) : null}
       {isLoading ? (
         <Preloader />
-      ) : participantsPagebale != null ? (
+      ) : participantsPageable != null ? (
         <div>
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={participantsPagebale.totalPages > 1 ? limit : 0}
+            sneakPeek={participantsPageable.totalPages > 1 ? limit : 0}
             tableData={tableData()}
           />
-          {limit === undefined && participantsPagebale.totalPages > 1 ? (
-            <Pagebale
-              count={participantsPagebale.totalPages}
+          {limit === undefined && participantsPageable.totalPages > 1 ? (
+            <Pageable
+              count={participantsPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pagebale}
+              classname={styles.pageable}
             />
           ) : null}
         </div>

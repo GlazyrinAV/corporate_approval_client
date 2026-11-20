@@ -1,4 +1,4 @@
-import type { TPageble } from '../../../shared/utils/commonTypes';
+import type { TPageable } from '../../../shared/utils/commonTypes';
 
 export type TCompany = {
   id: number;
@@ -9,6 +9,6 @@ export type TCompany = {
   hasBoardOfDirectors: boolean;
 };
 
-export type TCompanyPagebable = TPageble & {
+export type TCompanyPageable = TPageable & {
   content: TCompany[];
 };

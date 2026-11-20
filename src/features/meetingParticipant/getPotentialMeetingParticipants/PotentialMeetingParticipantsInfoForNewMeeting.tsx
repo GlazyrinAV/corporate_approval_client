@@ -21,11 +21,11 @@ export const PotentialMeetingParticipantsInfoForNewMeeting = ({
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const { companyId, meetingType } = location.state;
-  const meetingParticipantsPagebale = useSelector(
+  const meetingParticipantsPageable = useSelector(
     getPotentionalMeetingParticpants
   );
   const [page, setPage] = useState(
-    meetingParticipantsPagebale ? meetingParticipantsPagebale.number : 1
+    meetingParticipantsPageable ? meetingParticipantsPageable.number : 1
   );
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export const PotentialMeetingParticipantsInfoForNewMeeting = ({
     <MeetingParticipantsList
       page={page}
       limit={limit}
-      meetingParticipantsPagebale={meetingParticipantsPagebale}
+      meetingParticipantsPageable={meetingParticipantsPageable}
       onClick={onClick}
       onPageChange={(value) => setPage(value)}
     />

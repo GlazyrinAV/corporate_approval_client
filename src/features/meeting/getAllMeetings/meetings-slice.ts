@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { TMeetingPagebable } from '../types/currentMeeting';
+import type { TMeetingPageable } from '../types/currentMeeting';
 import { filterMeetingsApi, getMeetingsApi } from '../api/getMeetingApi';
 
 export type TMeetingApi = {
@@ -12,7 +12,7 @@ type TMeetingFilter = TMeetingApi & {
 };
 
 type TMeetingsState = {
-  meetings: TMeetingPagebable | null;
+  meetings: TMeetingPageable | null;
   isLoading: boolean;
   error: string | null;
 };

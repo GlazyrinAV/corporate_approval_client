@@ -1,17 +1,17 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
-import type { TCompany, TCompanyPagebable } from '../types/currentCompany';
+import { BASE_URL } from '../../../shared/utils/commonApi';
+import type { TCompany, TCompanyPageable } from '../types/currentCompany';
 
 export const getCompaniesApi = (page: number | null) =>
-  fetch(page ? `${URL}/company?page=${page - 1}` : `${URL}/company`)
-    .then((res) => checkResponse<TCompanyPagebable>(res))
+  fetch(page ? `${BASE_URL}/company?page=${page - 1}` : `${BASE_URL}/company`)
+    .then((res) => checkResponse<TCompanyPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);
     });
 
 export const getCompanyByIdApi = (id: number) =>
-  fetch(`${URL}/company/${id}`)
+  fetch(`${BASE_URL}/company/${id}`)
     .then((res) => checkResponse<TCompany>(res))
     .then((data) => {
       if (data) return data;
@@ -21,10 +21,10 @@ export const getCompanyByIdApi = (id: number) =>
 export const filterCompaniesApi = (query: string, page: number) =>
   fetch(
     page
-      ? `${URL}/company/search?criteria=${query}&page=${page - 1}`
-      : `${URL}/company/search?criteria=${query}`
+      ? `${BASE_URL}/company/search?criteria=${query}&page=${page - 1}`
+      : `${BASE_URL}/company/search?criteria=${query}`
   )
-    .then((res) => checkResponse<TCompanyPagebable>(res))
+    .then((res) => checkResponse<TCompanyPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);

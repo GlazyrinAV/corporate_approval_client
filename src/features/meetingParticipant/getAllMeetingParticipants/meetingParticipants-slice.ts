@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import type {
   TMeetingParticipant,
-  TMeetingParticipantPagebale
+  TMeetingParticipantPageable
 } from '../types/currentMeetingParticipant';
 import { getAllMeetingParticipantsApi } from '../api/getMeetingParticipant';
 import type { TCurrentMeetingParticipant } from '../types/newMeetingParticipant';
@@ -24,7 +24,7 @@ type TNewMeetingParticipantApi = {
 };
 
 type TMeetingParticipantsState = {
-  meetingParticipants: TMeetingParticipantPagebale | null;
+  meetingParticipants: TMeetingParticipantPageable | null;
   choosenMeetingParticipants: TCurrentMeetingParticipant[];
   isLoading: boolean;
   error: string | null;

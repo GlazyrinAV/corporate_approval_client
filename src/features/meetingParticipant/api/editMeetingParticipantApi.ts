@@ -1,6 +1,6 @@
 import { checkResponse } from '../../../shared/utils/commonApi';
-import { URL } from '../../../shared/utils/commonApi';
-import type { TMeetingParticipantPagebale } from '../types/currentMeetingParticipant';
+import { BASE_URL } from '../../../shared/utils/commonApi';
+import type { TMeetingParticipantPageable } from '../types/currentMeetingParticipant';
 import type { TCurrentMeetingParticipant } from '../types/newMeetingParticipant';
 
 export const saveMeetingParticipantsApi = (
@@ -8,14 +8,14 @@ export const saveMeetingParticipantsApi = (
   meetingId: number,
   meetingParticipants: TCurrentMeetingParticipant[]
 ) =>
-  fetch(`${URL}/${companyId}/meeting/${meetingId}/participants`, {
+  fetch(`${BASE_URL}/${companyId}/meeting/${meetingId}/participants`, {
     method: 'POST',
     body: JSON.stringify(meetingParticipants),
     headers: {
       'Content-Type': 'application/json'
     }
   })
-    .then((res) => checkResponse<TMeetingParticipantPagebale>(res))
+    .then((res) => checkResponse<TMeetingParticipantPageable>(res))
     .then((data) => {
       if (data) return data;
       return Promise.reject(data);
@@ -27,7 +27,7 @@ export const deleteMeetingParticipantApi = (
   meetingParticipantId: number
 ) =>
   fetch(
-    `${URL}/${companyId}/meeting/${meetingId}/participants/${meetingParticipantId}`,
+    `${BASE_URL}/${companyId}/meeting/${meetingId}/participants/${meetingParticipantId}`,
     {
       method: 'DELETE',
       headers: {
