@@ -1,27 +1,32 @@
-export const Search = () => (
-  <svg
-    version='1.0'
-    xmlns='http://www.w3.org/2000/svg'
-    width='80px'
-    viewBox='0 0 920.000000 512.000000'
-    preserveAspectRatio='xMidYMid meet'
-  >
-    <g
-      transform='translate(0.000000,512.000000) scale(0.100000,-0.100000)'
-      fill='#000000'
-      stroke='none'
+import React from 'react';
+
+interface IconProps {
+  size?: number;
+  color?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export const Search = React.forwardRef<SVGSVGElement, IconProps>(
+  ({ size = 24, color = 'currentColor', className, style }, ref) => (
+    <svg
+      ref={ref}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      style={style}
     >
-      <path
-        d='M3950 4794 c-508 -69 -964 -368 -1239 -812 -127 -204 -204 -414 -242
--662 -17 -109 -17 -379 0 -495 92 -628 528 -1167 1121 -1385 510 -186 1083
--124 1535 168 l80 51 65 -62 c36 -34 340 -335 675 -669 l610 -607 142 141 c78
-78 140 145 137 148 -217 212 -1314 1323 -1314 1330 0 5 25 42 56 82 319 413
-430 973 295 1493 -156 605 -645 1088 -1258 1244 -192 49 -455 63 -663 35z
-m475 -205 c603 -90 1103 -546 1254 -1144 28 -112 31 -135 40 -263 46 -628
--287 -1206 -857 -1491 -305 -153 -707 -193 -1052 -106 -533 134 -968 566
--1106 1097 -75 290 -58 640 43 913 208 560 701 943 1293 1005 95 10 279 4 385
--11z'
-      />
-    </g>
-  </svg>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4.35-4.35" />
+    </svg>
+  )
 );
+
+Search.displayName = 'Search';

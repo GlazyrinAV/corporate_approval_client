@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { useDebounce } from '../../shared/utils/hooks/useDebounce';
 import style from './SearchBar.module.css';
 import { CommonButton } from '../../shared/ui/common-button/CommonButton';
+import { Search } from '../../shared/assets/icons';
 
 type SearchBarProps = {
   onSearch?: (query: string) => void;
@@ -35,25 +36,32 @@ export const SearchBar = ({
   );
 
   return (
-    <div>
+    <div className={style.wrapper}>
       <FormInput
         placeholder={placeholder}
         value={query}
         onChange={(e) => handleChange(e.target.value)}
         type='text'
         classname={style.container}
+        sx={{
+          '& .MuiInputBase-input': {
+            paddingLeft: '45px'
+          }
+        }}
       />
+      <Search className={style.icon} color='rgba(0, 0, 0, 0.25)'/>
       {query.trim() ? (
-        <CommonButton
-          variant='text'
-          onClick={() => {
-            onClear();
-            setQuery('');
-          }}
-          className={style.clear}
-        >
-          Очистить
-        </CommonButton>
+        <div className={style.actionButton}>
+          <CommonButton
+            variant='text'
+            onClick={() => {
+              onClear();
+              setQuery('');
+            }}
+          >
+            Очистить
+          </CommonButton>
+        </div>
       ) : null}
     </div>
   );

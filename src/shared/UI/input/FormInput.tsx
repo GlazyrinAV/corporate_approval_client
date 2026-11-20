@@ -1,3 +1,4 @@
+import type { SxProps, Theme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 
 type FormInputProps = {
@@ -13,6 +14,7 @@ type FormInputProps = {
   placeholder?: string;
   value?: string;
   classname?: string;
+  sx?: SxProps<Theme>;
 };
 
 export const FormInput = ({
@@ -27,7 +29,8 @@ export const FormInput = ({
   color = 'primary',
   placeholder,
   value,
-  classname
+  classname,
+  sx
 }: FormInputProps) => {
   return (
     <TextField
@@ -43,6 +46,7 @@ export const FormInput = ({
       placeholder={placeholder}
       value={value}
       className={classname}
+      sx={sx}
     />
   );
 };

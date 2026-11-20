@@ -1,10 +1,20 @@
-.container {
-  width: 100%;
+.wrapper {
   position: relative;
+  overflow: visible;
 }
 
-.clear {
+.icon {
   position: absolute;
-  top: 30%;
-  right: 5%;
+  top: 15px;
+  left: 1%;
+}
+
+.container {
+  width: 100%;
+}
+
+.actionButton {
+  position: relative;
+  top: -45px;
+  right: -90%;
 }
