@@ -3,14 +3,11 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import styles from './CommonCard.module.css';
 import Container from '@mui/material/Container';
-
-type TCommonCardContent = {
-  [key: string]: string;
-};
+import type { TDataInfo } from '../../utils/commonTypes';
 
 type TCommonCardProps = {
   title: string;
-  content: TCommonCardContent;
+  content: TDataInfo;
   children?: React.ReactNode;
   row?: boolean;
 };
@@ -42,7 +39,8 @@ export const CommonCard = ({
         >
           {title}
         </Typography>
-        {Object.entries(content).map(([key, value], index) => {
+        {content.data.map((filed, index) => {
+          const key = filed.key ?? String(index);
           return (
             <Container
               style={{
@@ -50,19 +48,19 @@ export const CommonCard = ({
                 flexDirection: row ? 'row' : 'column',
                 gap: row ? '20px' : '0'
               }}
-              key={index}
+              key={key}
             >
               <Typography
                 variant='h6'
                 sx={{ color: 'text.primary', fontSize: 18, lineHeight: '36px' }}
               >
-                {key}
+                {filed.fieldLabel}
               </Typography>
               <Typography
                 variant='body2'
                 sx={{ color: 'text.primary', fontSize: 16, lineHeight: '36px' }}
               >
-                {value}
+                {String(filed.fieldValue ?? '')}
               </Typography>
             </Container>
           );

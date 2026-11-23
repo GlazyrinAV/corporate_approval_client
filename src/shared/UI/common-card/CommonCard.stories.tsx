@@ -22,7 +22,18 @@ export const Default: Story = {
     return (
       <CommonCard
         title='New title'
-        content={{ name: 'This Name', content: 'This Content' }}
+        content={{
+          data: [
+            {
+              fieldLabel: 'name',
+              fieldValue: 'This Name'
+            },
+            {
+              fieldLabel: 'content',
+              fieldValue: 'This Content'
+            }
+          ]
+        }}
       >
         <CommonButton onClick={() => {}}>More</CommonButton>
       </CommonCard>

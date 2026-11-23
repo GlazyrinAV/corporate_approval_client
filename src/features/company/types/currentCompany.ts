@@ -1,4 +1,4 @@
-import type { TPageable } from '../../../shared/utils/commonTypes';
+import type { TPaginated } from '../../../shared/utils/commonTypes';
 import type { CompanyTypeKey } from '../../../shared/utils/companyTypes';
 
 export type TCompany = {
@@ -10,6 +10,4 @@ export type TCompany = {
   hasBoardOfDirectors: boolean;
 };
 
-export type TCompanyPageable = TPageable & {
-  content: TCompany[];
-};
+export type TCompanyPageable = TPaginated<TCompany>;

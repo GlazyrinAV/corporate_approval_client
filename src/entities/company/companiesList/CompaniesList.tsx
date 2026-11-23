@@ -1,4 +1,7 @@
-import { COMPANY_TYPE, type CompanyTypeKey } from '../../../shared/utils/companyTypes';
+import {
+  COMPANY_TYPE,
+  type CompanyTypeKey
+} from '../../../shared/utils/companyTypes';
 import styles from './CompaniesList.module.css';
 import { Link, useNavigate } from 'react-router';
 import { routeBuilders } from '../../../app/routes';
@@ -25,12 +28,23 @@ export const CompaniesList = ({ companies }: CompaniesListProps) => {
                 key={company.id}
                 title='Информация о компании'
                 content={{
-                  Наименование: company.title,
-                  'Вид компании':
-                    COMPANY_TYPE[company.companyType as CompanyTypeKey] ??
-                    company.companyType,
-                  ИНН: String(company.inn),
-                  ОГРН: String(company.registrationNumber)
+                  data: [
+                    { fieldLabel: 'Наименование', fieldValue: company.title },
+                    {
+                      fieldLabel: 'Вид компании',
+                      fieldValue:
+                        COMPANY_TYPE[company.companyType as CompanyTypeKey] ??
+                        company.companyType
+                    },
+                    {
+                      fieldLabel: 'ИНН',
+                      fieldValue: String(company.inn)
+                    },
+                    {
+                      fieldLabel: 'ОГРН',
+                      fieldValue: String(company.registrationNumber)
+                    }
+                  ]
                 }}
               >
                 <CommonButton

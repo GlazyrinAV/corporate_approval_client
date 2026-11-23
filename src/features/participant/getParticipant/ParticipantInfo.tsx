@@ -13,17 +13,41 @@ export const ParticipantInfo = ({ participant }: ParticipantInfoProps) => {
       title='Информация об участнике'
       row
       content={{
-        ФИО: participant.name,
-        'Дата рождения': String(participant.dateOfBirth),
-        'Документ удостоверяющий личность': participant.idDocument,
-        'Данные документа': participant.idDocumentData,
-        'Адрес регистрации': participant.registrationAddress,
-        'Номинальная доля в уставном капитале': String(
-          participant.nominalShare
-        ),
-        'Фактическая доля': String(participant.share),
-        'Тип учатника': findType(participant.participantType),
-        Активен: participant.isActive ? 'Да' : 'Нет'
+        data: [
+          { fieldLabel: 'ФИО', fieldValue: participant.name },
+          {
+            fieldLabel: 'Дата рождения',
+            fieldValue: String(participant.dateOfBirth)
+          },
+          {
+            fieldLabel: 'Документ удостоверяющий личность',
+            fieldValue: participant.idDocument
+          },
+          {
+            fieldLabel: 'Данные документа',
+            fieldValue: participant.idDocumentData
+          },
+          {
+            fieldLabel: 'Адрес регистрации',
+            fieldValue: participant.registrationAddress
+          },
+          {
+            fieldLabel: 'Номинальная доля в уставном капитале',
+            fieldValue: String(participant.nominalShare)
+          },
+          {
+            fieldLabel: 'Фактическая доля',
+            fieldValue: String(participant.share)
+          },
+          {
+            fieldLabel: 'Тип учатника',
+            fieldValue: findType(participant.participantType)
+          },
+          {
+            fieldLabel: 'Активен',
+            fieldValue: participant.isActive ? 'Да' : 'Нет'
+          }
+        ]
       }}
     />
   );

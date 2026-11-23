@@ -8,16 +8,14 @@ import { BasicTable, type RowData } from '../../../shared/ui/table/Table';
 import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import styles from './MeetingsInfo.module.css';
 import dayjs from 'dayjs';
-import type { TPageable } from '../../../shared/utils/commonTypes';
+import type { TPaginated } from '../../../shared/utils/commonTypes';
 import type { TMeeting } from '../types/currentMeeting';
 
 type MeetingFormatted = Omit<TMeeting, 'dateOfMeeting'> & {
   dateOfMeeting: string;
 };
 
-type MeetingInfoData = TPageable & {
-  content: MeetingFormatted[];
-};
+type MeetingInfoData = TPaginated<MeetingFormatted>;
 
 type MeetingsInfoProps = {
   companyId: number;

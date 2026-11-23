@@ -1,4 +1,4 @@
-import type { TPageable } from '../../../shared/utils/commonTypes';
+import type { TPaginated } from '../../../shared/utils/commonTypes';
 
 export type TParticipant = {
   id: number;
@@ -14,6 +14,4 @@ export type TParticipant = {
   isActive: boolean;
 };
 
-export type TParticipantPageable = TPageable & {
-  content: TParticipant[];
-};
+export type TParticipantPageable = TPaginated<TParticipant>;
