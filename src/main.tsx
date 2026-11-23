@@ -1,17 +1,23 @@
+import { Suspense } from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router';
 import App from './app/App.tsx';
 import store from './app/store.ts';
+import { Preloader } from './shared/ui/preloader/Preloader';
+import './index.css';
 
-createRoot(document.getElementById('root')!).render(
+const root = createRoot(document.getElementById('root')!);
+
+root.render(
   <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
+    <BrowserRouter>
+      <Provider store={store}>
+        <Suspense fallback={<Preloader />}>
+          <App />
+        </Suspense>
+      </Provider>
+    </BrowserRouter>
   </StrictMode>
 );
