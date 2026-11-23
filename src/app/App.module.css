@@ -1,9 +1,9 @@
-.main_container {
+.mainContainer {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-.main_content {
+.mainContent {
   flex-grow: 1;
 }

@@ -1,19 +1,4 @@
 {
-  "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "isolatedModules": true,
-    "noEmit": false,
-    "jsx": "react-jsx",
-    "types": ["node", "jest"]
-  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
