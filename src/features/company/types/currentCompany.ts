@@ -1,11 +1,12 @@
 import type { TPageable } from '../../../shared/utils/commonTypes';
+import type { CompanyTypeKey } from '../../../shared/utils/companyTypes';
 
 export type TCompany = {
   id: number;
   title: string;
   inn: string;
   registrationNumber: string;
-  companyType: string;
+  companyType: CompanyTypeKey;
   hasBoardOfDirectors: boolean;
 };
 

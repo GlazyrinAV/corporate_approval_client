@@ -4,7 +4,6 @@ import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { RadioSelector } from '../../../shared/ui/radio-selector/RadioSelector';
 import { Switcher } from '../../../shared/ui/switcher/Switcher';
 import type { TCompany } from '../../../features/company/types/currentCompany';
-import { COMPANY_TYPE } from '../../../shared/utils/companyTypes';
 import {
   Controller,
   useForm,
@@ -96,20 +95,18 @@ export const EditCompanyForm = ({
       <Controller
         name='companyType'
         control={control}
-        defaultValue={
-          currentCompany ? COMPANY_TYPE[currentCompany?.companyType] : null
-        }
+        defaultValue={currentCompany?.companyType ?? 'LLC'}
         render={({ field, fieldState: { error } }) => (
           <RadioSelector
             {...field}
             id='CompanyOrganizationForm'
             options={[
               {
-                value: COMPANY_TYPE['LLC'],
+                value: 'LLC',
                 label: 'ООО'
               },
               {
-                value: COMPANY_TYPE['JSC'],
+                value: 'JSC',
                 label: 'АО'
               }
             ]}

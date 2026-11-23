@@ -1,4 +1,6 @@
-export const COMPANY_TYPE: { [key: string]: string } = {
+export const COMPANY_TYPE = {
   LLC: 'Общество с ограниченной ответственностью',
-  JSC: 'Акционерное общество'
-};
+  JSC: 'Акционерное общество',
+} as const;
+
+export type CompanyTypeKey = keyof typeof COMPANY_TYPE;

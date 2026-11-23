@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { COMPANY_TYPE } from '../../../shared/utils/companyTypes';
+import type { CompanyTypeKey } from '../../../shared/utils/companyTypes';
 
 export const companySchema = z.object({
   id: z.number().optional(),
@@ -16,7 +17,10 @@ export const companySchema = z.object({
     .min(13, 'ОГРН содержит 13 цифр')
     .max(13, 'ОГРН содержит 13 цифр')
     .regex(/^\d+$/, 'ИНН должен содержать только цифры'),
-  companyType: z.enum(COMPANY_TYPE, 'Вид компании должен быть выбран'),
+  companyType: z.enum(
+    Object.keys(COMPANY_TYPE) as [CompanyTypeKey, ...CompanyTypeKey[]],
+    'Вид компании должен быть выбран'
+  ),
   hasBoardOfDirectors: z.boolean(
     'Необходоимо указать наличие Совета директоров'
   )

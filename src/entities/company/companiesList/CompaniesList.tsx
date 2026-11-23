@@ -1,4 +1,4 @@
-import { COMPANY_TYPE } from '../../../shared/utils/companyTypes';
+import { COMPANY_TYPE, type CompanyTypeKey } from '../../../shared/utils/companyTypes';
 import styles from './CompaniesList.module.css';
 import { Link, useNavigate } from 'react-router';
 import { routeBuilders } from '../../../app/routes';
@@ -26,7 +26,9 @@ export const CompaniesList = ({ companies }: CompaniesListProps) => {
                 title='Информация о компании'
                 content={{
                   Наименование: company.title,
-                  'Вид компании': COMPANY_TYPE[company.companyType],
+                  'Вид компании':
+                    COMPANY_TYPE[company.companyType as CompanyTypeKey] ??
+                    company.companyType,
                   ИНН: String(company.inn),
                   ОГРН: String(company.registrationNumber)
                 }}
