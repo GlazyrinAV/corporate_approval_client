@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector
+} from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 import type { TMeetingPageable } from '../types/currentMeeting';
 import { filterMeetingsApi, getMeetingsApi } from '../api/getMeetingApi';
 
@@ -85,3 +90,18 @@ export const meetingsSlice = createSlice({
 
 export default meetingsSlice;
 export const { getMeetings, getIsLoading, getError } = meetingsSlice.selectors;
+
+/**
+ * Memoized selector that formats meeting dates to strings.
+ * Returns empty array when no meetings are loaded.
+ */
+export const getFormattedMeetings = createSelector(
+  [getMeetings],
+  (meetings) => {
+    if (!meetings?.content) return [];
+    return meetings.content.map((meeting) => ({
+      ...meeting,
+      dateOfMeeting: dayjs(meeting.dateOfMeeting).format('DD-MM-YYYY')
+    }));
+  }
+);
