@@ -95,7 +95,7 @@ export const EditCompanyForm = ({
       <Controller
         name='companyType'
         control={control}
-        defaultValue={currentCompany?.companyType ?? 'LLC'}
+        defaultValue={currentCompany?.companyType ?? null}
         render={({ field, fieldState: { error } }) => (
           <RadioSelector
             {...field}

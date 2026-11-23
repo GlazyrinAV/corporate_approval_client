@@ -9,10 +9,7 @@ import {
 } from 'react-hook-form';
 import styles from './MeetingEditForm.module.css';
 import { CommonButton } from '../../shared/ui/common-button/CommonButton';
-import {
-  findMeetingTypeValue,
-  MEETING_TYPE
-} from '../../shared/utils/meetingTypes';
+import { MEETING_TYPE } from '../../shared/utils/meetingTypes';
 import { RadioSelector } from '../../shared/ui/radio-selector/RadioSelector';
 import { DatePickerBasic } from '../../shared/ui/date-picker/DatePickerBasic';
 import { FormInput } from '../../shared/ui/input/FormInput';
@@ -253,7 +250,7 @@ export const MeetingEditForm = ({
         <Controller
           name='meetingType'
           control={control}
-          defaultValue={findMeetingTypeValue(meetingType)}
+          defaultValue={meetingType}
           render={({ field, fieldState: { error } }) => (
             <RadioSelector
               {...field}
