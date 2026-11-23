@@ -10,7 +10,7 @@ import {
   updateParticipantInPotentialList
 } from '../../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
 import { Pageable } from '../../../shared/ui/pageable/Pageable';
-import { findParticipantTypeLabel } from '../../../shared/utils/participantTypes';
+
 import {
   addToChosenList,
   fetchMeetingParticipants,
@@ -143,10 +143,7 @@ export const MeetingParticipantEditForm = ({
           ...value,
           meetingId: meetingId ? meetingId : null,
           participant: {
-            ...value.participant,
-            participantType: findParticipantTypeLabel(
-              value.participant.participantType
-            )
+            ...value.participant
           }
         })
       );

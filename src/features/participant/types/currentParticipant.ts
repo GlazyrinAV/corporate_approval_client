@@ -1,4 +1,5 @@
 import type { TPaginated } from '../../../shared/utils/commonTypes';
+import type { ParticipantTypeValue } from '../../../shared/utils/participantTypes';
 
 export type TParticipant = {
   id: number;
@@ -10,7 +11,7 @@ export type TParticipant = {
   nominalShare?: string;
   share?: string;
   companyId: string;
-  participantType: string;
+  participantType: ParticipantTypeValue;
   isActive: boolean;
 };
 

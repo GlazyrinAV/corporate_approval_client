@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { PARTICIPANT_TYPE } from '../../../shared/utils/participantTypes';
+import {
+  PARTICIPANT_TYPE,
+  type ParticipantTypeValue
+} from '../../../shared/utils/participantTypes';
 
 export const participantSchema = z.object({
   id: z.number().optional(),
@@ -34,6 +37,14 @@ export const participantSchema = z.object({
     )
     .transform((val) => String(val)),
   companyId: z.string('Необходимо выбрать компанию'),
-  participantType: z.enum(PARTICIPANT_TYPE, 'Вид участника должен быть выбран'),
+  participantType: z
+    .enum(
+      [PARTICIPANT_TYPE['OWNER'], PARTICIPANT_TYPE['MEMBER_OF_BOARD']] as [
+        ParticipantTypeValue,
+        ParticipantTypeValue
+      ],
+      'Вид участника должен быть выбран'
+    )
+    .optional(),
   isActive: z.boolean('необходимо отметить актуальность участника')
 });

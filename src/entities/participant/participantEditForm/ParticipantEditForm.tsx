@@ -13,11 +13,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { TParticipant } from '../../../features/participant/types/currentParticipant';
 import { participantSchema } from '../../../features/participant/schema/participantSchema';
 import { DatePickerBasic } from '../../../shared/ui/date-picker/DatePickerBasic';
-import {
-  findType,
-  PARTICIPANT_TYPE
-} from '../../../shared/utils/participantTypes';
-import type { TNewParticipant } from '../../../features/participant/types/newParticipant';
+import { PARTICIPANT_TYPE } from '../../../shared/utils/participantTypes';
+import type { z } from 'zod';
+
+type ParticipantFormValues = z.infer<typeof participantSchema>;
 
 type ParticipantEditFormProps = {
   currentParticipant?: TParticipant;
@@ -30,20 +29,18 @@ export const EditParticipantForm = ({
   onSubmit,
   companyId
 }: ParticipantEditFormProps) => {
-  const { handleSubmit, control, register } = useForm<
-    TParticipant | TNewParticipant
-  >({
+  const { handleSubmit, control, register } = useForm<ParticipantFormValues>({
     resolver: zodResolver(participantSchema)
   });
 
-  const submit: SubmitHandler<TParticipant> = (data) => {
+  const submit: SubmitHandler<ParticipantFormValues> = (data) => {
     onSubmit({
       ...data,
       id: currentParticipant?.id || null
-    });
+    } as TParticipant);
   };
 
-  const onInvalid: SubmitErrorHandler<TParticipant> = (errors) => {
+  const onInvalid: SubmitErrorHandler<ParticipantFormValues> = (errors) => {
     console.error('Validation errors:', errors);
   };
 
@@ -160,11 +157,7 @@ export const EditParticipantForm = ({
       <Controller
         name='participantType'
         control={control}
-        defaultValue={
-          currentParticipant
-            ? findType(currentParticipant.participantType)
-            : null
-        }
+        defaultValue={currentParticipant?.participantType}
         render={({ field, fieldState: { error } }) => (
           <RadioSelector
             {...field}

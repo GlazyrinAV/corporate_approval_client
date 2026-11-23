@@ -1,5 +1,5 @@
 import { CommonCard } from '../../../shared/ui/common-card/CommonCard';
-import { findType } from '../../../shared/utils/participantTypes';
+import { PARTICIPANT_TYPE } from '../../../shared/utils/participantTypes';
 import type { TParticipant } from '../types/currentParticipant';
 
 type ParticipantInfoProps = {
@@ -40,8 +40,8 @@ export const ParticipantInfo = ({ participant }: ParticipantInfoProps) => {
             fieldValue: String(participant.share)
           },
           {
-            fieldLabel: 'Тип учатника',
-            fieldValue: findType(participant.participantType)
+            fieldLabel: 'Тип участника',
+            fieldValue: PARTICIPANT_TYPE[participant.participantType]
           },
           {
             fieldLabel: 'Активен',
