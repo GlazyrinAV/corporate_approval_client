@@ -1,6 +1,27 @@
 const BASE_URL = 'http://localhost:8080/approval';
 
-export const checkResponse = async <T>(response: Response): Promise<T> => {
+const COMMON_HEADERS: Record<string, string> = {
+  'Content-Type': 'application/json'
+};
+
+const buildQuery = (
+  base: string,
+  params: Record<string, string | number>
+): string => {
+  const url = new URL(base);
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, String(value));
+  }
+  return url.toString();
+};
+
+const buildOptions = (method: string, body?: object): RequestInit => ({
+  method,
+  headers: COMMON_HEADERS,
+  ...(body !== undefined && { body: JSON.stringify(body) })
+});
+
+const checkResponse = async <T>(response: Response): Promise<T> => {
   if (response.ok) return response.json();
 
   try {
@@ -11,4 +32,4 @@ export const checkResponse = async <T>(response: Response): Promise<T> => {
   }
 };
 
-export { BASE_URL };
+export { BASE_URL, buildQuery, buildOptions, checkResponse };

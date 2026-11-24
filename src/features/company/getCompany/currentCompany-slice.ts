@@ -79,7 +79,7 @@ export const currentCompanySlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCompanyById.rejected, (state, action) => {
-        state.error = action.error.message as string;
+        state.error = action.error.message;
         state.isLoading = false;
       })
       .addCase(saveCompany.fulfilled, (state, action) => {
@@ -88,7 +88,7 @@ export const currentCompanySlice = createSlice({
         state.isLoading = false;
       })
       .addCase(saveCompany.rejected, (state, action) => {
-        state.error = action.error.message as string;
+        state.error = action.error.message;
         state.isLoading = false;
       })
       .addCase(saveCompany.pending, (state) => {
@@ -101,7 +101,7 @@ export const currentCompanySlice = createSlice({
         state.error = null;
       })
       .addCase(updateCompany.rejected, (state, action) => {
-        state.error = action.error.message as string;
+        state.error = action.error.message;
         state.isLoading = false;
       })
       .addCase(updateCompany.pending, (state) => {
@@ -114,12 +114,8 @@ export const currentCompanySlice = createSlice({
         state.error = null;
       })
       .addCase(removeCompany.rejected, (state, action) => {
-        state.error = action.error.message as string;
+        state.error = action.error.message;
         state.isLoading = false;
-      })
-      .addCase(removeCompany.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
       });
   }
 });

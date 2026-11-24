@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { filterCompaniesApi, getCompaniesApi } from '../api/getCompanyApi';
 import type { TCompanyPageable } from '../types/currentCompany';
 
@@ -15,17 +15,15 @@ type TCompaniesState = {
 
 export const fetchCompanies = createAsyncThunk(
   'companies/fetchCompanies',
-  getCompaniesApi
+  async (page?: number) => getCompaniesApi(page)
 );
 
 export const filterCompanies = createAsyncThunk(
   'companies/filterCompanies',
-  async ({ query, page }: TCompanyFilter) => {
-    return await filterCompaniesApi(query, page);
-  }
+  async ({ query, page }: TCompanyFilter) => filterCompaniesApi(query, page)
 );
 
-const companiesInintialState: TCompaniesState = {
+const initialState: TCompaniesState = {
   companies: null,
   isLoading: false,
   error: null
@@ -33,50 +31,39 @@ const companiesInintialState: TCompaniesState = {
 
 export const companiesSlice = createSlice({
   name: 'companies',
-  initialState: companiesInintialState,
+  initialState,
   reducers: {},
   selectors: {
-    getCompanies(state) {
-      return state.companies;
-    },
-    getIsLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getCompanies: (state) => state.companies,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCompanies.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchCompanies.fulfilled, (state, action) => {
-        state.companies = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchCompanies.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(filterCompanies.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(filterCompanies.fulfilled, (state, action) => {
-        state.companies = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(filterCompanies.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      });
+      .addMatcher(
+        isAnyOf(fetchCompanies.pending, filterCompanies.pending),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(fetchCompanies.fulfilled, filterCompanies.fulfilled),
+        (state, action) => {
+          state.companies = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(fetchCompanies.rejected, filterCompanies.rejected),
+        (state, action) => {
+          state.error = action.error.message;
+          state.isLoading = false;
+        }
+      );
   }
 });
 
 export default companiesSlice;
-export const { getCompanies, getIsLoading, getError } =
-  companiesSlice.selectors;
+export const { getCompanies, getIsLoading, getError } = companiesSlice.selectors;

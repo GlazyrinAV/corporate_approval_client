@@ -1,45 +1,29 @@
-import { checkResponse } from '../../../shared/utils/commonApi';
-import { BASE_URL } from '../../../shared/utils/commonApi';
+import {
+  BASE_URL,
+  buildOptions,
+  buildQuery,
+  checkResponse
+} from '../../../shared/utils/commonApi';
 import type { TCompany } from '../types/currentCompany';
 import type { TNewCompany } from '../types/newCompany';
 
-export const saveCompanyApi = (company: TNewCompany) =>
-  fetch(`${BASE_URL}`, {
-    method: 'POST',
-    body: JSON.stringify(company),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((res) => checkResponse<TCompany>(res))
-    .then((data) => {
-      if (data) return data;
-      return Promise.reject(data);
-    });
+export const saveCompanyApi = (company: TNewCompany, signal?: AbortSignal) =>
+  fetch(buildQuery(`${BASE_URL}/company`, {}), {
+    ...buildOptions('POST', company),
+    signal
+  }).then((res) => checkResponse<TCompany>(res));
 
-export const updateCompanyApi = (company: TCompany) =>
-  fetch(`${BASE_URL}/${company.id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(company),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((res) => checkResponse<TCompany>(res))
-    .then((data) => {
-      if (data) return data;
-      return Promise.reject(data);
-    });
+export const updateCompanyApi = (company: TCompany, signal?: AbortSignal) =>
+  fetch(`${BASE_URL}/company/${company.id}`, {
+    ...buildOptions('PATCH', company),
+    signal
+  }).then((res) => checkResponse<TCompany>(res));
 
-export const deleteCompanyApi = (id: number) =>
-  fetch(`${BASE_URL}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json'
-    }
+export const deleteCompanyApi = (id: number, signal?: AbortSignal) =>
+  fetch(`${BASE_URL}/company/${id}`, {
+    ...buildOptions('DELETE'),
+    signal
   }).then((res) => {
-    if (res.status === 204) {
-      return;
-    }
-    return Promise.reject();
+    if (res.status === 204) return;
+    return Promise.reject(new Error('Delete failed'));
   });
