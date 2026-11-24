@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { getCompanyByIdApi } from '../api/getCompanyApi';
 import type { TCompany } from '../types/currentCompany';
 import type { TNewCompany } from '../types/newCompany';
@@ -46,7 +46,7 @@ export const removeCompany = createAsyncThunk(
   }
 );
 
-const currentCompanyInitialState: TCurrentCompanyState = {
+const initialState: TCurrentCompanyState = {
   company: null,
   isLoading: false,
   error: null
@@ -54,71 +54,59 @@ const currentCompanyInitialState: TCurrentCompanyState = {
 
 export const currentCompanySlice = createSlice({
   name: 'currentCompany',
-  initialState: currentCompanyInitialState,
+  initialState,
   reducers: {},
   selectors: {
-    getCurrentCompany(state) {
-      return state.company;
-    },
-    getIsLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getCurrentCompany: (state) => state.company,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCompanyById.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchCompanyById.fulfilled, (state, action) => {
-        state.company = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchCompanyById.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.isLoading = false;
-      })
-      .addCase(saveCompany.fulfilled, (state, action) => {
-        state.company = action.payload;
-        state.error = null;
-        state.isLoading = false;
-      })
-      .addCase(saveCompany.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.isLoading = false;
-      })
-      .addCase(saveCompany.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(updateCompany.fulfilled, (state, action) => {
-        state.company = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(updateCompany.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.isLoading = false;
-      })
-      .addCase(updateCompany.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(removeCompany.fulfilled, (state) => {
         state.company = null;
         state.isLoading = false;
         state.error = null;
       })
-      .addCase(removeCompany.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.isLoading = false;
-      });
+      .addMatcher(
+        isAnyOf(
+          fetchCompanyById.pending,
+          saveCompany.pending,
+          updateCompany.pending,
+          removeCompany.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchCompanyById.rejected,
+          saveCompany.rejected,
+          updateCompany.rejected,
+          removeCompany.rejected
+        ),
+        (state, action) => {
+          state.error = action.error.message;
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchCompanyById.fulfilled,
+          saveCompany.fulfilled,
+          updateCompany.fulfilled
+        ),
+        (state, action) => {
+          state.company = action.payload;
+          state.error = null;
+          state.isLoading = false;
+        }
+      );
   }
 });
 
 export default currentCompanySlice;
-export const { getCurrentCompany } = currentCompanySlice.selectors;
+export const { getCurrentCompany, getIsLoading, getError } =
+  currentCompanySlice.selectors;
