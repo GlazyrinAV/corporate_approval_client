@@ -4,7 +4,7 @@ import {
 } from '../../../shared/utils/commonApi';
 import type { TCompany, TCompanyPageable } from '../types/currentCompany';
 
-const buildUrl = (
+export const buildCompanyUrl = (
   base: string,
   params: Record<string, string | number>
 ): string => {
@@ -17,7 +17,7 @@ const buildUrl = (
 
 export const getCompaniesApi = (page: number | null, signal?: AbortSignal) =>
   fetch(
-    buildUrl(`${BASE_URL}/company`, page !== null ? { page: page - 1 } : {}),
+    buildCompanyUrl(`${BASE_URL}/company`, page !== null ? { page: page - 1 } : {}),
     { signal }
   ).then((res) => checkResponse<TCompanyPageable>(res));
 
@@ -32,7 +32,7 @@ export const filterCompaniesApi = (
   signal?: AbortSignal
 ) =>
   fetch(
-    buildUrl(`${BASE_URL}/company/search`, {
+    buildCompanyUrl(`${BASE_URL}/company/search`, {
       criteria: query,
       page: page - 1
     }),
