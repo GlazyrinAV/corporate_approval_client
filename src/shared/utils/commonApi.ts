@@ -4,7 +4,7 @@ const COMMON_HEADERS: Record<string, string> = {
   'Content-Type': 'application/json'
 };
 
-const buildQuery = (
+const buildUrl = (
   base: string,
   params: Record<string, string | number>
 ): string => {
@@ -32,4 +32,4 @@ const checkResponse = async <T>(response: Response): Promise<T> => {
   }
 };
 
-export { BASE_URL, buildQuery, buildOptions, checkResponse };
+export { BASE_URL, buildUrl, buildOptions, checkResponse };

@@ -1,13 +1,13 @@
 import {
   BASE_URL,
-  buildQuery,
+  buildUrl,
   checkResponse
 } from '../../../shared/utils/commonApi';
 import type { TCompany, TCompanyPageable } from '../types/currentCompany';
 
 export const getCompaniesApi = (page: number | null, signal?: AbortSignal) =>
   fetch(
-    buildQuery(`${BASE_URL}/company`, page !== null ? { page: page - 1 } : {}),
+    buildUrl(`${BASE_URL}/company`, page !== null ? { page: page - 1 } : {}),
     { signal }
   ).then((res) => checkResponse<TCompanyPageable>(res));
 
@@ -22,7 +22,7 @@ export const filterCompaniesApi = (
   signal?: AbortSignal
 ) =>
   fetch(
-    buildQuery(`${BASE_URL}/company/search`, {
+    buildUrl(`${BASE_URL}/company/search`, {
       criteria: query,
       page: page - 1
     }),

@@ -1,14 +1,14 @@
 import {
   BASE_URL,
   buildOptions,
-  buildQuery,
+  buildUrl,
   checkResponse
 } from '../../../shared/utils/commonApi';
 import type { TCompany } from '../types/currentCompany';
 import type { TNewCompany } from '../types/newCompany';
 
 export const saveCompanyApi = (company: TNewCompany, signal?: AbortSignal) =>
-  fetch(buildQuery(`${BASE_URL}/company`, {}), {
+  fetch(buildUrl(`${BASE_URL}/company`, {}), {
     ...buildOptions('POST', company),
     signal
   }).then((res) => checkResponse<TCompany>(res));
