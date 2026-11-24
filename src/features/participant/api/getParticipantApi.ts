@@ -1,45 +1,47 @@
-import { checkResponse } from '../../../shared/utils/commonApi';
-import { BASE_URL } from '../../../shared/utils/commonApi';
+import { BASE_URL, checkResponse } from '../../../shared/utils/commonApi';
 import type {
   TParticipant,
   TParticipantPageable
 } from '../types/currentParticipant';
 
+export const buildParticipantUrl = (companyId: number, page?: number) => {
+  const base = `${BASE_URL}/${companyId}/participant`;
+  console.log(page !== undefined ? `${base}?page=${page - 1}` : base);
+  return page !== undefined ? `${base}?page=${page - 1}` : base;
+};
+
+export const buildParticipantByIdUrl = (
+  companyId: number,
+  participantId: number
+) => `${BASE_URL}/${companyId}/participant/${participantId}`;
+
+const buildFilterParticipantsUrl = (
+  companyId: number,
+  query: string,
+  page?: number
+) => {
+  const base = `${BASE_URL}/${companyId}/participant/search?criteria=${query}`;
+  return page !== undefined ? `${base}&page=${page - 1}` : base;
+};
+
 export const getParticipantsApi = (companyId: number, page: number | null) =>
-  fetch(
-    page
-      ? `${BASE_URL}/${companyId}/participant?page=${page - 1}`
-      : `${BASE_URL}/${companyId}/participant`
-  )
-    .then((res) => checkResponse<TParticipantPageable>(res))
-    .then((data) => {
-      if (data) return data;
-      return Promise.reject(data);
-    });
+  fetch(buildParticipantUrl(companyId, page ?? undefined)).then((res) =>
+    checkResponse<TParticipantPageable>(res)
+  );
 
 export const getParticipantByIdApi = (
   companyId: number,
   participantId: number
 ) =>
-  fetch(`${BASE_URL}/${companyId}/participant/${participantId}`)
-    .then((res) => checkResponse<TParticipant>(res))
-    .then((data) => {
-      if (data) return data;
-      return Promise.reject(data);
-    });
+  fetch(buildParticipantByIdUrl(companyId, participantId)).then((res) =>
+    checkResponse<TParticipant>(res)
+  );
 
 export const filterParticipantsApi = (
   companyId: number,
   query: string,
   page: number
 ) =>
-  fetch(
-    page
-      ? `${BASE_URL}/${companyId}/participant/search?criteria=${query}&page=${page - 1}`
-      : `${BASE_URL}/${companyId}/participant/search?criteria=${query}`
-  )
-    .then((res) => checkResponse<TParticipantPageable>(res))
-    .then((data) => {
-      if (data) return data;
-      return Promise.reject(data);
-    });
+  fetch(buildFilterParticipantsUrl(companyId, query, page)).then((res) =>
+    checkResponse<TParticipantPageable>(res)
+  );

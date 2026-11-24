@@ -22,7 +22,7 @@ type ParticipantsInfoProps = {
 
 export const PartcipantsInfo = ({
   companyId,
-  limit = 0,
+  limit,
   onClick
 }: ParticipantsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
