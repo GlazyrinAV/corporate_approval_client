@@ -4,17 +4,6 @@ const COMMON_HEADERS: Record<string, string> = {
   'Content-Type': 'application/json'
 };
 
-const buildUrl = (
-  base: string,
-  params: Record<string, string | number>
-): string => {
-  const url = new URL(base);
-  for (const [key, value] of Object.entries(params)) {
-    url.searchParams.set(key, String(value));
-  }
-  return url.toString();
-};
-
 const buildOptions = (method: string, body?: object): RequestInit => ({
   method,
   headers: COMMON_HEADERS,
@@ -32,4 +21,4 @@ const checkResponse = async <T>(response: Response): Promise<T> => {
   }
 };
 
-export { BASE_URL, buildUrl, buildOptions, checkResponse };
+export { BASE_URL, buildOptions, checkResponse };

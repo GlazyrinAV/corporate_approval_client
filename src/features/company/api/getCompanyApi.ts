@@ -1,9 +1,19 @@
 import {
   BASE_URL,
-  buildUrl,
   checkResponse
 } from '../../../shared/utils/commonApi';
 import type { TCompany, TCompanyPageable } from '../types/currentCompany';
+
+const buildUrl = (
+  base: string,
+  params: Record<string, string | number>
+): string => {
+  const url = new URL(base);
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, String(value));
+  }
+  return url.toString();
+};
 
 export const getCompaniesApi = (page: number | null, signal?: AbortSignal) =>
   fetch(
