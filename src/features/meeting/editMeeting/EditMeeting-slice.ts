@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createSlice,
+  isAnyOf,
   type PayloadAction
 } from '@reduxjs/toolkit';
 import type { TNewMeeting } from '../types/newMeeting';
@@ -11,6 +12,8 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
+
+const TIME_FORMAT = 'HH:mm:ss.SSS';
 
 type editMeetingState = {
   form: TNewMeeting | TMeeting;
@@ -33,22 +36,28 @@ export type TFieldType<T> = {
   value: string | number | Date;
 };
 
+const createDefaultForm = (): TNewMeeting => ({
+  companyId: '',
+  meetingType: '',
+  dateOfMeeting: null,
+  dateOfProtocol: null,
+  startOfRegistration: null,
+  endOfRegistration: null,
+  startOfMeeting: null,
+  endOfMeeting: null,
+  town: '',
+  address: '',
+  secretaryId: '',
+  chairmanId: ''
+});
+
+const parseTimeField = (value: string | Date | null): Date | null => {
+  if (!value) return null;
+  return dayjs(value, TIME_FORMAT).toDate();
+};
+
 export const editMeetingInitialState: editMeetingState = {
-  form: {
-    id: null,
-    companyId: '',
-    meetingType: '',
-    dateOfMeeting: null,
-    dateOfProtocol: null,
-    startOfRegistration: null,
-    endOfRegistration: null,
-    startOfMeeting: null,
-    endOfMeeting: null,
-    town: '',
-    address: '',
-    secretaryId: '',
-    chairmanId: ''
-  },
+  form: createDefaultForm(),
   error: null,
   isLoading: false
 };
@@ -57,7 +66,7 @@ export const saveMeeting = createAsyncThunk(
   'meeting/saveMeeting',
   async ({ companyId, meeting }: TNewMeetingApi, { dispatch }) => {
     const newMeeting = await saveMeetingApi(companyId, meeting);
-    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
+    await dispatch(fetchMeetings({ companyId, page: 1 }));
     return newMeeting;
   }
 );
@@ -66,7 +75,7 @@ export const updateMeeting = createAsyncThunk(
   'meeting/updateMeeting',
   async ({ companyId, meeting }: TUpdateMeetingApi, { dispatch }) => {
     const updatedMeeting = await updateMeetingApi(companyId, meeting);
-    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
+    await dispatch(fetchMeetings({ companyId, page: 1 }));
     return updatedMeeting;
   }
 );
@@ -78,29 +87,17 @@ export const editMeetingSlice = createSlice({
     setFormValue: (state, action: PayloadAction<TFieldType<TNewMeeting>>) => {
       const { field, value } = action.payload;
       if (field in state.form) {
-        (state.form[field] as typeof value) = value;
+        state.form[field] = value as never;
       }
     },
     loadDefaultValues: (state, action: PayloadAction<TMeeting>) => {
-      const currentMeeting = action.payload;
+      const { payload } = action;
       state.form = {
-        ...currentMeeting,
-        startOfMeeting: dayjs(
-          currentMeeting?.startOfMeeting,
-          'HH:mm:ss.SSS'
-        ).toDate(),
-        endOfMeeting: dayjs(
-          currentMeeting?.endOfMeeting,
-          'HH:mm:ss.SSS'
-        ).toDate(),
-        startOfRegistration: dayjs(
-          currentMeeting?.startOfRegistration,
-          'HH:mm:ss.SSS'
-        ).toDate(),
-        endOfRegistration: dayjs(
-          currentMeeting?.endOfRegistration,
-          'HH:mm:ss.SSS'
-        ).toDate()
+        ...payload,
+        startOfMeeting: parseTimeField(payload.startOfMeeting),
+        endOfMeeting: parseTimeField(payload.endOfMeeting),
+        startOfRegistration: parseTimeField(payload.startOfRegistration),
+        endOfRegistration: parseTimeField(payload.endOfRegistration)
       };
     }
   },
@@ -111,30 +108,28 @@ export const editMeetingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(saveMeeting.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(saveMeeting.fulfilled, (state) => {
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(saveMeeting.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(updateMeeting.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(updateMeeting.fulfilled, (state) => {
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(updateMeeting.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      });
+      .addMatcher(
+        isAnyOf(saveMeeting.pending, updateMeeting.pending),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(saveMeeting.fulfilled, updateMeeting.fulfilled),
+        (state) => {
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(saveMeeting.rejected, updateMeeting.rejected),
+        (state, action) => {
+          state.error =
+            action.error.message ?? 'Error while saving new meeting';
+          state.isLoading = false;
+        }
+      );
   }
 });
 

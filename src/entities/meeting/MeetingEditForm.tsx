@@ -82,7 +82,6 @@ export const MeetingEditForm = ({
           (participant) => participant.participant.id === Number(secretaryId)
         );
       }
-      console.log(secretary)
       if (!secretary) {
         secretary = potentialParticipants?.content?.find(
           (participant) => participant.participant.id === Number(secretaryId)

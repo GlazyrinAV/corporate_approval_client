@@ -34,7 +34,7 @@ export const MeetingParticipantsInfo = ({
   const isLoading = useSelector(getIsCurrentLoading);
   const meetingParticipantsPageable = useSelector(getMeetingParticipants);
   const [page, setPage] = useState(
-    meetingParticipantsPageable ? meetingParticipantsPageable.number : 1
+    meetingParticipantsPageable ? meetingParticipantsPageable.number + 1 : 1
   );
   const meeting = useSelector(getCurrentMeeting);
 

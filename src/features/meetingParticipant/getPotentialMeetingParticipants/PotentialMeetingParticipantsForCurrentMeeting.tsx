@@ -27,7 +27,7 @@ export const PotentialMeetingParticipantsForCurrentMeetingInfo = ({
     getPotentionalMeetingParticpants
   );
   const [page, setPage] = useState(
-    meetingParticipantsPageable ? meetingParticipantsPageable.number : 1
+    meetingParticipantsPageable ? meetingParticipantsPageable.number + 1 : 1
   );
 
   useEffect(() => {

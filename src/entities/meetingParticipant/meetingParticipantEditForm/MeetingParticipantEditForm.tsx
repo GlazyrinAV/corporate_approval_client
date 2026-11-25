@@ -47,10 +47,10 @@ export const MeetingParticipantEditForm = ({
   const chosenMeetingParticipants = useSelector(getChosenMeetingParticipants);
 
   const [pageCurrent, setPageCurrent] = useState(
-    meetingParticipants?.number ?? 1
+    meetingParticipants ? meetingParticipants.number + 1 : 1
   );
   const [pagePotential, setPagePotential] = useState(
-    potentialMeetingParticipants?.number ?? 1
+    potentialMeetingParticipants ? potentialMeetingParticipants.number + 1 : 1
   );
 
   // Получаем текущих участников

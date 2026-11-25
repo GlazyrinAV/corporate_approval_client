@@ -18,7 +18,7 @@ export const CompaniesInfo = () => {
   const companiesPageable = useSelector(getCompanies);
   const isLoading = useSelector(getIsLoading);
   const [page, setPage] = useState(
-    companiesPageable ? companiesPageable.number : 1
+    companiesPageable ? companiesPageable.number + 1 : 1
   );
   const [searchQuery, setSearchQuery] = useState('');
 

@@ -29,7 +29,7 @@ export const PartcipantsInfo = ({
   const participantsPageable = useSelector(getParticipants);
   const isLoading = useSelector(getIsLoading);
   const [page, setPage] = useState(
-    participantsPageable ? participantsPageable.number : 1
+    participantsPageable ? participantsPageable.number + 1 : 1
   );
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -43,7 +43,7 @@ export const PartcipantsInfo = ({
         })
       );
     } else {
-      dispatch(fetchParticipants({ companyId: companyId, page: page }));
+      dispatch(fetchParticipants({ companyId: companyId, page }));
     }
   }, [dispatch, companyId, searchQuery, page]);
 

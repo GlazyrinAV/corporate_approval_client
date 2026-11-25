@@ -6,7 +6,6 @@ import type {
 
 export const buildParticipantUrl = (companyId: number, page?: number) => {
   const base = `${BASE_URL}/${companyId}/participant`;
-  console.log(page !== undefined ? `${base}?page=${page - 1}` : base);
   return page !== undefined ? `${base}?page=${page - 1}` : base;
 };
 
