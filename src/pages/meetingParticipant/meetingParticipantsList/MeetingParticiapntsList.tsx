@@ -24,7 +24,9 @@ export const MeetingParticipantsList = () => {
     <section className={styles.wraper}>
       <div className={styles.actions}>
         <CommonButton
-          onClick={() => navigate(routeBuilders.currentCompany({ companyId }))}
+          onClick={() =>
+            navigate(routeBuilders.currentMeeting({ companyId, meetingId }))
+          }
         >
           Back
         </CommonButton>

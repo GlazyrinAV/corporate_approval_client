@@ -19,16 +19,22 @@ export const EditMeeting = ({ currentMeeting, onSubmit }: EditMeetingProps) => {
     <section className={styles.container}>
       <div className={styles.actions}>
         <CommonButton
-          onClick={() => navigate(routeBuilders.meetings({ companyId }))}
+          onClick={() =>
+            currentMeeting
+              ? navigate(
+                  routeBuilders.currentMeeting({
+                    companyId,
+                    meetingId: currentMeeting.id
+                  })
+                )
+              : navigate(routeBuilders.meetings({ companyId }))
+          }
         >
           Back
         </CommonButton>
       </div>
       <div className={styles.content}>
-        <MeetingEditForm
-          currentMeeting={currentMeeting}
-          onSubmit={onSubmit}
-        />
+        <MeetingEditForm currentMeeting={currentMeeting} onSubmit={onSubmit} />
       </div>
     </section>
   );

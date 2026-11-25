@@ -15,7 +15,7 @@ import {
   addToChosenList,
   fetchMeetingParticipants,
   getChosenMeetingParticipants,
-  getIsCurrentLoading,
+  getIsLoading,
   getMeetingParticipants,
   removeFromChosenList,
   updateParticipantInChosenList
@@ -39,7 +39,7 @@ export const MeetingParticipantEditForm = ({
   const companyId = Number(params?.companyId);
   const meetingId = Number(params?.meetingId);
   const isPotentialLoading = useSelector(getIsPotentialLoading);
-  const isCurrentLoading = useSelector(getIsCurrentLoading);
+  const isCurrentLoading = useSelector(getIsLoading);
   const meetingParticipants = useSelector(getMeetingParticipants);
   const potentialMeetingParticipants = useSelector(
     getPotentionalMeetingParticpants

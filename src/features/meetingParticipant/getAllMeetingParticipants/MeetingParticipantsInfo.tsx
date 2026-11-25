@@ -8,7 +8,7 @@ import { Pageable } from '../../../shared/ui/pageable/Pageable';
 import styles from './MeetingParticipantsInfo.module.css';
 import {
   fetchMeetingParticipants,
-  getIsCurrentLoading,
+  getIsLoading,
   getMeetingParticipants
 } from './meetingParticipants-slice';
 import {
@@ -31,7 +31,7 @@ export const MeetingParticipantsInfo = ({
   onClick
 }: MeetingParticipantsInfoProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const isLoading = useSelector(getIsCurrentLoading);
+  const isLoading = useSelector(getIsLoading);
   const meetingParticipantsPageable = useSelector(getMeetingParticipants);
   const [page, setPage] = useState(
     meetingParticipantsPageable ? meetingParticipantsPageable.number + 1 : 1

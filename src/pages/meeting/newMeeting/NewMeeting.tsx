@@ -2,7 +2,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import type { AppDispatch } from '../../../app/store';
 import type { TNewMeeting } from '../../../features/meeting/types/newMeeting';
-import { MeetingEditForm } from '../../../entities/meeting/MeetingEditForm';
 import { saveMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
 import { useEffect } from 'react';
 import {
@@ -11,6 +10,7 @@ import {
 } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
 import { clearPotentialList } from '../../../features/meetingParticipant/getPotentialMeetingParticipants/potentialMeetingParticipants-slice';
 import { routeBuilders } from '../../../app/routes';
+import { EditMeeting } from '../../../features/meeting/editMeeting/EditMeeting';
 
 export const NewMeeting = () => {
   const params = useParams<{ companyId: string }>();
@@ -29,7 +29,5 @@ export const NewMeeting = () => {
     navigate(routeBuilders.meetings({ companyId }));
   };
 
-  return (
-    <MeetingEditForm onSubmit={handleSubmit} />
-  );
+  return <EditMeeting onSubmit={handleSubmit} />;
 };

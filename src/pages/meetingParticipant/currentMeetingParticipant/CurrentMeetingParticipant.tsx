@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import styles from './CurrentMeetingParticipant.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
-import { getIsCurrentLoading } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
+import { getIsLoading } from '../../../features/meetingParticipant/getAllMeetingParticipants/meetingParticipants-slice';
 import { MeetingParticipantInfo } from '../../../features/meetingParticipant/getMeetingParticipant/MeetingParticipantInfo';
 import { routeBuilders } from '../../../app/routes';
 
@@ -25,7 +25,7 @@ export const CurrentMeetingParticipant = () => {
   const meetingId = Number(params?.meetingId);
   const meetingParticipantId = Number(params?.meetingParticipantId);
   const meetingParticipant = useSelector(getCurrentMeetingParticipant);
-  const isLoading = useSelector(getIsCurrentLoading);
+  const isLoading = useSelector(getIsLoading);
 
   useEffect(() => {
     dispatch(

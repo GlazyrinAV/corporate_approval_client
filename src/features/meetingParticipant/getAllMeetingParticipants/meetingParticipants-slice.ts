@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createSlice,
+  isAnyOf,
   type PayloadAction
 } from '@reduxjs/toolkit';
 import type {
@@ -30,134 +31,107 @@ type TMeetingParticipantsState = {
   error: string | null;
 };
 
-export const fetchMeetingParticipants = createAsyncThunk(
-  'meetingParticipants/fetchMeetingParticipants',
-  async ({ companyId, meetingId, page }: TMeetingParticipantsApi) => {
-    return await getAllMeetingParticipantsApi(companyId, meetingId, page);
-  }
-);
-
-export const saveMeetingParticipants = createAsyncThunk(
-  'meetingParticipant/saveMeetingParticipant',
-  async (
-    { companyId, meetingId, participants }: TNewMeetingParticipantApi,
-    { dispatch }
-  ) => {
-    const newMeetingParticipants = await saveMeetingParticipantsApi(
-      companyId,
-      meetingId,
-      participants
-    );
-    dispatch(
-      fetchMeetingParticipants({
-        companyId: companyId,
-        meetingId: meetingId,
-        page: 1
-      })
-    );
-    return newMeetingParticipants;
-  }
-);
-
-const meetingParticipantsInintialState: TMeetingParticipantsState = {
+const initialState: TMeetingParticipantsState = {
   meetingParticipants: null,
   choosenMeetingParticipants: [],
   isLoading: false,
   error: null
 };
 
+export const fetchMeetingParticipants = createAsyncThunk<
+  TMeetingParticipantPageable,
+  TMeetingParticipantsApi
+>('meetingParticipants/fetchMeetingParticipants', async ({ companyId, meetingId, page }) => {
+  return getAllMeetingParticipantsApi(companyId, meetingId, page);
+});
+
+export const saveMeetingParticipants = createAsyncThunk<
+  void,
+  TNewMeetingParticipantApi
+>('meetingParticipant/saveMeetingParticipant', async ({ companyId, meetingId, participants }, { dispatch }) => {
+  await saveMeetingParticipantsApi(companyId, meetingId, participants);
+  await dispatch(fetchMeetingParticipants({ companyId, meetingId, page: 1 }));
+});
+
 export const meetingParticipantsSlice = createSlice({
   name: 'meetingParticipants',
-  initialState: meetingParticipantsInintialState,
+  initialState,
   reducers: {
-    addToChosenList(state, actions: PayloadAction<TMeetingParticipant>) {
-      state.choosenMeetingParticipants.push(actions.payload);
+    addToChosenList(state, action: PayloadAction<TCurrentMeetingParticipant>) {
+      state.choosenMeetingParticipants.push(action.payload);
     },
     updateParticipantInChosenList(
       state,
       action: PayloadAction<TMeetingParticipant>
     ) {
-      return {
-        ...state,
-        choosenMeetingParticipants: state.choosenMeetingParticipants.map(
-          (item) =>
-            item.participant.id === action.payload.participant.id
-              ? action.payload
-              : item
-        )
-      };
+      const index = state.choosenMeetingParticipants.findIndex(
+        (item) => item.participant.id === action.payload.participant.id
+      );
+      if (index !== -1) {
+        state.choosenMeetingParticipants[index] = action.payload as TCurrentMeetingParticipant;
+      }
     },
     removeFromChosenList(state, action: PayloadAction<number>) {
-      state.choosenMeetingParticipants = [
-        ...state.choosenMeetingParticipants.filter(
-          (item) => item.participant.id != action.payload
-        )
-      ];
+      state.choosenMeetingParticipants = state.choosenMeetingParticipants.filter(
+        (item) => item.participant.id !== action.payload
+      );
     },
     clearChosenList(state) {
       state.choosenMeetingParticipants = [];
     },
     clearMeetingParticipants(state) {
       state.meetingParticipants = null;
-    },
+      state.error = null;
+    }
   },
   selectors: {
-    getMeetingParticipants(state) {
-      return state.meetingParticipants;
-    },
-    getChosenMeetingParticipants(state) {
-      return state.choosenMeetingParticipants;
-    },
-    getIsCurrentLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getMeetingParticipants: (state) => state.meetingParticipants,
+    getChosenMeetingParticipants: (state) => state.choosenMeetingParticipants,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMeetingParticipants.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchMeetingParticipants.fulfilled, (state, action) => {
-        state.meetingParticipants = action.payload;
-        state.choosenMeetingParticipants = action.payload.content;
-        state.error = null;
-        state.isLoading = false;
-      })
-      .addCase(fetchMeetingParticipants.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(saveMeetingParticipants.fulfilled, (state, action) => {
-        state.meetingParticipants = action.payload;
-        state.error = null;
-        state.isLoading = false;
-      })
-      .addCase(saveMeetingParticipants.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(saveMeetingParticipants.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      });
+      .addMatcher(
+        isAnyOf(
+          fetchMeetingParticipants.pending,
+          saveMeetingParticipants.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchMeetingParticipants.rejected,
+          saveMeetingParticipants.rejected
+        ),
+        (state, action) => {
+          state.error = action.error.message ?? 'Error in MeetingParticipants actions';
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) => fetchMeetingParticipants.fulfilled.match(action),
+        (state, action: PayloadAction<TMeetingParticipantPageable>) => {
+          state.meetingParticipants = action.payload;
+          state.choosenMeetingParticipants = action.payload.content;
+          state.error = null;
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) => saveMeetingParticipants.fulfilled.match(action),
+        (state) => {
+          state.error = null;
+          state.isLoading = false;
+        }
+      );
   }
 });
 
+export const { clearMeetingParticipants, clearChosenList, addToChosenList, removeFromChosenList, updateParticipantInChosenList } = meetingParticipantsSlice.actions;
 export default meetingParticipantsSlice;
-export const {
-  getMeetingParticipants,
-  getChosenMeetingParticipants,
-  getIsCurrentLoading,
-  getError
-} = meetingParticipantsSlice.selectors;
-export const {
-  addToChosenList,
-  removeFromChosenList,
-  updateParticipantInChosenList,
-  clearChosenList,
-  clearMeetingParticipants
-} = meetingParticipantsSlice.actions;
+export const { getMeetingParticipants, getChosenMeetingParticipants, getIsLoading, getError } =
+  meetingParticipantsSlice.selectors;
