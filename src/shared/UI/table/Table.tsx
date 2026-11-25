@@ -35,47 +35,27 @@ export const BasicTable = ({
   isHeadersVisible = true,
   emptyDataMessage = 'нет данных'
 }: BasicTableProps) => {
-  function checkSneakPeak(tableData: RowData[]) {
-    if (
-      sneakPeek > 0 &&
-      tableData.length > 0 &&
-      tableData[0].rowData.length > 0
-    ) {
-      const sneakPeakData = tableData[0].rowData.map((key) => ({
-        cellLabel: key.cellLabel,
-        cellValue: '...'
-      }));
-      return [
-        ...tableData.slice(0, sneakPeek),
-        { id: -1, rowData: sneakPeakData }
-      ];
-    }
-    return tableData;
-  }
-
-  const checkedTableData = checkSneakPeak(tableData);
+  const checkedTableData = checkSneakPeak(tableData, sneakPeek);
   const headers = getHeaders(checkedTableData);
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='table'>
-        {isHeadersVisible ? (
+        {isHeadersVisible && headers.length > 0 && (
           <TableHead>
             <TableRow>
-              {headers.length > 0
-                ? headers.map((header, headerIdx) => (
-                    <TableCell
-                      key={`${headerIdx}-cell`}
-                      id={`${headerIdx}-cell`}
-                      align='center'
-                    >
-                      {header}&nbsp;
-                    </TableCell>
-                  ))
-                : null}
+              {headers.map((header, headerIdx) => (
+                <TableCell
+                  key={`${headerIdx}-cell`}
+                  id={`${headerIdx}-cell`}
+                  align='center'
+                >
+                  {header}&nbsp;
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
-        ) : null}
+        )}
         <TableBody>
           {checkedTableData.length > 0 ? (
             checkedTableData.map((row) => (
@@ -85,29 +65,30 @@ export const BasicTable = ({
                   '&:last-child td, &:last-child th': { border: 0 },
                   '&:hover': !disableView
                     ? { background: '#F7E8FF', cursor: 'pointer' }
-                    : null
+                    : undefined
                 }}
               >
                 {headers.map((header, headerIdx) => {
                   const cell = row.rowData.find(
-                    (cell) => cell.cellLabel === header
+                    (c) => c.cellLabel === header
                   );
-                  return createCell(
-                    cell,
-                    row.id,
-                    headerIdx,
-                    handleClick,
-                    emptyDataMessage
+                  return (
+                    <TableCell
+                      key={`${row.id}-table-row-${headerIdx}-cell`}
+                      align={getCellAlign(cell)}
+                      onClick={() => handleClick?.(row.id)}
+                    >
+                      {getCellContent(cell, emptyDataMessage)}
+                    </TableCell>
                   );
                 })}
               </TableRow>
             ))
           ) : (
             <TableRow
-              key={`Empty-table-row`}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell key={`Empty-table-row-cell`} align={'center'}>
+              <TableCell align='center'>
                 Данные отсутствуют
               </TableCell>
             </TableRow>
@@ -118,57 +99,46 @@ export const BasicTable = ({
   );
 };
 
-function getHeaders(rowData: RowData[]): string[] {
-  const headers = [];
+function checkSneakPeak(tableData: RowData[], sneakPeek: number): RowData[] {
+  if (
+    sneakPeek > 0 &&
+    tableData.length > 0 &&
+    tableData[0].rowData.length > 0
+  ) {
+    const sneakPeakData = tableData[0].rowData.map((cell) => ({
+      cellLabel: cell.cellLabel,
+      cellValue: '...' as const
+    }));
+    return [
+      ...tableData.slice(0, sneakPeek),
+      { id: -1, rowData: sneakPeakData }
+    ];
+  }
+  return tableData;
+}
 
-  if (rowData.length > 0) {
-    rowData.forEach((row) => {
-      if (row.rowData.length > headers.length) {
-        row.rowData
-          .slice(headers.length)
-          .forEach((cell) => headers.push(cell.cellLabel));
-      }
-    });
+function getHeaders(rowData: RowData[]): string[] {
+  const headers: string[] = [];
+
+  for (const row of rowData) {
+    for (let i = headers.length; i < row.rowData.length; i++) {
+      headers.push(row.rowData[i].cellLabel);
+    }
   }
 
   return headers;
 }
 
-function createCell(
-  cell: CellData,
-  rowId: number,
-  cellId: number,
-  handleClick: (id: number) => void,
+function getCellAlign(cell: CellData | undefined): 'left' | 'center' | 'right' {
+  if (!cell) return 'center';
+  return typeof cell.cellValue === 'number' ? 'right' : 'center';
+}
+
+function getCellContent(
+  cell: CellData | undefined,
   emptyDataMessage: string
 ): ReactNode {
-  return cell ? (
-    // проверка ячейки на наличие Node
-    React.isValidElement(cell.cellValue) ? (
-      <TableCell
-        key={`${rowId}-table-row-${cellId}-cell`}
-        align='center'
-        onClick={() => (handleClick ? handleClick(rowId) : null)}
-      >
-        {cell.cellValue}
-      </TableCell>
-    ) : (
-      // Отрисовка элемента, если там не Node
-      <TableCell
-        key={`${rowId}-table-row-${cellId}-cell`}
-        align={typeof cell.cellValue === 'number' ? 'right' : 'center'}
-        onClick={() => (handleClick ? handleClick(rowId) : null)}
-      >
-        {cell.cellValue.toString()}
-      </TableCell>
-    )
-  ) : (
-    // Отрисовка элемента, если для этого столбца нет данных
-    <TableCell
-      key={`${rowId}-table-row-${cellId}-cell`}
-      align={'center'}
-      onClick={() => (handleClick ? handleClick(rowId) : null)}
-    >
-      {emptyDataMessage}
-    </TableCell>
-  );
+  if (!cell) return emptyDataMessage;
+  if (React.isValidElement(cell.cellValue)) return cell.cellValue;
+  return cell.cellValue.toString();
 }
