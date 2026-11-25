@@ -1,8 +1,12 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  isAnyOf,
+  type PayloadAction
+} from '@reduxjs/toolkit';
 import type { TMeeting } from '../types/currentMeeting';
 import { getMeetingByIdApi } from '../api/getMeetingApi';
 import { deleteMeetingApi } from '../api/editMeetingApi';
-
 import { fetchMeetings } from '../getAllMeetings/meetings-slice';
 
 type TCurrentMeetingState = {
@@ -16,71 +20,83 @@ type TMeetingApi = {
   meetingId: number;
 };
 
-export const fetchMeetingById = createAsyncThunk(
-  'meeting/fetchMeetingById',
-  async ({ companyId, meetingId }: TMeetingApi) =>
-    getMeetingByIdApi(companyId, meetingId)
-);
-
-export const removeMeeting = createAsyncThunk(
-  'meeting/removeMeeting',
-  async ({ companyId, meetingId }: TMeetingApi, { dispatch }) => {
-    await deleteMeetingApi(companyId, meetingId);
-    await dispatch(fetchMeetings({ companyId: companyId, page: 1 }));
-  }
-);
-
-const currentMeetingInitialState: TCurrentMeetingState = {
+const initialState: TCurrentMeetingState = {
   meeting: null,
   isLoading: false,
   error: null
 };
 
+export const fetchMeetingById = createAsyncThunk<TMeeting, TMeetingApi>(
+  'meeting/fetchMeetingById',
+  async ({ companyId, meetingId }) => {
+    return getMeetingByIdApi(companyId, meetingId);
+  }
+);
+
+export const removeMeeting = createAsyncThunk<void, TMeetingApi>(
+  'meeting/removeMeeting',
+  async ({ companyId, meetingId }, { dispatch }) => {
+    await deleteMeetingApi(companyId, meetingId);
+    const result = await dispatch(fetchMeetings({ companyId, page: 1 }));
+    if (fetchMeetings.fulfilled.match(result)) {
+      return;
+    }
+    throw new Error(
+      `Failed to refresh meetings after removing meeting with id: ${meetingId}`
+    );
+  }
+);
+
 export const currentMeetingSlice = createSlice({
   name: 'currentMeeting',
-  initialState: currentMeetingInitialState,
-  reducers: {},
-  selectors: {
-    getCurrentMeeting(state) {
-      return state.meeting;
-    },
-    getIsLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
+  initialState,
+  reducers: {
+    clearCurrentMeeting(state) {
+      state.meeting = null;
+      state.error = null;
     }
+  },
+  selectors: {
+    getCurrentMeeting: (state) => state.meeting,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMeetingById.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchMeetingById.fulfilled, (state, action) => {
-        state.meeting = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchMeetingById.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(removeMeeting.fulfilled, (state) => {
-        state.meeting = null;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(removeMeeting.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(removeMeeting.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      });
+      .addMatcher(
+        isAnyOf(fetchMeetingById.pending, removeMeeting.pending),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => fetchMeetingById.fulfilled.match(action),
+        (state, action: PayloadAction<TMeeting>) => {
+          state.meeting = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => removeMeeting.fulfilled.match(action),
+        (state) => {
+          state.meeting = null;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(fetchMeetingById.rejected, removeMeeting.rejected),
+        (state, action) => {
+          state.error = action.error.message ?? 'Error in meeting action';
+          state.isLoading = false;
+        }
+      );
   }
 });
 
+export const { clearCurrentMeeting } = currentMeetingSlice.actions;
 export default currentMeetingSlice;
-export const { getCurrentMeeting } = currentMeetingSlice.selectors;
+export const { getCurrentMeeting, getIsLoading, getError } =
+  currentMeetingSlice.selectors;

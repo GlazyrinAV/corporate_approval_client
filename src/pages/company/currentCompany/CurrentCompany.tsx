@@ -6,7 +6,6 @@ import { routeBuilders } from '../../../app/routes';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../app/store';
 import { removeCompany } from '../../../features/company/getCompany/currentCompany-slice';
-import { fetchCompanies } from '../../../features/company/getAll/companies-slice';
 import { PartcipantsInfo } from '../../../features/participant/getAll/ParticipantsInfo';
 import { MeetingsInfo } from '../../../features/meeting/getAllMeetings/MeetingsInfo';
 
@@ -18,7 +17,6 @@ export const CurrentCompany = () => {
 
   const handleDelete = () => {
     dispatch(removeCompany(companyId));
-    dispatch(fetchCompanies(1));
     navigate(routeBuilders.main());
   };
 
@@ -34,7 +32,8 @@ export const CurrentCompany = () => {
           <CommonButton
             color='secondary'
             onClick={() => {
-              navigate(routeBuilders.editCompany({ companyId }))}}
+              navigate(routeBuilders.editCompany({ companyId }));
+            }}
           >
             Edit Company
           </CommonButton>

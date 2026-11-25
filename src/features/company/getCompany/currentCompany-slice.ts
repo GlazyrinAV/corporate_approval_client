@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  isAnyOf,
+  type PayloadAction
+} from '@reduxjs/toolkit';
 import { getCompanyByIdApi } from '../api/getCompanyApi';
 import type { TCompany } from '../types/currentCompany';
 import type { TNewCompany } from '../types/newCompany';
@@ -38,11 +43,17 @@ export const updateCompany = createAsyncThunk(
   }
 );
 
-export const removeCompany = createAsyncThunk(
+export const removeCompany = createAsyncThunk<void, number>(
   'currentCompany/removeCompany',
-  async (id: number, { dispatch }) => {
+  async (id, { dispatch }) => {
     await deleteCompanyApi(id);
-    await dispatch(fetchCompanies(1));
+    const result = await dispatch(fetchCompanies(1));
+    if (fetchCompanies.fulfilled.match(result)) {
+      return;
+    }
+    throw new Error(
+      `Failed to refresh companies after removing company with id: ${id}`
+    );
   }
 );
 
@@ -63,11 +74,6 @@ export const currentCompanySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(removeCompany.fulfilled, (state) => {
-        state.company = null;
-        state.isLoading = false;
-        state.error = null;
-      })
       .addMatcher(
         isAnyOf(
           fetchCompanyById.pending,
@@ -88,7 +94,7 @@ export const currentCompanySlice = createSlice({
           removeCompany.rejected
         ),
         (state, action) => {
-          state.error = action.error.message;
+          state.error = action.error.message ?? 'Error in company action';
           state.isLoading = false;
         }
       )
@@ -98,8 +104,16 @@ export const currentCompanySlice = createSlice({
           saveCompany.fulfilled,
           updateCompany.fulfilled
         ),
-        (state, action) => {
+        (state, action: PayloadAction<TCompany>) => {
           state.company = action.payload;
+          state.error = null;
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) => removeCompany.fulfilled.match(action),
+        (state) => {
+          state.company = null;
           state.error = null;
           state.isLoading = false;
         }

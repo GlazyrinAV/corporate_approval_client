@@ -125,8 +125,7 @@ export const editMeetingSlice = createSlice({
       .addMatcher(
         isAnyOf(saveMeeting.rejected, updateMeeting.rejected),
         (state, action) => {
-          state.error =
-            action.error.message ?? 'Error while saving new meeting';
+          state.error = action.error.message ?? 'Error in new meeting actions';
           state.isLoading = false;
         }
       );

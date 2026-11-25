@@ -58,7 +58,7 @@ export const companiesSlice = createSlice({
       .addMatcher(
         isAnyOf(fetchCompanies.rejected, filterCompanies.rejected),
         (state, action) => {
-          state.error = action.error.message;
+          state.error = action.error.message ?? 'Error in companies actions';
           state.isLoading = false;
         }
       );
@@ -66,4 +66,5 @@ export const companiesSlice = createSlice({
 });
 
 export default companiesSlice;
-export const { getCompanies, getIsLoading, getError } = companiesSlice.selectors;
+export const { getCompanies, getIsLoading, getError } =
+  companiesSlice.selectors;

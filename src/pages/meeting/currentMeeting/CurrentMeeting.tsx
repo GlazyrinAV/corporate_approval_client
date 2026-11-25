@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../../app/store';
 import { useEffect } from 'react';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
-import {
-  fetchMeetings,
-  getIsLoading
-} from '../../../features/meeting/getAllMeetings/meetings-slice';
+import { getIsLoading } from '../../../features/meeting/getAllMeetings/meetings-slice';
 import {
   fetchMeetingById,
   getCurrentMeeting,
@@ -44,7 +41,6 @@ export const CurrentMeeting = () => {
         meetingId: meetingId
       })
     );
-    dispatch(fetchMeetings({ companyId, page: 1 }));
     navigate(routeBuilders.meetings({ companyId }));
   };
 
