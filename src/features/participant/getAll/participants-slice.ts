@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import {
   filterParticipantsApi,
   getParticipantsApi
@@ -20,21 +20,21 @@ type TParticipantsState = {
   error: string | null;
 };
 
-export const fetchParticipants = createAsyncThunk(
-  'participants/fetchParticipants',
-  async ({ companyId, page }: TParticipantApi) => {
-    return await getParticipantsApi(companyId, page);
-  }
+export const fetchParticipants = createAsyncThunk<
+  TParticipantPageable,
+  TParticipantApi
+>('participants/fetchParticipants', async ({ companyId, page }) =>
+  getParticipantsApi(companyId, page)
 );
 
-export const filterParticipants = createAsyncThunk(
-  'participants/filterParticipants',
-  async ({ companyId, query, page }: TParticpantFilter) => {
-    return await filterParticipantsApi(companyId, query, page);
-  }
+export const filterParticipants = createAsyncThunk<
+  TParticipantPageable,
+  TParticpantFilter
+>('participants/filterParticipants', async ({ companyId, query, page }) =>
+  filterParticipantsApi(companyId, query, page)
 );
 
-const participantsInintialState: TParticipantsState = {
+const initialParticipantsState: TParticipantsState = {
   participants: null,
   isLoading: false,
   error: null
@@ -42,47 +42,51 @@ const participantsInintialState: TParticipantsState = {
 
 export const participantsSlice = createSlice({
   name: 'participants',
-  initialState: participantsInintialState,
+  initialState: initialParticipantsState,
   reducers: {},
   selectors: {
-    getParticipants(state) {
-      return state.participants;
-    },
-    getIsLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getParticipants: (state) => state.participants,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchParticipants.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchParticipants.fulfilled, (state, action) => {
-        state.participants = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchParticipants.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(filterParticipants.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(filterParticipants.fulfilled, (state, action) => {
-        state.participants = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(filterParticipants.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      });
+      .addMatcher(
+        isAnyOf(
+          fetchParticipants.pending,
+          filterParticipants.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchParticipants.rejected,
+          filterParticipants.rejected
+        ),
+        (state, action) => {
+          state.error = action.error.message ?? 'Error in participants actions';
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) => fetchParticipants.fulfilled.match(action),
+        (state, action: ReturnType<typeof fetchParticipants.fulfilled>) => {
+          state.participants = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => filterParticipants.fulfilled.match(action),
+        (state, action: ReturnType<typeof filterParticipants.fulfilled>) => {
+          state.participants = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      );
   }
 });
 

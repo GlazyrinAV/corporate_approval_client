@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import type { TMeetingParticipant } from '../types/currentMeetingParticipant';
 import { getMeetingParticipantApi } from '../api/getMeetingParticipant';
 import { deleteMeetingParticipantApi } from '../api/editMeetingParticipantApi';
@@ -16,22 +16,21 @@ type TMeetingParticipantApi = {
   meetingParticipantId: number;
 };
 
-export const fetchMeetingParticipantById = createAsyncThunk(
+export const fetchMeetingParticipantById = createAsyncThunk<
+  TMeetingParticipant,
+  TMeetingParticipantApi
+>(
   'meetingParticipant/fetchMeetingParticipantById',
-  async ({
-    companyId,
-    meetingId,
-    meetingParticipantId
-  }: TMeetingParticipantApi) =>
+  async ({ companyId, meetingId, meetingParticipantId }) =>
     getMeetingParticipantApi(companyId, meetingId, meetingParticipantId)
 );
 
-export const removeMeetingParticipant = createAsyncThunk(
+export const removeMeetingParticipant = createAsyncThunk<
+  void,
+  TMeetingParticipantApi
+>(
   'meetingParticipant/removeMeetingParticipant',
-  async (
-    { companyId, meetingId, meetingParticipantId }: TMeetingParticipantApi,
-    { dispatch }
-  ) => {
+  async ({ companyId, meetingId, meetingParticipantId }, { dispatch }) => {
     await deleteMeetingParticipantApi(
       companyId,
       meetingId,
@@ -39,8 +38,8 @@ export const removeMeetingParticipant = createAsyncThunk(
     );
     await dispatch(
       fetchMeetingParticipants({
-        companyId: companyId,
-        meetingId: meetingId,
+        companyId,
+        meetingId,
         page: 1
       })
     );
@@ -58,44 +57,52 @@ export const currentMeetingParticipantSlice = createSlice({
   initialState: currentMeetingParticipantInitialState,
   reducers: {},
   selectors: {
-    getCurrentMeetingParticipant(state) {
-      return state.meetingParticipant;
-    },
-    getIsLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getCurrentMeetingParticipant: (state) => state.meetingParticipant,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMeetingParticipantById.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchMeetingParticipantById.fulfilled, (state, action) => {
-        state.meetingParticipant = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchMeetingParticipantById.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(removeMeetingParticipant.fulfilled, (state) => {
-        state.meetingParticipant = null;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(removeMeetingParticipant.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(removeMeetingParticipant.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      });
+      .addMatcher(
+        isAnyOf(
+          fetchMeetingParticipantById.pending,
+          removeMeetingParticipant.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchMeetingParticipantById.rejected,
+          removeMeetingParticipant.rejected
+        ),
+        (state, action) => {
+          state.error =
+            action.error.message ?? 'Error in MeetingParticipant actions';
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) => fetchMeetingParticipantById.fulfilled.match(action),
+        (
+          state,
+          action: ReturnType<typeof fetchMeetingParticipantById.fulfilled>
+        ) => {
+          state.meetingParticipant = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => removeMeetingParticipant.fulfilled.match(action),
+        (state) => {
+          state.meetingParticipant = null;
+          state.isLoading = false;
+          state.error = null;
+        }
+      );
   }
 });
 

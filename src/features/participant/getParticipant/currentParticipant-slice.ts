@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import type { TParticipant } from '../types/currentParticipant';
-import { getParticipantByIdApi } from '../api/getParticipantApi';
 import type { TNewParticipant } from '../types/newParticipant';
+import { getParticipantByIdApi } from '../api/getParticipantApi';
 import { fetchParticipants } from '../getAll/participants-slice';
 import {
   deleteParticipantApi,
@@ -30,42 +30,40 @@ type TUpdateParticipantApi = {
   participant: TParticipant;
 };
 
-export const fetchParticipantById = createAsyncThunk(
-  'participant/fetchParticipantById',
-  async ({ companyId, participantId }: TParticipantApi) =>
-    getParticipantByIdApi(companyId, participantId)
+export const fetchParticipantById = createAsyncThunk<
+  TParticipant,
+  TParticipantApi
+>('participant/fetchParticipantById', async ({ companyId, participantId }) =>
+  getParticipantByIdApi(companyId, participantId)
 );
 
-export const saveParticipant = createAsyncThunk(
-  'participant/saveParticipant',
-  async ({ companyId, participant }: TNewParticipantApi, { dispatch }) => {
-    const newParticipant = await saveParticipantApi(companyId, participant);
-    await dispatch(fetchParticipants({ companyId: companyId, page: 1 }));
-    return newParticipant;
-  }
-);
+export const saveParticipant = createAsyncThunk<
+  TParticipant,
+  TNewParticipantApi
+>('participant/saveParticipant', async ({ companyId, participant }, { dispatch }) => {
+  const newParticipant = saveParticipantApi(companyId, participant);
+  await dispatch(fetchParticipants({ companyId, page: 1 }));
+  return newParticipant;
+});
 
-export const updateParticipant = createAsyncThunk(
-  'participant/updateParticipant',
-  async ({ companyId, participant }: TUpdateParticipantApi, { dispatch }) => {
-    const updatedParticipant = await updateParticipantApi(
-      companyId,
-      participant
-    );
-    await dispatch(fetchParticipants({ companyId: companyId, page: 1 }));
-    return updatedParticipant;
-  }
-);
+export const updateParticipant = createAsyncThunk<
+  TParticipant,
+  TUpdateParticipantApi
+>('participant/updateParticipant', async ({ companyId, participant }, { dispatch }) => {
+  const updatedParticipant = updateParticipantApi(companyId, participant);
+  await dispatch(fetchParticipants({ companyId, page: 1 }));
+  return updatedParticipant;
+});
 
-export const removeParticipant = createAsyncThunk(
-  'participant/removeParticipant',
-  async ({ companyId, participantId }: TParticipantApi, { dispatch }) => {
-    await deleteParticipantApi(companyId, participantId);
-    await dispatch(fetchParticipants({ companyId: companyId, page: 1 }));
-  }
-);
+export const removeParticipant = createAsyncThunk<
+  void,
+  TParticipantApi
+>('participant/removeParticipant', async ({ companyId, participantId }, { dispatch }) => {
+  await deleteParticipantApi(companyId, participantId);
+  await dispatch(fetchParticipants({ companyId, page: 1 }));
+});
 
-const currentParticipantInitialState: TCurrentParticipantState = {
+const initialCurrentParticipantState: TCurrentParticipantState = {
   participant: null,
   isLoading: false,
   error: null
@@ -73,73 +71,71 @@ const currentParticipantInitialState: TCurrentParticipantState = {
 
 export const currentParticipantSlice = createSlice({
   name: 'currentParticipant',
-  initialState: currentParticipantInitialState,
+  initialState: initialCurrentParticipantState,
   reducers: {},
   selectors: {
-    getCurrentParticipant(state) {
-      return state.participant;
-    },
-    getIsLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getCurrentParticipant: (state) => state.participant,
+    getIsLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchParticipantById.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchParticipantById.fulfilled, (state, action) => {
-        state.participant = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(fetchParticipantById.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(saveParticipant.fulfilled, (state, action) => {
-        state.participant = action.payload;
-        state.error = null;
-        state.isLoading = false;
-      })
-      .addCase(saveParticipant.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(saveParticipant.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(updateParticipant.fulfilled, (state, action) => {
-        state.participant = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(updateParticipant.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(updateParticipant.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(removeParticipant.fulfilled, (state) => {
-        state.participant = null;
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(removeParticipant.rejected, (state, action) => {
-        state.error = action.error.message as string;
-        state.isLoading = false;
-      })
-      .addCase(removeParticipant.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      });
+      .addMatcher(
+        isAnyOf(
+          fetchParticipantById.pending,
+          saveParticipant.pending,
+          updateParticipant.pending,
+          removeParticipant.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchParticipantById.rejected,
+          saveParticipant.rejected,
+          updateParticipant.rejected,
+          removeParticipant.rejected
+        ),
+        (state, action) => {
+          state.error = action.error.message ?? 'Error in participant actions';
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) => fetchParticipantById.fulfilled.match(action),
+        (state, action: ReturnType<typeof fetchParticipantById.fulfilled>) => {
+          state.participant = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => saveParticipant.fulfilled.match(action),
+        (state, action: ReturnType<typeof saveParticipant.fulfilled>) => {
+          state.participant = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => updateParticipant.fulfilled.match(action),
+        (state, action: ReturnType<typeof updateParticipant.fulfilled>) => {
+          state.participant = action.payload;
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => removeParticipant.fulfilled.match(action),
+        (state) => {
+          state.participant = null;
+          state.isLoading = false;
+          state.error = null;
+        }
+      );
   }
 });
 

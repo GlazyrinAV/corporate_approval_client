@@ -1,8 +1,4 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  type PayloadAction
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import type {
   TMeetingParticipant,
   TMeetingParticipantPageable
@@ -30,38 +26,29 @@ type TPotentialMeetingParticipantsState = {
   error: string | null;
 };
 
-export const fetchPotentialMeetingParticipantsForCurrentMeeting =
-  createAsyncThunk(
-    'potentialMeetingParticipants/fetchPotentialMeetingParticipantsForCurrentMeeting',
-    async ({
+export const fetchPotentialMeetingParticipantsForCurrentMeeting = createAsyncThunk<
+  TMeetingParticipantPageable,
+  TPotentialMeetingParticipantsForCurrentMeetingApi
+>(
+  'potentialMeetingParticipants/fetchPotentialMeetingParticipantsForCurrentMeeting',
+  async ({ companyId, meetingId, page }) =>
+    getPotentialMeetingParticipantsForCurrentMeetingApi(
       companyId,
       meetingId,
       page
-    }: TPotentialMeetingParticipantsForCurrentMeetingApi) => {
-      return await getPotentialMeetingParticipantsForCurrentMeetingApi(
-        companyId,
-        meetingId,
-        page
-      );
-    }
-  );
-
-export const fetchPotentialMeetingParticipantsForNewMeeting = createAsyncThunk(
-  'potentialMeetingParticipants/fetchPotentialMeetingParticipantsForNewMeeting',
-  async ({
-    companyId,
-    meetingType,
-    page
-  }: TPotentialMeetingParticipantsForNewMeetingApi) => {
-    return await getPotentialMeetingParticipantsForNewMeetingApi(
-      companyId,
-      meetingType,
-      page
-    );
-  }
+    )
 );
 
-const meetingParticipantsInintialState: TPotentialMeetingParticipantsState = {
+export const fetchPotentialMeetingParticipantsForNewMeeting = createAsyncThunk<
+  TMeetingParticipantPageable,
+  TPotentialMeetingParticipantsForNewMeetingApi
+>(
+  'potentialMeetingParticipants/fetchPotentialMeetingParticipantsForNewMeeting',
+  async ({ companyId, meetingType, page }) =>
+    getPotentialMeetingParticipantsForNewMeetingApi(companyId, meetingType, page)
+);
+
+const initialPotentialMeetingParticipantsState: TPotentialMeetingParticipantsState = {
   potentialMeetingParticipants: null,
   isLoading: false,
   error: null
@@ -69,77 +56,66 @@ const meetingParticipantsInintialState: TPotentialMeetingParticipantsState = {
 
 export const potentialMeetingParticipantsSlice = createSlice({
   name: 'potentialMeetingParticipants',
-  initialState: meetingParticipantsInintialState,
+  initialState: initialPotentialMeetingParticipantsState,
   reducers: {
-    updateParticipantInPotentialList(
-      state,
-      actions: PayloadAction<TMeetingParticipant>
-    ) {
-      state.potentialMeetingParticipants.content.map((item) =>
-        item.participant.id === actions.payload.participant.id
-          ? actions.payload
-          : item
-      );
+    updateParticipantInPotentialList(state, action: { payload: TMeetingParticipant }) {
+      const content = state.potentialMeetingParticipants?.content;
+      if (content) {
+        const index = content.findIndex(
+          (item) => item.participant.id === action.payload.participant.id
+        );
+        if (index !== -1) {
+          content[index] = action.payload;
+        }
+      }
     },
     clearPotentialList(state) {
       state.potentialMeetingParticipants = null;
     }
   },
   selectors: {
-    getPotentionalMeetingParticpants(state) {
-      return state.potentialMeetingParticipants;
-    },
-    getIsPotentialLoading(state) {
-      return state.isLoading;
-    },
-    getError(state) {
-      return state.error;
-    }
+    getPotentionalMeetingParticpants: (state) => state.potentialMeetingParticipants,
+    getIsPotentialLoading: (state) => state.isLoading,
+    getError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(
-        fetchPotentialMeetingParticipantsForCurrentMeeting.pending,
+      .addMatcher(
+        isAnyOf(
+          fetchPotentialMeetingParticipantsForCurrentMeeting.pending,
+          fetchPotentialMeetingParticipantsForNewMeeting.pending
+        ),
         (state) => {
           state.isLoading = true;
           state.error = null;
         }
       )
-      .addCase(
-        fetchPotentialMeetingParticipantsForCurrentMeeting.fulfilled,
+      .addMatcher(
+        isAnyOf(
+          fetchPotentialMeetingParticipantsForCurrentMeeting.rejected,
+          fetchPotentialMeetingParticipantsForNewMeeting.rejected
+        ),
         (state, action) => {
+          state.error = action.error.message ?? 'Error in potential participants actions';
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(
+        (action) =>
+          fetchPotentialMeetingParticipantsForCurrentMeeting.fulfilled.match(action),
+        (state, action: ReturnType<typeof fetchPotentialMeetingParticipantsForCurrentMeeting.fulfilled>) => {
           state.potentialMeetingParticipants = action.payload;
           state.isLoading = false;
           state.error = null;
         }
       )
-      .addCase(
-        fetchPotentialMeetingParticipantsForCurrentMeeting.rejected,
-        (state, action) => {
-          state.error = action.error.message as string;
-          state.isLoading = false;
-        }
-      )
-      .addCase(
-        fetchPotentialMeetingParticipantsForNewMeeting.pending,
-        (state) => {
-          state.isLoading = true;
-          state.error = null;
-        }
-      )
-      .addCase(
-        fetchPotentialMeetingParticipantsForNewMeeting.fulfilled,
-        (state, action) => {
+      .addMatcher(
+        (action) =>
+          fetchPotentialMeetingParticipantsForNewMeeting.fulfilled.match(action),
+        (state, action: ReturnType<typeof fetchPotentialMeetingParticipantsForNewMeeting.fulfilled>) => {
           state.potentialMeetingParticipants = action.payload;
           state.isLoading = false;
           state.error = null;
-        }
-      )
-      .addCase(
-        fetchPotentialMeetingParticipantsForNewMeeting.rejected,
-        (state, action) => {
-          state.error = action.error.message as string;
-          state.isLoading = false;
         }
       );
   }
