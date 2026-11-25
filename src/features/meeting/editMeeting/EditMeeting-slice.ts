@@ -37,18 +37,18 @@ export type TFieldType<T> = {
 };
 
 const createDefaultForm = (): TNewMeeting => ({
-  companyId: '',
-  meetingType: '',
+  companyId: null,
+  meetingType: null,
   dateOfMeeting: null,
   dateOfProtocol: null,
   startOfRegistration: null,
   endOfRegistration: null,
   startOfMeeting: null,
   endOfMeeting: null,
-  town: '',
-  address: '',
-  secretaryId: '',
-  chairmanId: ''
+  town: null,
+  address: null,
+  secretaryId: null,
+  chairmanId: null
 });
 
 const parseTimeField = (value: string | Date | null): Date | null => {
@@ -99,6 +99,9 @@ export const editMeetingSlice = createSlice({
         startOfRegistration: parseTimeField(payload.startOfRegistration),
         endOfRegistration: parseTimeField(payload.endOfRegistration)
       };
+    },
+    clearFormValues(state) {
+      state.form = createDefaultForm();
     }
   },
   selectors: {
@@ -134,4 +137,5 @@ export const editMeetingSlice = createSlice({
 
 export default editMeetingSlice;
 export const { getForm } = editMeetingSlice.selectors;
-export const { setFormValue, loadDefaultValues } = editMeetingSlice.actions;
+export const { setFormValue, loadDefaultValues, clearFormValues } =
+  editMeetingSlice.actions;

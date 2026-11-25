@@ -450,12 +450,16 @@ export const MeetingEditForm = ({
           Сохранить собрание
         </CommonButton>
       </form>
-      <div className={styles.second_colomn}>
-        <MeetingParticipantEditForm
-          meetingType={meetingType}
-          participantExceptions={getParticipantExceptions()}
-        />
-      </div>
+      {currentMeeting ? (
+        <></>
+      ) : (
+        <div className={styles.second_colomn}>
+          <MeetingParticipantEditForm
+            meetingType={meetingType}
+            participantExceptions={getParticipantExceptions()}
+          />
+        </div>
+      )}
     </div>
   );
 };

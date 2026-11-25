@@ -2,7 +2,9 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import type { AppDispatch } from '../../../app/store';
 import type { TNewMeeting } from '../../../features/meeting/types/newMeeting';
-import { saveMeeting } from '../../../features/meeting/editMeeting/EditMeeting-slice';
+import {
+  saveMeeting
+} from '../../../features/meeting/editMeeting/EditMeeting-slice';
 import { useEffect } from 'react';
 import {
   clearChosenList,
