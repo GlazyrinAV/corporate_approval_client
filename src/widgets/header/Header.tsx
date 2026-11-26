@@ -9,24 +9,24 @@ export const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <header>
-      <AppBar position='static'>
-        <Toolbar sx={{ display: 'flex', gap: '30px' }}>
-          <Typography variant='h6'>Corporate Approval</Typography>
-          <CommonButton
-            color='secondary'
-            onClick={() => navigate(routeBuilders.main())}
-          >
-            Home
-          </CommonButton>
-          <CommonButton
-            color='secondary'
-            onClick={() => navigate(routeBuilders.newCompany())}
-          >
-            New Company
-          </CommonButton>
-        </Toolbar>
-      </AppBar>
-    </header>
+    <AppBar component='header' position='static' role='banner'>
+      <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
+        <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+          Corporate Approval
+        </Typography>
+        <CommonButton
+          color='secondary'
+          onClick={() => navigate(routeBuilders.main())}
+        >
+          Home
+        </CommonButton>
+        <CommonButton
+          color='secondary'
+          onClick={() => navigate(routeBuilders.newCompany())}
+        >
+          New Company
+        </CommonButton>
+      </Toolbar>
+    </AppBar>
   );
 };
