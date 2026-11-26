@@ -22,9 +22,14 @@ export const Default: Story = {
       <CheckList
         values={[
           { id: 1, name: 'checked', checked: true },
-          { id: 2, name: 'unchecked', checked: false }
+          {
+            id: 2,
+            name: 'unchecked',
+            checked: false,
+            newValue: 'la-la'
+          }
         ]}
-        fileds={['name']}
+        fields={['name', 'newValue']}
       />
     );
   }
