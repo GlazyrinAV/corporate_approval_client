@@ -184,7 +184,7 @@ export const MeetingParticipantEditForm = ({
                   count={meetingParticipants.totalPages}
                   page={pageCurrent}
                   onChange={handlePageChangeCurrent}
-                  classname={styles.pagable}
+                  className={styles.pagable}
                 />
               )}
             </>
@@ -208,7 +208,7 @@ export const MeetingParticipantEditForm = ({
                   count={potentialMeetingParticipants.totalPages}
                   page={pagePotential}
                   onChange={handlePageChangePotential}
-                  classname={styles.pagable}
+                  className={styles.pagable}
                 />
               )}
           </>

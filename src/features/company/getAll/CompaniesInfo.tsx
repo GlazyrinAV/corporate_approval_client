@@ -60,7 +60,7 @@ export const CompaniesInfo = () => {
               count={companiesPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pageable}
+              className={styles.pageable}
             />
           ) : null}
         </section>

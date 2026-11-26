@@ -66,7 +66,7 @@ export const MeetingParticipantsList = ({
               count={meetingParticipantsPageable.totalPages}
               page={page}
               onChange={handlePageChange}
-              classname={styles.pageable}
+              className={styles.pageable}
             />
           ) : null}
         </div>

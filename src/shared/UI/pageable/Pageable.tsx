@@ -4,27 +4,30 @@ type PageableProps = {
   count: number;
   page: number;
   onChange: (value: number) => void;
-  classname?: string;
+  className?: string;
   size?: 'large' | 'small' | 'medium';
+  color?: 'primary' | 'secondary' | 'standard';
+  variant?: 'text' | 'outlined';
 };
 
 export const Pageable = ({
   count,
   page,
   onChange,
-  classname,
-  size = 'large'
+  className,
+  size = 'large',
+  color,
+  variant,
 }: PageableProps) => {
   return (
     <Pagination
       count={count}
       page={page}
-      onChange={(event: React.ChangeEvent<unknown, Element>, value: number) => {
-        event.preventDefault();
-        onChange(value);
-      }}
-      className={classname}
+      onChange={(_event, value) => onChange(value)}
+      className={className}
       size={size}
+      {...(color && { color })}
+      {...(variant && { variant })}
     />
   );
 };

@@ -75,7 +75,7 @@ export const MeetingsInfo = memo(
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}
-                classname={styles.pageable}
+                className={styles.pageable}
               />
             )}
           </div>
