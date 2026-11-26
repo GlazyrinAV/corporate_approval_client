@@ -14,7 +14,7 @@ export const CurrentCompany = ({ currentCompany }: CurrentCompanyProps) => {
     <CommonCard
       key={currentCompany?.id}
       title='Информация о компании'
-      row
+      horizontal
       content={{
         data: [
           { fieldLabel: 'Наименование', fieldValue: currentCompany?.title },

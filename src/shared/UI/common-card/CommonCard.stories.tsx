@@ -40,3 +40,28 @@ export const Default: Story = {
     );
   }
 };
+
+export const Horizontal: Story = {
+  render: () => {
+    return (
+      <CommonCard
+        horizontal
+        title='New title'
+        content={{
+          data: [
+            {
+              fieldLabel: 'name',
+              fieldValue: 'This Name'
+            },
+            {
+              fieldLabel: 'content',
+              fieldValue: 'This Content'
+            }
+          ]
+        }}
+      >
+        <CommonButton onClick={() => {}}>More</CommonButton>
+      </CommonCard>
+    );
+  }
+};

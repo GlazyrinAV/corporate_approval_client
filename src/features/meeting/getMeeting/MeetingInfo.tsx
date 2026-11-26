@@ -14,7 +14,7 @@ export const MeetingInfo = ({ meeting }: MeetingInfoProps) => {
     <CommonCard
       key={meeting.id}
       title='Информация о встрече'
-      row
+      horizontal
       content={{
         data: [
           { fieldLabel: 'ID встречи', fieldValue: String(meeting.id) },

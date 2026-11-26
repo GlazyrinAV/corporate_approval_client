@@ -11,7 +11,7 @@ export const ParticipantInfo = ({ participant }: ParticipantInfoProps) => {
     <CommonCard
       key={participant.id}
       title='Информация об участнике'
-      row
+      horizontal
       content={{
         data: [
           { fieldLabel: 'ФИО', fieldValue: participant.name },
