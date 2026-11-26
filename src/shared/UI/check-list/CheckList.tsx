@@ -46,31 +46,42 @@ export const CheckList = ({ values, onChange, fields }: CheckListProps) => {
   return (
     <List
       dense
+      role='list'
+      aria-label='Список выбора'
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
     >
       {values?.map((item) => {
         const labelId = `checkbox-list-secondary-label-${item.id}`;
+        const checkboxId = `checkbox-${item.id}`;
 
         return (
           <ListItem
             key={item.id}
             secondaryAction={
               <Checkbox
+                id={checkboxId}
                 edge='end'
                 onChange={handleToggle(item)}
                 checked={selectedIds.includes(item.id)}
-                slotProps={{ input: { 'aria-labelledby': labelId } }}
+                aria-labelledby={labelId}
+                aria-checked={selectedIds.includes(item.id)}
+                role='checkbox'
               />
             }
             disablePadding
+            role='listitem'
           >
-            <ListItemButton sx={{ gap: '10px' }}>
+            <ListItemButton
+              onClick={handleToggle(item)}
+              aria-labelledby={labelId}
+              sx={{ gap: '10px' }}
+            >
               {fields?.length ? (
-                fields.map((field) =>
+                fields.map((field, fieldIndex) =>
                   item[field] !== undefined ? (
                     <ListItemText
                       key={`${item.id}-${field}`}
-                      id={labelId}
+                      id={fieldIndex === 0 ? labelId : undefined}
                       primary={String(item[field])}
                     />
                   ) : null

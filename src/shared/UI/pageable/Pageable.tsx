@@ -1,4 +1,5 @@
 import Pagination from '@mui/material/Pagination';
+import { useMemo } from 'react';
 
 type PageableProps = {
   count: number;
@@ -8,6 +9,7 @@ type PageableProps = {
   size?: 'large' | 'small' | 'medium';
   color?: 'primary' | 'secondary' | 'standard';
   variant?: 'text' | 'outlined';
+  'aria-label'?: string;
 };
 
 export const Pageable = ({
@@ -18,7 +20,13 @@ export const Pageable = ({
   size = 'large',
   color,
   variant,
+  'aria-label': ariaLabel = 'Навигация по страницам'
 }: PageableProps) => {
+  const label = useMemo(() => {
+    if (ariaLabel) return ariaLabel;
+    return `Страница ${page} из ${count}`;
+  }, [ariaLabel, page, count]);
+
   return (
     <Pagination
       count={count}
@@ -26,6 +34,7 @@ export const Pageable = ({
       onChange={(_event, value) => onChange(value)}
       className={className}
       size={size}
+      aria-label={label}
       {...(color && { color })}
       {...(variant && { variant })}
     />
