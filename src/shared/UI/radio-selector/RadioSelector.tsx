@@ -9,7 +9,6 @@ export type TRadioSelectorOption = {
   value: string;
   label: string;
   disabled?: boolean;
-  color?: string;
 };
 
 type TRadioGroupProps = {
@@ -31,14 +30,14 @@ export const RadioSelector = ({
   row = false,
   error = false,
   value,
-  helpText = ' '
+  helpText
 }: TRadioGroupProps) => {
   return (
     <FormControl error={error}>
-      <FormLabel id={`${id}-label`}>{label}</FormLabel>
+      {label && <FormLabel id={`${id}-label`}>{label}</FormLabel>}
       <RadioGroup
         aria-labelledby={`${id}-label`}
-        name='radio-buttons-group'
+        name={`${id}-group`}
         row={row}
         onChange={onChange}
         value={value}
@@ -50,11 +49,10 @@ export const RadioSelector = ({
             label={option.label}
             disabled={option.disabled}
             key={option.value}
-            color={option.color}
           />
         ))}
       </RadioGroup>
-      <FormHelperText>{helpText}</FormHelperText>
+      {helpText && <FormHelperText>{helpText}</FormHelperText>}
     </FormControl>
   );
 };

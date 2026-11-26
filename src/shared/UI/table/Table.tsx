@@ -35,8 +35,8 @@ export const BasicTable = ({
   isHeadersVisible = true,
   emptyDataMessage = 'нет данных'
 }: BasicTableProps) => {
-  const checkedTableData = checkSneakPeak(tableData, sneakPeek);
-  const headers = getHeaders(checkedTableData);
+  const headers = getHeaders(tableData);
+  const displayData = applySneakPeek(tableData, sneakPeek);
 
   return (
     <TableContainer component={Paper}>
@@ -45,39 +45,42 @@ export const BasicTable = ({
           <TableHead>
             <TableRow>
               {headers.map((header, headerIdx) => (
-                <TableCell
-                  key={`${headerIdx}-cell`}
-                  id={`${headerIdx}-cell`}
-                  align='center'
-                >
-                  {header}&nbsp;
+                <TableCell key={headerIdx} align='center'>
+                  {header}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
         )}
         <TableBody>
-          {checkedTableData.length > 0 ? (
-            checkedTableData.map((row) => (
+          {displayData.length > 0 ? (
+            displayData.map((row) => (
               <TableRow
-                key={`${row.id}-table-row`}
+                key={row.id}
                 sx={{
                   '&:last-child td, &:last-child th': { border: 0 },
                   '&:hover': !disableView
                     ? { background: '#F7E8FF', cursor: 'pointer' }
                     : undefined
                 }}
+                onClick={() => handleClick?.(row.id)}
+                role={handleClick ? 'row' : undefined}
+                tabIndex={handleClick ? 0 : undefined}
+                onKeyDown={
+                  handleClick
+                    ? (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleClick(row.id);
+                        }
+                      }
+                    : undefined
+                }
               >
                 {headers.map((header, headerIdx) => {
-                  const cell = row.rowData.find(
-                    (c) => c.cellLabel === header
-                  );
+                  const cell = row.rowData.find((c) => c.cellLabel === header);
                   return (
-                    <TableCell
-                      key={`${row.id}-table-row-${headerIdx}-cell`}
-                      align={getCellAlign(cell)}
-                      onClick={() => handleClick?.(row.id)}
-                    >
+                    <TableCell key={headerIdx} align={getCellAlign(cell)}>
                       {getCellContent(cell, emptyDataMessage)}
                     </TableCell>
                   );
@@ -85,11 +88,9 @@ export const BasicTable = ({
               </TableRow>
             ))
           ) : (
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell align='center'>
-                Данные отсутствуют
+            <TableRow>
+              <TableCell colSpan={headers.length} align='center'>
+                {emptyDataMessage}
               </TableCell>
             </TableRow>
           )}
@@ -99,7 +100,7 @@ export const BasicTable = ({
   );
 };
 
-function checkSneakPeak(tableData: RowData[], sneakPeek: number): RowData[] {
+function applySneakPeek(tableData: RowData[], sneakPeek: number): RowData[] {
   if (
     sneakPeek > 0 &&
     tableData.length > 0 &&
@@ -107,7 +108,7 @@ function checkSneakPeak(tableData: RowData[], sneakPeek: number): RowData[] {
   ) {
     const sneakPeakData = tableData[0].rowData.map((cell) => ({
       cellLabel: cell.cellLabel,
-      cellValue: '...' as const
+      cellValue: '...'
     }));
     return [
       ...tableData.slice(0, sneakPeek),
@@ -134,11 +135,15 @@ function getCellAlign(cell: CellData | undefined): 'left' | 'center' | 'right' {
   return typeof cell.cellValue === 'number' ? 'right' : 'center';
 }
 
+function isReactNode(value: unknown): value is ReactNode {
+  return React.isValidElement(value);
+}
+
 function getCellContent(
   cell: CellData | undefined,
   emptyDataMessage: string
 ): ReactNode {
   if (!cell) return emptyDataMessage;
-  if (React.isValidElement(cell.cellValue)) return cell.cellValue;
+  if (isReactNode(cell.cellValue)) return cell.cellValue;
   return cell.cellValue.toString();
 }

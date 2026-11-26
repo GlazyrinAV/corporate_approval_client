@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Switcher } from './Switcher';
+import { useState } from 'react';
 
 const meta: Meta<typeof Switcher> = {
   title: 'UI/Switcher',
@@ -18,6 +19,16 @@ type Story = StoryObj<typeof Switcher>;
 
 export const Default: Story = {
   render: () => {
-    return <Switcher label='Choose' value={true} />;
+    const [on, setOn] = useState(false);
+    return (
+      <Switcher
+        id={'1'}
+        label='Choose'
+        value={on}
+        onChange={(event) => {
+          setOn(event.target.checked);
+        }}
+      />
+    );
   }
 };
