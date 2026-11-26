@@ -42,7 +42,7 @@ export const SearchBar = ({
         value={query}
         onChange={(e) => handleChange(e.target.value)}
         type='text'
-        classname={style.container}
+        className={style.container}
         sx={{
           '& .MuiInputBase-input': {
             paddingLeft: '45px'

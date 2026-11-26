@@ -1,52 +1,26 @@
-import type { SxProps, Theme } from '@mui/material/styles';
+import { forwardRef } from 'react';
+import type { SxProps, Theme } from '@mui/system';
+import type { TextFieldProps } from '@mui/material/TextField';
 import TextField from '@mui/material/TextField';
 
-type FormInputProps = {
-  label?: string;
-  variant?: 'outlined' | 'filled' | 'standard';
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
-  disabled?: boolean;
-  type?: 'text' | 'number' | 'password' | 'email' | 'tel' | 'date';
-  error?: boolean;
+type FormInputProps = Omit<TextFieldProps, 'slotProps'> & {
   helpText?: string;
-  color?: 'primary' | 'secondary' | 'error' | 'success' | 'info' | 'warning';
-  placeholder?: string;
-  value?: string;
-  classname?: string;
   sx?: SxProps<Theme>;
 };
 
-export const FormInput = ({
-  label,
-  variant = 'outlined',
-  onChange,
-  required = false,
-  disabled = false,
-  type = 'text',
-  error,
-  helpText,
-  color = 'primary',
-  placeholder,
-  value,
-  classname,
-  sx
-}: FormInputProps) => {
+export const FormInput = forwardRef<
+  HTMLDivElement,
+  FormInputProps
+>(({ helpText, color = 'primary', ...props }, ref) => {
   return (
     <TextField
-      label={label}
-      variant={variant}
-      onChange={onChange}
-      required={required}
-      disabled={disabled}
-      type={type}
-      error={error}
-      helperText={helpText ? helpText : null}
+      ref={ref}
+      variant='outlined'
       color={color}
-      placeholder={placeholder}
-      value={value}
-      className={classname}
-      sx={sx}
+      helperText={helpText ?? props.helperText ?? null}
+      {...props}
     />
   );
-};
+});
+
+FormInput.displayName = 'FormInput';
