@@ -13,11 +13,10 @@ export const CurrentCompany = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams<{ companyId: string }>();
-  const companyId = Number(params.companyId);
+  const companyId = Number(params?.companyId);
 
   const handleDelete = () => {
     dispatch(removeCompany(companyId));
-    navigate(routeBuilders.main());
   };
 
   return (
@@ -30,14 +29,14 @@ export const CurrentCompany = () => {
       <section className={styles.company_info}>
         <div className={styles.actions}>
           <CommonButton
-            color='secondary'
-            onClick={() => {
-              navigate(routeBuilders.editCompany({ companyId }));
-            }}
+            color="secondary"
+            onClick={() =>
+              navigate(routeBuilders.editCompany({ companyId: companyId }))
+            }
           >
             Edit Company
           </CommonButton>
-          <CommonButton color='error' onClick={handleDelete}>
+          <CommonButton color="error" onClick={handleDelete}>
             Delete Company
           </CommonButton>
         </div>
@@ -48,8 +47,10 @@ export const CurrentCompany = () => {
       <section className={styles.participants_info}>
         <div className={styles.actions}>
           <CommonButton
-            color='secondary'
-            onClick={() => navigate(routeBuilders.participants({ companyId }))}
+            color="secondary"
+            onClick={() =>
+              navigate(routeBuilders.participants({ companyId }))
+            }
           >
             View and Edit Participants
           </CommonButton>
@@ -61,8 +62,10 @@ export const CurrentCompany = () => {
       <section className={styles.meetings_info}>
         <div className={styles.actions}>
           <CommonButton
-            color='secondary'
-            onClick={() => navigate(routeBuilders.meetings({ companyId }))}
+            color="secondary"
+            onClick={() =>
+              navigate(routeBuilders.meetings({ companyId }))
+            }
           >
             View and Edit Meetings
           </CommonButton>
