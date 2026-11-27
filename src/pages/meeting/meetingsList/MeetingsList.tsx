@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import styles from './MeetingsList.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
@@ -11,11 +12,23 @@ export const MeetingsList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const params = useParams<{ companyId: string }>();
-  const companyId = Number(params?.companyId);
 
-  const handleClick = (meetingId: number) => {
-    navigate(routeBuilders.currentMeeting({ companyId, meetingId }));
-  };
+  const companyId = useMemo(
+    () => Number(params?.companyId),
+    [params?.companyId]
+  );
+
+  const handleClick = useCallback(
+    (meetingId: number) => {
+      navigate(routeBuilders.currentMeeting({ companyId, meetingId }));
+    },
+    [navigate, companyId]
+  );
+
+  const handleAddMeeting = useCallback(() => {
+    dispatch(clearFormValues());
+    navigate(routeBuilders.newMeeting({ companyId }));
+  }, [dispatch, navigate, companyId]);
 
   return (
     <section className={styles.wraper}>
@@ -25,20 +38,11 @@ export const MeetingsList = () => {
         >
           Back
         </CommonButton>
-        <CommonButton
-          color='secondary'
-          onClick={() => {
-            dispatch(clearFormValues());
-            navigate(routeBuilders.newMeeting({ companyId }));
-          }}
-        >
+        <CommonButton color='secondary' onClick={handleAddMeeting}>
           Add Meeting
         </CommonButton>
       </div>
-      <MeetingsInfo
-        companyId={Number(companyId)}
-        onClick={(id) => handleClick(id)}
-      />
+      <MeetingsInfo companyId={companyId} onClick={handleClick} />
     </section>
   );
 };
