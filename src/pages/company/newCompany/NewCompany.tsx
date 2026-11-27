@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../app/store';
 import { EditCompany } from '../../../features/company/editCompany/EditCompany';
@@ -10,10 +11,13 @@ export const NewCompany = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleSubmit = (company: TNewCompany) => {
-    dispatch(saveCompany(company));
-    navigate(routeBuilders.main());
-  };
+  const handleSubmit = useCallback(
+    (company: TNewCompany) => {
+      dispatch(saveCompany(company));
+      navigate(routeBuilders.main());
+    },
+    [dispatch, navigate]
+  );
 
   return <EditCompany onSubmit={handleSubmit} />;
 };
