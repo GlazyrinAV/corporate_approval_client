@@ -51,9 +51,7 @@ export const PartcipantsInfo = ({
     setPage(value);
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  const handleSearch = (query: string) => setSearchQuery(query);
 
   const tableData = (): RowData[] => {
     const data: RowData[] = [];

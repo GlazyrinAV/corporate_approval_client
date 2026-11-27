@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Preloader } from '../../shared/ui/preloader/Preloader';
 import { BasicTable, type RowData } from '../../shared/ui/table/Table';
@@ -6,16 +7,21 @@ import { getIsPotentialLoading } from '../../features/meetingParticipant/getPote
 import { Pageable } from '../../shared/ui/pageable/Pageable';
 import type { TMeetingParticipantPageable } from '../../features/meetingParticipant/types/currentMeetingParticipant';
 
+const CELL_LABELS = {
+  PARTICIPANT_NAME: 'Имя участника',
+  PARTICIPANT_SHARE: 'Доля участника'
+} as const;
+
 type MeetingParticipantsListProps = {
   meetingParticipantsPageable: TMeetingParticipantPageable;
   onClick?: (id: number) => void;
   onPageChange?: (id: number) => void;
   limit?: number;
-  page: number;
+  page?: number;
 };
 
 export const MeetingParticipantsList = ({
-  meetingParticipantsPageable: meetingParticipantsPageable,
+  meetingParticipantsPageable,
   onClick,
   onPageChange,
   limit = 0,
@@ -23,55 +29,52 @@ export const MeetingParticipantsList = ({
 }: MeetingParticipantsListProps) => {
   const isLoading = useSelector(getIsPotentialLoading);
 
-  const tableData = (): RowData[] => {
-    const data: RowData[] = [];
-    if (meetingParticipantsPageable?.content.length > 0) {
-      meetingParticipantsPageable.content.forEach((participant) =>
-        data.push({
-          id: participant.participant.id,
-          rowData: [
-            {
-              cellLabel: 'Имя участника',
-              cellValue: participant.participant.name
-            },
-            {
-              cellLabel: 'Доля участника',
-              cellValue: participant.participant.share
-            }
-          ]
-        })
-      );
-    }
-    return data;
-  };
+  const tableData = useMemo<RowData[]>(() => {
+    const content = meetingParticipantsPageable?.content;
+    if (!content || content.length === 0) return [];
 
-  const handlePageChange = (value: number) => {
-    onPageChange(value);
-  };
+    return content.map((participant) => ({
+      id: participant.participant.id,
+      rowData: [
+        {
+          cellLabel: CELL_LABELS.PARTICIPANT_NAME,
+          cellValue: participant.participant.name
+        },
+        {
+          cellLabel: CELL_LABELS.PARTICIPANT_SHARE,
+          cellValue: participant.participant.share
+        }
+      ]
+    }));
+  }, [meetingParticipantsPageable]);
+
+  const totalPages = meetingParticipantsPageable?.totalPages ?? 0;
+
+  const showPagination = limit === undefined && totalPages > 1;
 
   return (
     <div className={styles.wrapper}>
       {isLoading ? (
         <Preloader />
-      ) : meetingParticipantsPageable != null ? (
+      ) : tableData.length > 0 ? (
         <div>
           <BasicTable
             handleClick={onClick}
             disableView={!!limit}
-            sneakPeek={meetingParticipantsPageable.totalPages > 1 ? limit : 0}
-            tableData={tableData()}
+            sneakPeek={totalPages > 1 ? limit : 0}
+            tableData={tableData}
           />
-          {limit === undefined && meetingParticipantsPageable.totalPages > 1 ? (
+          {showPagination && (
             <Pageable
-              count={meetingParticipantsPageable.totalPages}
-              page={page}
-              onChange={handlePageChange}
+              count={totalPages}
+              page={page ?? 0}
+              onChange={onPageChange}
               className={styles.pageable}
             />
-          ) : null}
+          )}
         </div>
       ) : (
-        'Данные об участниках встречи не найдены'
+        <p>Данные об участниках встречи не найдены</p>
       )}
     </div>
   );

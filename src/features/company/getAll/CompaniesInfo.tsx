@@ -34,9 +34,7 @@ export const CompaniesInfo = () => {
     setPage(value);
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  const handleSearch = (query: string) => setSearchQuery(query);
 
   return (
     <div className={styles.wrapper}>

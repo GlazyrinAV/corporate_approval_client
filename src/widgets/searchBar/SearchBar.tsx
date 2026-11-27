@@ -1,6 +1,5 @@
+import { useCallback } from 'react';
 import { FormInput } from '../../shared/ui/input/FormInput';
-import { useCallback, useState } from 'react';
-import { useDebounce } from '../../shared/utils/hooks/useDebounce';
 import style from './SearchBar.module.css';
 import { CommonButton } from '../../shared/ui/common-button/CommonButton';
 import { Search } from '../../shared/assets/icons';
@@ -9,37 +8,35 @@ type SearchBarProps = {
   onSearch?: (query: string) => void;
   onClear?: () => void;
   placeholder?: string;
-  debounceValue?: number;
   queryValue: string;
 };
+
+const PLACEHOLDERS = {
+  DEFAULT: 'Найти по названию или инн'
+} as const;
 
 export const SearchBar = ({
   onSearch,
   onClear,
-  placeholder = 'Найти по названию или инн',
-  debounceValue = 300,
+  placeholder = PLACEHOLDERS.DEFAULT,
   queryValue
 }: SearchBarProps) => {
-  const [query, setQuery] = useState(queryValue ? queryValue : '');
-  const { debounce } = useDebounce(debounceValue);
-
   const handleChange = useCallback(
     (value: string) => {
-      setQuery(value);
-      debounce(() => {
-        if (onSearch || value.trim()) {
-          onSearch?.(value);
-        }
-      });
+      onSearch?.(value);
     },
-    [debounce, onSearch]
+    [onSearch]
   );
+
+  const handleClear = useCallback(() => {
+    onClear?.();
+  }, [onClear]);
 
   return (
     <div className={style.wrapper}>
       <FormInput
         placeholder={placeholder}
-        value={query}
+        value={queryValue}
         onChange={(e) => handleChange(e.target.value)}
         type='text'
         className={style.container}
@@ -49,16 +46,10 @@ export const SearchBar = ({
           }
         }}
       />
-      <Search className={style.icon} color='rgba(0, 0, 0, 0.25)'/>
-      {query.trim() ? (
+      <Search className={style.icon} color='rgba(0, 0, 0, 0.25)' />
+      {queryValue.trim() ? (
         <div className={style.actionButton}>
-          <CommonButton
-            variant='text'
-            onClick={() => {
-              onClear();
-              setQuery('');
-            }}
-          >
+          <CommonButton variant='text' onClick={handleClear}>
             Очистить
           </CommonButton>
         </div>

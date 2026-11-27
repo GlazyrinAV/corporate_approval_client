@@ -1,8 +1,12 @@
 import Checkbox from '@mui/material/Checkbox';
-import type { TMeetingParticipant } from '../../features/meetingParticipant/types/currentMeetingParticipant';
-import { useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Switcher } from '../../shared/ui/switcher/Switcher';
 import { BasicTable, type RowData } from '../../shared/ui/table/Table';
+import type { TMeetingParticipant } from '../../features/meetingParticipant/types/currentMeetingParticipant';
+
+type TNewMeetingParticipant = TMeetingParticipant & {
+  checked: boolean;
+};
 
 type NewMeetingParticipantsProps = {
   meetingParticipants: TNewMeetingParticipant[];
@@ -10,72 +14,75 @@ type NewMeetingParticipantsProps = {
   onChangePresent?: (meetingParticipant: TMeetingParticipant) => void;
 };
 
-type TNewMeetingParticipant = TMeetingParticipant & {
-  checked: boolean;
-};
+const CELL_LABELS = {
+  PRESENT: 'Присутствует на собрании',
+  PARTICIPANT_NAME: 'Имя участника',
+  PARTICIPANT_SHARE: 'Доля участника',
+  MEETING_MEMBER: 'Участник собрания'
+} as const;
 
 export const NewMeetingParticipants = ({
   meetingParticipants,
   onChangeChosen,
   onChangePresent
 }: NewMeetingParticipantsProps) => {
-  const [checked, setChecked] = useState(
+  const [checked, setChecked] = useState<number[]>(
     meetingParticipants
-      ? meetingParticipants.map((item) =>
-          item.checked ? item.participant.id : null
-        )
-      : []
+      .map((item) => (item.checked ? item.participant.id : null))
+      .filter((id): id is number => id !== null)
   );
 
-  const [present, setPresent] = useState(
+  const [present, setPresent] = useState<number[]>(
     meetingParticipants
-      ? meetingParticipants.map((item) =>
-          item.isPresent ? item.participant.id : null
-        )
-      : []
+      .map((item) => (item.isPresent ? item.participant.id : null))
+      .filter((id): id is number => id !== null)
   );
 
-  const handleToggle = (value: TMeetingParticipant) => () => {
-    const currentIndex = checked.indexOf(value.participant.id);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value.participant.id);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-    onChangeChosen(value);
-  };
-
-  const handleSwitch = (value: TMeetingParticipant) => () => {
-    const currentIndex = present.indexOf(value.participant.id);
-    const newPresent = [...present];
-
-    if (currentIndex === -1) {
-      newPresent.push(value.participant.id);
-      onChangePresent({
-        ...value,
-        isPresent: true
+  const handleToggle = useCallback(
+    (value: TMeetingParticipant) => () => {
+      setChecked((prev) => {
+        const currentIndex = prev.indexOf(value.participant.id);
+        const next = [...prev];
+        if (currentIndex === -1) {
+          next.push(value.participant.id);
+        } else {
+          next.splice(currentIndex, 1);
+        }
+        return next;
       });
-    } else {
-      newPresent.splice(currentIndex, 1);
-      onChangePresent({
-        ...value,
-        isPresent: false
+      onChangeChosen?.(value);
+    },
+    [onChangeChosen]
+  );
+
+  const handleSwitch = useCallback(
+    (value: TMeetingParticipant) => () => {
+      setPresent((prev) => {
+        const currentIndex = prev.indexOf(value.participant.id);
+        const next = [...prev];
+        if (currentIndex === -1) {
+          next.push(value.participant.id);
+        } else {
+          next.splice(currentIndex, 1);
+        }
+        return next;
       });
-    }
 
-    setPresent(newPresent);
-  };
+      const isNowPresent = !present.includes(value.participant.id);
+      onChangePresent?.({
+        ...value,
+        isPresent: isNowPresent
+      });
+    },
+    [onChangePresent, present]
+  );
 
-  const getTableData = (): RowData[] => {
-    const tableData: RowData[] = meetingParticipants.map((participant) => ({
+  const tableData = useMemo<RowData[]>(() => {
+    return meetingParticipants.map((participant) => ({
       id: participant.participant.id,
       rowData: [
         {
-          cellLabel: 'Присутствует на собрании',
+          cellLabel: CELL_LABELS.PRESENT,
           cellValue: (
             <Switcher
               value={present.includes(participant.participant.id)}
@@ -84,15 +91,15 @@ export const NewMeetingParticipants = ({
           )
         },
         {
-          cellLabel: 'Имя участника',
+          cellLabel: CELL_LABELS.PARTICIPANT_NAME,
           cellValue: participant.participant.name
         },
         {
-          cellLabel: 'Доля участника',
+          cellLabel: CELL_LABELS.PARTICIPANT_SHARE,
           cellValue: participant.participant.share
         },
         {
-          cellLabel: 'Участник собрания',
+          cellLabel: CELL_LABELS.MEETING_MEMBER,
           cellValue: (
             <Checkbox
               edge='end'
@@ -108,8 +115,7 @@ export const NewMeetingParticipants = ({
         }
       ]
     }));
-    return tableData;
-  };
+  }, [meetingParticipants, present, checked, handleSwitch, handleToggle]);
 
-  return <BasicTable tableData={getTableData()} disableView />;
+  return <BasicTable tableData={tableData} disableView />;
 };
