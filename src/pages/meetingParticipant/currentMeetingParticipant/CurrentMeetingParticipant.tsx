@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import type { AppDispatch } from '../../../app/store';
@@ -5,7 +6,6 @@ import {
   fetchMeetingParticipantById,
   getCurrentMeetingParticipant
 } from '../../../features/meetingParticipant/getMeetingParticipant/currentMeetingParticipant-slice';
-import { useEffect } from 'react';
 import styles from './CurrentMeetingParticipant.module.css';
 import { CommonButton } from '../../../shared/ui/common-button/CommonButton';
 import { Preloader } from '../../../shared/ui/preloader/Preloader';
@@ -21,34 +21,30 @@ export const CurrentMeetingParticipant = () => {
     meetingId: string;
     meetingParticipantId: string;
   }>();
-  const companyId = Number(params?.companyId);
-  const meetingId = Number(params?.meetingId);
-  const meetingParticipantId = Number(params?.meetingParticipantId);
   const meetingParticipant = useSelector(getCurrentMeetingParticipant);
   const isLoading = useSelector(getIsLoading);
 
+  const paramsData = useMemo(
+    () => ({
+      companyId: Number(params?.companyId),
+      meetingId: Number(params?.meetingId),
+      meetingParticipantId: Number(params?.meetingParticipantId)
+    }),
+    [params?.companyId, params?.meetingId, params?.meetingParticipantId]
+  );
+
   useEffect(() => {
-    dispatch(
-      fetchMeetingParticipantById({
-        companyId: companyId,
-        meetingId: meetingId,
-        meetingParticipantId: meetingParticipantId
-      })
-    );
-  }, [dispatch, companyId, meetingId, meetingParticipantId]);
+    dispatch(fetchMeetingParticipantById(paramsData));
+  }, [dispatch, paramsData]);
+
+  const handleBack = useCallback(() => {
+    navigate(routeBuilders.meetingParticipants(paramsData));
+  }, [navigate, paramsData]);
 
   return (
     <div className={styles.container}>
       <div className={styles.navigation}>
-        <CommonButton
-          onClick={() =>
-            navigate(
-              routeBuilders.meetingParticipants({ companyId, meetingId })
-            )
-          }
-        >
-          Back
-        </CommonButton>
+        <CommonButton onClick={handleBack}>Back</CommonButton>
       </div>
       <section>
         {isLoading ? (
