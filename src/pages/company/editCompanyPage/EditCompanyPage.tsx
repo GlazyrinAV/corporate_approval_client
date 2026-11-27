@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentCompany,
@@ -14,10 +15,13 @@ export const EditCompanyPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleSubmit = (company: TCompany) => {
-    dispatch(updateCompany(company));
-    navigate(routeBuilders.currentCompany({ companyId: company?.id }));
-  };
+  const handleSubmit = useCallback(
+    (company: TCompany) => {
+      dispatch(updateCompany(company));
+      navigate(routeBuilders.currentCompany({ companyId: company.id }));
+    },
+    [dispatch, navigate]
+  );
 
   return (
     <EditCompany currentCompany={currentCompany} onSubmit={handleSubmit} />
